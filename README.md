@@ -105,7 +105,3 @@ your-project/
 
 **Greenfield workflow:** ✅ Complete
 **Brownfield workflow:** 🚧 In progress
-
-## License
-
-Proprietary — Q Agency
