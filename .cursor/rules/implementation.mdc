@@ -1,0 +1,133 @@
+---
+description: Rules for implementing code from TASKS.md
+globs: src/**/*
+alwaysApply: false
+---
+
+# Implementation Rules
+
+You are implementing code based on an approved task. Follow these rules strictly.
+
+## Required Inputs
+
+Before implementing, you must have:
+- Specific task from approved TASKS.md (e.g., "Implement T2")
+- Access to @specs/FEAT-XXX/DESIGN.md for technical approach
+- Access to @.framework/CONSTITUTION.md for coding standards
+
+If TASKS.md is not approved (Status â‰  APPROVED), STOP and inform the user.
+
+## Scope Control
+
+- Implement ONLY the specified task - nothing more, nothing less
+- Do NOT implement other tasks "while you're at it"
+- Do NOT refactor unrelated code
+- Do NOT add features not specified in DESIGN.md
+- If the task is unclear, ASK for clarification before proceeding
+
+### Allowed Supporting Changes
+- You MAY make minimal supporting changes strictly required to compile/run the code:
+  - Wiring new files into index/export
+  - Route registration for new endpoints
+  - Module registry updates
+  - Import statements
+  - Fixing compile errors caused by the change
+- These must be listed explicitly in your summary at the end
+
+## Task Type Handling
+
+### If the task is an Implementation task (code):
+- Implement the specified component/function/endpoint
+- Ensure existing tests still compile (fix imports if needed)
+- Do NOT add new tests unless the task explicitly says so
+
+### If the task is a Testing task:
+- Add or modify tests ONLY
+- Do NOT change implementation code unless fixing a bug the test reveals
+- Follow testing patterns from CONSTITUTION.md
+- Ensure tests are runnable and pass
+
+## Standards Compliance
+
+### From CONSTITUTION.md
+- Follow all coding standards (naming, structure, patterns)
+- Use specified tech stack and libraries
+- Follow file/folder structure conventions
+- Apply security practices defined there
+
+### From DESIGN.md
+- Follow the architecture exactly
+- Use data models as specified
+- Implement APIs/interfaces as designed
+- Respect component boundaries
+
+## Code Quality
+
+### Error Handling
+- Handle errors appropriately - no silent failures
+- Use meaningful error messages
+- Follow project's error handling patterns from CONSTITUTION.md
+
+### Input Validation
+- Validate all external inputs
+- Fail fast with clear messages
+- Never trust user input
+
+### Testability
+- Write code that can be unit tested
+- Use dependency injection where appropriate
+- Avoid hardcoded dependencies
+- No global state unless CONSTITUTION.md allows it
+
+### Configuration
+- No hardcoded values that belong in config
+- Use environment variables or config files as per CONSTITUTION.md
+- Magic numbers should be named constants
+
+## Documentation
+
+- Add docstrings/comments for public functions/classes
+- Follow documentation style from CONSTITUTION.md
+- Comments explain WHY, not WHAT (code explains what)
+
+## Output
+
+- Save files in locations specified by CONSTITUTION.md folder structure
+- Follow file naming conventions from CONSTITUTION.md
+- One component/class per file unless CONSTITUTION.md says otherwise
+
+## Checklist Before Done
+
+- [ ] Only the specified task is implemented
+- [ ] Code follows CONSTITUTION.md standards
+- [ ] Architecture matches DESIGN.md
+- [ ] Errors are handled appropriately
+- [ ] Inputs are validated
+- [ ] Code is testable
+- [ ] No hardcoded configuration values
+- [ ] Files saved in correct location
+
+## Required Summary
+
+At the end of every implementation, provide:
+
+```
+## Implementation Summary
+
+**Task:** [Task ID and description]
+
+**Files changed:**
+- path/to/file1.py (created/modified)
+- path/to/file2.py (created/modified)
+
+**What was implemented:**
+- [Brief description of what you did]
+
+**Supporting changes:**
+- [Any wiring, imports, registrations - or "None"]
+
+**Assumptions / Open questions:**
+- [Any assumptions made, or "None"]
+```
+
+This summary is required for code review (Gate 4).

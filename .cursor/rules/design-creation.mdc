@@ -1,0 +1,101 @@
+---
+description: Rules for creating DESIGN.md files
+globs: specs/**/DESIGN.md
+alwaysApply: false
+---
+
+# Design Creation Rules
+
+You are creating a technical design document. Follow these rules strictly.
+
+## Required Inputs
+
+Before creating a DESIGN.md, you must have:
+- Approved SPEC.md for this feature (@specs/FEAT-XXX/SPEC.md)
+- Access to @.framework/CONSTITUTION.md for project standards
+
+If SPEC.md is not approved (Status â‰  APPROVED), STOP and inform the user.
+
+## Template
+
+Always use the template structure from @.framework/templates/DESIGN.template.md
+
+## Field Rules
+
+### Metadata
+- **Feature ID**: Must match the SPEC.md Feature ID exactly
+- **Feature Name**: Must match the SPEC.md Feature Name exactly
+- Status is always DRAFT until Tech Lead approves
+- Author: developer name + "/ AI-assisted"
+- Reviewer: leave blank (Tech Lead fills this)
+- Date: today's date
+
+### Overview
+- 1-2 paragraphs maximum
+- Explain the technical approach at a high level
+- Must address HOW to build what SPEC.md describes
+- Reference CONSTITUTION.md patterns and standards
+
+### Architecture
+- List all components that will be created or modified
+- Use the table format: Component | Change Type | Description
+- Change Type must be one of: New / Modify / Use existing
+- Include a simple diagram (Mermaid) if interactions are complex
+
+### Data Model
+- Only include if feature requires new or modified data structures
+- List entities, fields, types, and descriptions
+- Follow naming conventions from CONSTITUTION.md
+- If no data model changes, write "No data model changes required."
+
+### API / Interfaces
+- Only include if feature exposes or consumes APIs
+- List endpoints with Method, Path, and Description
+- Follow API conventions from CONSTITUTION.md
+- If no API changes, write "No API changes required."
+
+### Dependencies
+- List external libraries, services, or systems required
+- Include version constraints if relevant
+- If no new dependencies, write "No new dependencies required."
+
+### Security Considerations
+- Address authentication, authorization, input validation
+- Identify sensitive data handling
+- Reference security standards from CONSTITUTION.md
+- If no security implications, write "No additional security considerations."
+
+### Risks & Tradeoffs
+- Note key technical risks or concerns
+- Document rejected alternatives and why
+- Explain significant tradeoffs made
+- If no significant risks, write "No significant risks identified."
+
+### Open Questions
+- Unresolved technical decisions that need answers
+- Format as checklist: `- [ ] Question here?`
+- These must be resolved before moving to TASKS.md
+
+## Constraints
+
+- Every design decision must align with CONSTITUTION.md
+- Do NOT include task breakdown (belongs in TASKS.md)
+- Do NOT include code implementation (belongs in actual code)
+- Do NOT include timeline or estimates (project management concern)
+- Do NOT contradict or expand scope beyond SPEC.md
+- All bracket placeholders from template must be removed from output; if info is missing, add an Open Question instead
+
+## Validation
+
+Before completing, verify:
+- [ ] All acceptance criteria from SPEC.md are technically addressable
+- [ ] Architecture follows CONSTITUTION.md patterns
+- [ ] No scope creep beyond SPEC.md boundaries
+- [ ] All required sections filled (no placeholders)
+- [ ] Status set to DRAFT
+
+## Output
+
+Save the file to: `specs/FEAT-XXX-{feature-slug}/DESIGN.md`
+
+Must be in the same folder as the corresponding SPEC.md.

@@ -1,0 +1,194 @@
+---
+description: Rules for reviewing implemented code against specifications
+globs: specs/**/REVIEW.md
+alwaysApply: false
+---
+
+# Code Review Rules
+
+You are generating a REVIEW.md document for a completed feature. Follow these rules strictly.
+
+## What You Must Inspect
+
+Although you are producing `specs/FEAT-XXX/REVIEW.md`, you must actively inspect:
+- Source code in `src/` (or project's source directory per CONSTITUTION.md)
+- Test files in `tests/` (or project's test directory per CONSTITUTION.md)
+- Any configuration files changed
+- The actual implementation, not just the spec documents
+
+Do NOT produce a review based solely on reading SPEC.md, DESIGN.md, and TASKS.md. You must verify the code exists and matches.
+
+## Required Inputs
+
+Before reviewing, you must have access to:
+- @specs/FEAT-XXX/SPEC.md for acceptance criteria
+- @specs/FEAT-XXX/DESIGN.md for technical approach
+- @specs/FEAT-XXX/TASKS.md for task list
+- @.framework/CONSTITUTION.md for coding standards
+- The actual source code files implementing this feature
+
+## Review Process
+
+### Step 1: Task Completion Check
+
+Verify every task in TASKS.md is implemented:
+- [ ] All implementation tasks (T1, T2, ...) have corresponding code
+- [ ] All testing tasks have corresponding tests
+- [ ] No tasks were skipped
+
+If tasks are missing or incomplete, continue the review but set Verdict = BLOCKED at the end.
+
+### Step 2: Acceptance Criteria Validation
+
+For EACH acceptance criterion in SPEC.md:
+- Trace it to the implementing code
+- Verify the behavior matches the criterion exactly
+- Mark as PASS or FAIL with explanation
+
+Format:
+```
+| Criterion | Status | Evidence |
+|-----------|--------|----------|
+| Given X, when Y, then Z | PASS/FAIL | [file path + identifier] |
+```
+
+**Evidence format:** Use `path/to/file.py (function_name)` or `path/to/file.py (ClassName.method)`. Line numbers optional — only include if you have reliable tooling output. Do not guess line numbers.
+
+### Step 3: CONSTITUTION.md Compliance
+
+Check code against project standards:
+
+**Coding Standards**
+- [ ] Naming conventions followed
+- [ ] File/folder structure correct
+- [ ] Code patterns match project standards
+- [ ] No prohibited patterns used
+
+**Error Handling**
+- [ ] Errors handled appropriately
+- [ ] No silent failures
+- [ ] Error messages are meaningful
+
+**Security**
+- [ ] Input validation present
+- [ ] Authentication/authorization correct (if applicable)
+- [ ] No hardcoded secrets or credentials
+
+**Testing**
+- [ ] Unit tests exist for new code
+- [ ] Tests are meaningful (not just coverage padding)
+- [ ] Test coverage meets threshold from CONSTITUTION.md
+
+### Step 4: DESIGN.md Alignment
+
+Verify implementation matches technical design:
+- [ ] Architecture followed as specified
+- [ ] Data models match design
+- [ ] APIs/interfaces match design
+- [ ] No unauthorized deviations
+
+If deviations exist, they must be justified. Unjustified deviations = FAIL.
+
+### Step 5: Code Quality
+
+General quality checks:
+- [ ] No dead code or commented-out blocks
+- [ ] No TODO/FIXME without linked issue/task
+- [ ] No duplicate code that should be refactored
+- [ ] Dependencies added are justified and in DESIGN.md
+
+## Review Verdicts
+
+### APPROVED
+All checks pass. Code is ready for human reviewer.
+
+### CHANGES REQUESTED
+One or more checks failed. List specific issues with:
+- What failed
+- Where (file path + identifier)
+- What needs to change
+- Which task to revisit (T1, T2, etc.)
+
+### BLOCKED
+Cannot complete full review due to:
+- Missing or incomplete tasks
+- Missing tests
+- Cannot trace acceptance criteria to code
+- Required files not accessible
+
+Note: Always produce a full review document even when BLOCKED. List what is missing and what was reviewable.
+
+## Output Format
+
+Produce a structured review:
+
+```markdown
+# Code Review: FEAT-XXX
+
+## Summary
+
+| Category | Status |
+|----------|--------|
+| Task Completion | ✅ / ❌ |
+| Acceptance Criteria | ✅ / ❌ |
+| CONSTITUTION Compliance | ✅ / ❌ |
+| DESIGN Alignment | ✅ / ❌ |
+| Code Quality | ✅ / ❌ |
+
+**Verdict:** APPROVED / CHANGES REQUESTED / BLOCKED
+
+## Task Completion
+
+| Task | Status | Location |
+|------|--------|----------|
+| T1: [description] | ✅ / ❌ | path/to/file.py (function) |
+| T2: [description] | ✅ / ❌ | path/to/file.py (class) |
+| ... | ... | ... |
+
+## Acceptance Criteria
+
+| Criterion | Status | Evidence |
+|-----------|--------|----------|
+| Given X, when Y, then Z | PASS/FAIL | path/to/file.py (handler_function) |
+| ... | ... | ... |
+
+## Issues Found
+
+### Issue 1: [Title]
+- **Severity:** Critical / Major / Minor
+- **Location:** path/to/file.py (ClassName.method_name)
+- **Problem:** [Description]
+- **Fix:** [What needs to change]
+- **Task:** Revisit T3
+
+### Issue 2: ...
+
+## Recommendations
+
+[Optional: Non-blocking suggestions for improvement]
+```
+
+## Constraints
+
+- Do NOT approve code that fails acceptance criteria
+- Do NOT approve code with missing tests
+- Do NOT approve code that deviates from DESIGN.md without justification
+- Do NOT fix code yourself - only report issues
+- Do NOT add new requirements not in SPEC.md
+- Do NOT fabricate line numbers - use function/class/method identifiers instead
+
+## Severity Definitions
+
+| Severity | Definition | Blocks Approval? |
+|----------|------------|------------------|
+| Critical | Acceptance criteria not met, security flaw, data loss risk | Yes |
+| Major | CONSTITUTION violation, missing tests, design deviation | Yes |
+| Minor | Style issues, minor improvements, optional refactoring | No |
+
+## After Review
+
+- If APPROVED: Human reviewer (Tech Lead/Senior Dev) makes final decision at Gate 4
+- If CHANGES REQUESTED: Developer fixes issues, then requests re-review
+- If BLOCKED: Developer completes missing work, then requests re-review
+
+Save review output to: `specs/FEAT-XXX-{feature-slug}/REVIEW.md`
