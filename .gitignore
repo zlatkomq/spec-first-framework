@@ -1,0 +1,60 @@
+# ===================
+# Test Project Files
+# ===================
+
+# Application code (test project)
+app/
+
+# Tests (test project)
+tests/
+
+# Dependencies (test project)
+requirements.txt
+
+# Virtual environment
+venv/
+.venv/
+env/
+.env
+
+# ===================
+# Generated Specs
+# ===================
+
+# Actual specs created during testing (examples are in .framework/examples/)
+specs/FEAT-*/
+specs/BUG-*/
+specs/CR-*/
+
+# Instance constitution (template is in templates/)
+.framework/CONSTITUTION.md
+
+# ===================
+# Python
+# ===================
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+*.egg-info/
+dist/
+build/
+.eggs/
+
+# ===================
+# IDE / OS
+# ===================
+.DS_Store
+*.swp
+*.swo
+.idea/
+*.iml
+.vscode/
+
+# ===================
+# Coverage
+# ===================
+htmlcov/
+.coverage
+.coverage.*
+coverage.xml
