@@ -18,6 +18,10 @@ A structured, spec-first workflow that ensures:
 
 **This framework is for greenfield projects only.**
 
+**Current version is optimized for backend API development** — services, APIs, database-backed applications. The workflow concepts (spec → design → tasks → review) are universal, but the templates and examples assume backend terminology (data models, endpoints, repositories).
+
+Frontend, mobile, and infrastructure adaptations are planned for future versions.
+
 A separate repository with adapted rules and additional templates for brownfield/legacy codebases is planned. It will include codebase analysis, legacy assessment, and migration strategy tooling.
 
 ## Core Principles
