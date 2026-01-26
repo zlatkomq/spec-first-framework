@@ -42,6 +42,13 @@ build/
 .eggs/
 
 # ===================
+# Internal / Private
+# ===================
+
+# Internal analysis documents (not for public release)
+FRAMEWORK-ANALYSIS.md
+
+# ===================
 # IDE / OS
 # ===================
 .DS_Store
