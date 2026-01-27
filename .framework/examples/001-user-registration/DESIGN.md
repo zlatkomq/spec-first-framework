@@ -4,8 +4,8 @@
 
 | Field | Value |
 |-------|-------|
-| Feature ID | FEAT-001 |
-| Feature Name | User Registration |
+| ID | 001 |
+| Name | User Registration |
 | Status | APPROVED |
 | Author | Developer / AI-assisted |
 | Reviewer | |
@@ -15,7 +15,7 @@
 
 ## Overview
 
-This feature implements invite-only user registration using FastAPI's dependency injection pattern with a layered architecture (endpoint → service → repository). Users submit an invite code, email, and password via a REST endpoint. The service layer validates the invite code, checks email uniqueness, validates password strength, and creates the user account. Passwords are hashed using bcrypt before storage. The invite code is marked as used upon successful registration.
+This implements invite-only user registration using FastAPI's dependency injection pattern with a layered architecture (endpoint → service → repository). Users submit an invite code, email, and password via a REST endpoint. The service layer validates the invite code, checks email uniqueness, validates password strength, and creates the user account. Passwords are hashed using bcrypt before storage. The invite code is marked as used upon successful registration.
 
 All components follow CONSTITUTION.md patterns: Repository pattern for data access, Pydantic for validation, async/await for I/O, and RFC 7807 error responses.
 
@@ -197,7 +197,7 @@ Password validation failed (422):
 - **Input Validation**: All inputs validated via Pydantic schemas; email format validated using email-validator
 - **Invite Code Validation**: Codes checked for existence and unused status before proceeding
 - **Timing Attack Prevention**: Use constant-time comparison for invite code validation
-- **Rate Limiting**: Consider rate limiting at API gateway level (not in this feature scope)
+- **Rate Limiting**: Consider rate limiting at API gateway level (not in this scope)
 - **No Password in Response**: Response never includes password or password_hash
 - **SQL Injection Prevention**: All queries via SQLAlchemy ORM per CONSTITUTION.md
 

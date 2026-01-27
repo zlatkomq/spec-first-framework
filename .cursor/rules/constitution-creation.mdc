@@ -79,7 +79,7 @@ Always use the template structure from @.framework/templates/CONSTITUTION.templa
 ### Open Questions
 - Capture any unresolved decisions
 - Format as checklist: `- [ ] Question here?`
-- These should be resolved before first feature begins
+- These should be resolved before first spec begins
 
 ## Constraints
 

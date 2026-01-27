@@ -11,10 +11,10 @@ You are creating a technical design document. Follow these rules strictly.
 ## Required Inputs
 
 Before creating a DESIGN.md, you must have:
-- Approved SPEC.md for this feature (@specs/FEAT-XXX/SPEC.md)
+- Approved SPEC.md (@specs/XXX/SPEC.md)
 - Access to @.framework/CONSTITUTION.md for project standards
 
-If SPEC.md is not approved (Status â‰  APPROVED), STOP and inform the user.
+If SPEC.md is not approved (Status != APPROVED), STOP and inform the user.
 
 ## Template
 
@@ -23,8 +23,8 @@ Always use the template structure from @.framework/templates/DESIGN.template.md
 ## Field Rules
 
 ### Metadata
-- **Feature ID**: Must match the SPEC.md Feature ID exactly
-- **Feature Name**: Must match the SPEC.md Feature Name exactly
+- **ID**: Must match the SPEC.md ID exactly
+- **Name**: Must match the SPEC.md Name exactly
 - Status is always DRAFT until Tech Lead approves
 - Author: developer name + "/ AI-assisted"
 - Reviewer: leave blank (Tech Lead fills this)
@@ -43,13 +43,13 @@ Always use the template structure from @.framework/templates/DESIGN.template.md
 - Include a simple diagram (Mermaid) if interactions are complex
 
 ### Data Model
-- Only include if feature requires new or modified data structures
+- Only include if this requires new or modified data structures
 - List entities, fields, types, and descriptions
 - Follow naming conventions from CONSTITUTION.md
 - If no data model changes, write "No data model changes required."
 
 ### API / Interfaces
-- Only include if feature exposes or consumes APIs
+- Only include if this exposes or consumes APIs
 - List endpoints with Method, Path, and Description
 - Follow API conventions from CONSTITUTION.md
 - If no API changes, write "No API changes required."
@@ -96,6 +96,6 @@ Before completing, verify:
 
 ## Output
 
-Save the file to: `specs/FEAT-XXX-{feature-slug}/DESIGN.md`
+Save the file to: `specs/XXX-{slug}/DESIGN.md`
 
 Must be in the same folder as the corresponding SPEC.md.

@@ -1,6 +1,6 @@
 # Spec-First Framework: Live Workflow Demo
 
-A real walkthrough of building FEAT-001 User Registration using the framework.
+A real walkthrough of building 001 User Registration using the framework.
 
 ---
 
@@ -51,7 +51,7 @@ A real walkthrough of building FEAT-001 User Registration using the framework.
 
 **Prompt:**
 ```
-@spec-creation.mdc Create SPEC.md for FEAT-001 user authentication:
+@spec-creation.mdc Create SPEC.md for 001 user authentication:
 it should have all standard features.
 ```
 
@@ -101,7 +101,7 @@ User registration only.
 
 **AI Action:** Updated SPEC.md, replaced open questions with "Decisions Made" table.
 
-**Output:** `specs/FEAT-001-user-registration/SPEC.md` (Status: DRAFT)
+**Output:** `specs/001-user-registration/SPEC.md` (Status: DRAFT)
 
 ---
 
@@ -134,7 +134,7 @@ The design-creation rules require SPEC.md to be APPROVED before creating DESIGN.
 - Security considerations
 - Acceptance criteria traceability table
 
-**Output:** `specs/FEAT-001-user-registration/DESIGN.md` (Status: DRAFT)
+**Output:** `specs/001-user-registration/DESIGN.md` (Status: DRAFT)
 
 ---
 
@@ -167,7 +167,7 @@ yes
 | T10 | Unit tests: user repository |
 | T11 | Integration test: endpoint |
 
-**Output:** `specs/FEAT-001-user-registration/TASKS.md` (Status: DRAFT)
+**Output:** `specs/001-user-registration/TASKS.md` (Status: DRAFT)
 
 ---
 
@@ -214,7 +214,7 @@ Each task followed implementation rules:
 
 **Prompt:**
 ```
-@code-review.mdc Review FEAT-001 against @specs/FEAT-001-user-registration/SPEC.md
+@code-review.mdc Review 001 against @specs/001-user-registration/SPEC.md
 ```
 
 **AI Action:** Inspected actual source code and tests, generated REVIEW.md:
@@ -233,7 +233,7 @@ Each task followed implementation rules:
 - Remove unused import
 - Consider DI for service
 
-**Output:** `specs/FEAT-001-user-registration/REVIEW.md`
+**Output:** `specs/001-user-registration/REVIEW.md`
 
 ---
 
@@ -244,7 +244,7 @@ Each task followed implementation rules:
 Human approved
 ```
 
-**AI Action:** Updated REVIEW.md and TASKS.md to mark feature complete.
+**AI Action:** Updated REVIEW.md and TASKS.md to mark spec complete.
 
 ---
 
@@ -266,7 +266,7 @@ Human approved
 ## Artifacts Produced
 
 ```
-specs/FEAT-001-user-registration/
+specs/001-user-registration/
 ├── SPEC.md       # What to build (13 acceptance criteria)
 ├── DESIGN.md     # How to build it (architecture, API, data model)
 ├── TASKS.md      # Implementation breakdown (11 tasks)

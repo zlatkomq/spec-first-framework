@@ -1,4 +1,4 @@
-# Code Review: FEAT-001
+# Code Review: 001
 
 ## Summary
 
@@ -90,7 +90,7 @@
 | Check | Status | Notes |
 |-------|--------|-------|
 | Input validation present | ✅ | Pydantic schemas for all inputs |
-| Authentication/authorization correct | N/A | This feature is registration (pre-auth) |
+| Authentication/authorization correct | N/A | This is registration (pre-auth) |
 | No hardcoded secrets or credentials | ✅ | DATABASE_URL from environment variable |
 
 ### Testing

@@ -12,10 +12,10 @@ You are implementing code based on an approved task. Follow these rules strictly
 
 Before implementing, you must have:
 - Specific task from approved TASKS.md (e.g., "Implement T2")
-- Access to @specs/FEAT-XXX/DESIGN.md for technical approach
+- Access to @specs/XXX/DESIGN.md for technical approach
 - Access to @.framework/CONSTITUTION.md for coding standards
 
-If TASKS.md is not approved (Status â‰  APPROVED), STOP and inform the user.
+If TASKS.md is not approved (Status != APPROVED), STOP and inform the user.
 
 ## Scope Control
 

@@ -1,11 +1,12 @@
-# Feature Specification
+# Specification
 
 ## Metadata
 
 | Field | Value |
 |-------|-------|
-| Feature ID | FEAT-001 |
-| Feature Name | User Registration |
+| ID | 001 |
+| Name | User Registration |
+| Type | Feature |
 | Status | APPROVED |
 | Author | PO / AI-assisted |
 | Date | 2026-01-21 |
@@ -64,19 +65,19 @@ Invite-only user registration for the car selling platform. Allows invited users
 
 **Out of Scope:**
 
-- User login (separate feature)
-- Password reset / forgot password (separate feature)
-- Email verification after registration (separate feature)
+- User login (separate spec)
+- Password reset / forgot password (separate spec)
+- Email verification after registration (separate spec)
 - Social login (Google, GitHub, etc.)
 - User profile management
-- Invite code generation and distribution (admin feature)
+- Invite code generation and distribution (admin spec)
 - Multi-factor authentication
 
 ---
 
 ## Dependencies
 
-- Admin invite code management feature must exist first (admin generates single-use invite codes)
+- Admin invite code management spec must exist first (admin generates single-use invite codes)
 
 ---
 

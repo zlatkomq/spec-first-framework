@@ -16,7 +16,7 @@ First public release of the Spec-First AI Development Framework. This version pr
 - **Full traceability** from requirements to code
 
 #### Rules (`.cursor/rules/`)
-- `spec-creation.mdc` — Create feature specifications from requirements
+- `spec-creation.mdc` — Create specifications from requirements
 - `design-creation.mdc` — Generate technical designs from approved specs
 - `task-creation.mdc` — Break designs into atomic, implementable tasks
 - `implementation.mdc` — Implement code following standards
@@ -24,13 +24,13 @@ First public release of the Spec-First AI Development Framework. This version pr
 - `constitution-creation.mdc` — Define project-level standards
 
 #### Templates (`.framework/templates/`)
-- `SPEC.template.md` — Feature specification structure
+- `SPEC.template.md` — Specification structure
 - `DESIGN.template.md` — Technical design structure
 - `TASKS.template.md` — Task breakdown structure
 - `CONSTITUTION.template.md` — Project standards structure
 
 #### Example
-- Complete FEAT-001 User Registration example showing full workflow execution
+- Complete 001 User Registration example showing full workflow execution
 
 #### Documentation
 - `README.md` — Quick start guide
@@ -55,7 +55,7 @@ First public release of the Spec-First AI Development Framework. This version pr
 
 1. Copy `.cursor/` and `.framework/` folders into your project
 2. Create `CONSTITUTION.md` using: `@constitution-creation.mdc` + your project description
-3. For each feature, follow the workflow: SPEC → DESIGN → TASKS → Implementation → Review
+3. For each spec, follow the workflow: SPEC → DESIGN → TASKS → Implementation → Review
 
 See [README.md](README.md) for detailed instructions.
 

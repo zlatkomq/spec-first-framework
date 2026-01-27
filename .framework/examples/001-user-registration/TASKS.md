@@ -4,8 +4,8 @@
 
 | Field | Value |
 |-------|-------|
-| Feature ID | FEAT-001 |
-| Feature Name | User Registration |
+| ID | 001 |
+| Name | User Registration |
 | Status | APPROVED |
 | Author | Developer / AI-assisted |
 | Date | 2026-01-21 |
@@ -66,6 +66,6 @@ Implement invite-only user registration following the layered architecture from 
 
 ## Completion
 
-**Feature Status:** ✅ COMPLETE  
+**Status:** COMPLETE  
 **Approved by:** Human Reviewer  
 **Date:** 2026-01-21

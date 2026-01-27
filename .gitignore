@@ -22,9 +22,7 @@ env/
 # ===================
 
 # Actual specs created during testing (examples are in .framework/examples/)
-specs/FEAT-*/
-specs/BUG-*/
-specs/CR-*/
+specs/[0-9]*/
 
 # Instance constitution (template is in templates/)
 .framework/CONSTITUTION.md

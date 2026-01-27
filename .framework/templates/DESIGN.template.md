@@ -4,8 +4,8 @@
 
 | Field | Value |
 |-------|-------|
-| Feature ID | FEAT-XXX |
-| Feature Name | |
+| ID | XXX |
+| Name | |
 | Status | DRAFT / APPROVED |
 | Author | |
 | Reviewer | |
@@ -15,7 +15,7 @@
 
 ## Overview
 
-[1-2 paragraphs: What is the technical approach? How will this feature be built at a high level?]
+[1-2 paragraphs: What is the technical approach? How will this be built at a high level?]
 
 ---
 
