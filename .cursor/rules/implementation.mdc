@@ -12,10 +12,10 @@ You are implementing code based on an approved task. Follow these rules strictly
 
 Before implementing, you must have:
 - Specific task from approved TASKS.md (e.g., "Implement T2")
-- Access to @specs/FEAT-XXX/DESIGN.md for technical approach
+- Access to @specs/XXX/DESIGN.md for technical approach
 - Access to @.framework/CONSTITUTION.md for coding standards
 
-If TASKS.md is not approved (Status â‰  APPROVED), STOP and inform the user.
+If TASKS.md is not approved (Status != APPROVED), STOP and inform the user.
 
 ## Scope Control
 
@@ -128,6 +128,25 @@ At the end of every implementation, provide:
 
 **Assumptions / Open questions:**
 - [Any assumptions made, or "None"]
+
+**Design feedback:** (optional)
+- [Any observations about DESIGN.md - or "None"]
 ```
 
 This summary is required for code review (Gate 4).
+
+## Implementation Feedback
+
+If during implementation you discover:
+- A potentially better approach than DESIGN.md specifies
+- A gap or ambiguity in the design
+- A potential issue in the design
+
+Document it in the "Design feedback" section of your summary.
+
+Examples:
+- "Password validation could be cleaner as a Pydantic validator instead of service method"
+- "DESIGN.md doesn't specify behavior when invite code is null vs empty string"
+- "The sequence diagram shows sync call but this would benefit from async"
+
+This does NOT authorize changing the design — follow DESIGN.md as specified. The feedback captures learning for the team to consider in future iterations or Change Requests.

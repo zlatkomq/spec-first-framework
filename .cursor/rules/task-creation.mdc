@@ -11,10 +11,10 @@ You are creating a task breakdown document. Follow these rules strictly.
 ## Required Inputs
 
 Before creating a TASKS.md, you must have:
-- Approved DESIGN.md for this feature (@specs/FEAT-XXX/DESIGN.md)
+- Approved DESIGN.md (@specs/XXX/DESIGN.md)
 - Access to @.framework/CONSTITUTION.md for project standards
 
-If DESIGN.md is not approved (Status â‰  APPROVED), STOP and inform the user.
+If DESIGN.md is not approved (Status != APPROVED), STOP and inform the user.
 
 ## Template
 
@@ -23,8 +23,8 @@ Always use the template structure from @.framework/templates/TASKS.template.md
 ## Field Rules
 
 ### Metadata
-- **Feature ID**: Must match the DESIGN.md Feature ID exactly
-- **Feature Name**: Must match the DESIGN.md Feature Name exactly
+- **ID**: Must match the DESIGN.md ID exactly
+- **Name**: Must match the DESIGN.md Name exactly
 - Status is always DRAFT until Tech Lead approves
 - Author: developer name + "/ AI-assisted" (if name unknown, use "Developer / AI-assisted")
 - Date: today's date
@@ -52,7 +52,7 @@ Always use the template structure from @.framework/templates/TASKS.template.md
 
 ### Definition of Done
 - Keep the standard checklist from template
-- Add feature-specific items if needed (e.g., "Documentation updated")
+- Add spec-specific items if needed (e.g., "Documentation updated")
 
 ## Task Sizing Guidelines
 
@@ -83,6 +83,6 @@ Before completing, verify:
 
 ## Output
 
-Save the file to: `specs/FEAT-XXX-{feature-slug}/TASKS.md`
+Save the file to: `specs/XXX-{slug}/TASKS.md`
 
 Must be in the same folder as the corresponding SPEC.md and DESIGN.md.

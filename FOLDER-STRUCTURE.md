@@ -12,6 +12,9 @@ project/
 │       ├── task-creation.mdc           # Rules for creating TASKS.md
 │       ├── implementation.mdc          # Rules for implementing code
 │       ├── code-review.mdc             # Rules for code review
+│       ├── bugfixing.mdc               # Rules for creating BUG.md
+│       ├── bug-implementation.mdc      # Rules for implementing bugfixes
+│       ├── bug-review.mdc              # Rules for reviewing bugfixes
 │       ├── codebase-analysis.mdc       # Rules for analyzing legacy codebase
 │       ├── legacy-assessment.mdc       # Rules for assessing tech debt/risks
 │       └── constitution-creation.mdc   # Rules for creating CONSTITUTION.md
@@ -22,6 +25,8 @@ project/
 │   │   ├── DESIGN.template.md          # Template structure for technical design
 │   │   ├── TASKS.template.md           # Template structure for task breakdown
 │   │   ├── CONSTITUTION.template.md    # Template structure for project constitution
+│   │   ├── BUG.template.md                 # Template for bug reports
+│   │   ├── BUG-REVIEW.template.md          # Template for bug review
 │   │   ├── CODEBASE-ANALYSIS.template.md   # Template for codebase analysis (legacy)
 │   │   └── LEGACY-ASSESSMENT.template.md   # Template for legacy assessment
 │   │
@@ -33,20 +38,29 @@ project/
 │       └── LEGACY-ASSESSMENT.md        # Tech debt, risks, do-not-touch areas
 │
 ├── specs/
-│   ├── FEAT-001-user-authentication/
+│   ├── 001-user-authentication/
 │   │   ├── SPEC.md                     # What to build
 │   │   ├── DESIGN.md                   # How to build it
 │   │   └── TASKS.md                    # Implementation breakdown
 │   │
-│   ├── FEAT-002-password-reset/
+│   ├── 002-password-reset/
 │   │   ├── SPEC.md
 │   │   ├── DESIGN.md
 │   │   └── TASKS.md
 │   │
-│   └── FEAT-XXX-feature-name/          # Pattern: FEAT-{ID}-{slug}/
+│   └── XXX-description/                # Pattern: {ID}-{slug}/
 │       ├── SPEC.md
 │       ├── DESIGN.md
 │       └── TASKS.md
+│
+├── bugs/                               # Bug specifications (separate from features)
+│   ├── BUG-001-description/
+│   │   ├── BUG.md                      # Bug report and fix plan
+│   │   └── REVIEW.md                   # Bug fix review
+│   │
+│   └── BUG-XXX-description/            # Pattern: BUG-{ID}-{slug}/
+│       ├── BUG.md
+│       └── REVIEW.md
 │
 └── src/                                # Your actual codebase
     └── ...
@@ -62,7 +76,8 @@ project/
 | `.framework/templates/` | Document templates | Project setup |
 | `.framework/CONSTITUTION.md` | Project standards | Step 0 (once) |
 | `docs/legacy-analysis/` | Legacy codebase analysis | Step 0 (brownfield only) |
-| `specs/FEAT-XXX/` | Feature specifications | Per feature |
+| `specs/XXX/` | Feature specifications | Per spec |
+| `bugs/BUG-XXX/` | Bug specifications | Per bug |
 | `src/` | Actual code | Implementation |
 
 ---
@@ -78,6 +93,9 @@ project/
 | `task-creation.mdc` | Step 3 | How AI creates TASKS.md |
 | `implementation.mdc` | Step 4 | How AI writes code |
 | `code-review.mdc` | Step 5 | How AI reviews code |
+| `bugfixing.mdc` | Bugfix Step 1 | How AI creates BUG.md |
+| `bug-implementation.mdc` | Bugfix Step 2 | How AI implements bugfixes |
+| `bug-review.mdc` | Bugfix Step 3 | How AI reviews bugfixes |
 | `codebase-analysis.mdc` | Step 0 (legacy) | How AI analyzes existing code |
 | `legacy-assessment.mdc` | Step 0 (legacy) | How AI identifies tech debt |
 | `constitution-creation.mdc` | Step 0 | How AI creates CONSTITUTION.md |
@@ -89,6 +107,8 @@ project/
 | `SPEC.template.md` | Step 1 | Structure for specifications |
 | `DESIGN.template.md` | Step 2 | Structure for technical design |
 | `TASKS.template.md` | Step 3 | Structure for task breakdown |
+| `BUG.template.md` | Bugfix Step 1 | Structure for bug reports |
+| `BUG-REVIEW.template.md` | Bugfix Step 3 | Structure for bug fix reviews |
 | `CONSTITUTION.template.md` | Step 0 | Structure for project standards |
 | `CODEBASE-ANALYSIS.template.md` | Step 0 (legacy) | Structure for codebase analysis |
 | `LEGACY-ASSESSMENT.template.md` | Step 0 (legacy) | Structure for tech debt assessment |
@@ -103,25 +123,44 @@ project/
 | `SPEC.md` | PO/BA + AI | PO/Client | What to build |
 | `DESIGN.md` | Developer + AI | Tech Lead | How to build it |
 | `TASKS.md` | Developer + AI | Tech Lead | Implementation steps |
+| `BUG.md` | Developer + AI | Tech Lead | Bug report and fix plan |
+| `REVIEW.md` (bugs) | Developer + AI | Reviewer | Bug fix verification |
 
 ---
 
 ## Naming Conventions
 
-### Feature Folders
+### Spec Folders
 
 ```
-FEAT-{ID}-{slug}/
+{ID}-{slug}/
 
 Examples:
-FEAT-001-user-authentication/
-FEAT-002-password-reset/
-FEAT-003-invoice-export/
-FEAT-042-dashboard-redesign/
+001-user-authentication/
+002-password-reset/
+003-invoice-export/
+042-fix-race-condition/
 ```
 
 - **ID**: Sequential number, zero-padded (001, 002, ... 042, ... 100)
 - **slug**: Lowercase, hyphen-separated, descriptive name
+- **Type**: Defined inside SPEC.md (Feature, Bugfix, Refactor, etc.)
+
+### Bug Folders
+
+```
+BUG-{ID}-{slug}/
+
+Examples:
+BUG-001-safari-validation-fails/
+BUG-002-unicode-email-crash/
+BUG-003-timeout-on-large-upload/
+```
+
+- **Prefix**: Always `BUG-` to distinguish from feature specs
+- **ID**: Sequential number within bugs, zero-padded (001, 002, etc.)
+- **slug**: Lowercase, hyphen-separated, describes the bug (max 4 words)
+- **Links to**: Original SPEC.md in Related Spec field
 
 ### Document Files
 
@@ -142,7 +181,7 @@ project/
 │   └── CONSTITUTION.md     ✓ Created fresh
 ├── docs/
 │   └── legacy-analysis/    ✗ NOT NEEDED
-├── specs/                  ✓ Feature specs
+├── specs/                  ✓ Specs
 └── src/                    ✓ New code
 ```
 
@@ -158,7 +197,7 @@ project/
 │   └── legacy-analysis/    ✓ REQUIRED
 │       ├── CODEBASE-ANALYSIS.md
 │       └── LEGACY-ASSESSMENT.md
-├── specs/                  ✓ Feature specs
+├── specs/                  ✓ Specs
 └── src/                    ✓ Existing + new code
 ```
 
@@ -174,6 +213,8 @@ project/
 | Change document structure | `.framework/templates/*.template.md` |
 | Check project standards | `.framework/CONSTITUTION.md` |
 | Understand legacy code | `docs/legacy-analysis/` |
-| Find feature requirements | `specs/FEAT-XXX/SPEC.md` |
-| Find technical approach | `specs/FEAT-XXX/DESIGN.md` |
-| Find implementation tasks | `specs/FEAT-XXX/TASKS.md` |
+| Find requirements | `specs/XXX/SPEC.md` |
+| Find technical approach | `specs/XXX/DESIGN.md` |
+| Find implementation tasks | `specs/XXX/TASKS.md` |
+| Find bug reports | `bugs/BUG-XXX/BUG.md` |
+| Find bug fix reviews | `bugs/BUG-XXX/REVIEW.md` |

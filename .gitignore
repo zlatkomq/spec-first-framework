@@ -21,10 +21,11 @@ env/
 # Generated Specs
 # ===================
 
-# Actual specs created during testing (examples are in .framework/examples/)
-specs/FEAT-*/
-specs/BUG-*/
-specs/CR-*/
+# Actual specs created during testing (examples are in docs/examples/)
+# Entire specs folder is for testing framework development only
+specs/*
+# But keep .gitkeep to preserve folder structure
+!specs/.gitkeep
 
 # Instance constitution (template is in templates/)
 .framework/CONSTITUTION.md

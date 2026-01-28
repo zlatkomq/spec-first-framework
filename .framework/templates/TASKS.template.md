@@ -4,8 +4,8 @@
 
 | Field | Value |
 |-------|-------|
-| Feature ID | FEAT-XXX |
-| Feature Name | |
+| ID | XXX |
+| Name | |
 | Status | DRAFT / APPROVED |
 | Author | |
 | Date | |

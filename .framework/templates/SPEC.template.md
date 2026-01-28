@@ -1,11 +1,12 @@
-# Feature Specification
+# Specification
 
 ## Metadata
 
 | Field | Value |
 |-------|-------|
-| Feature ID | FEAT-XXX |
-| Feature Name | |
+| ID | XXX |
+| Name | |
+| Type | Feature / Refactor / Migration / Performance / Security / Infrastructure |
 | Status | DRAFT / APPROVED |
 | Author | |
 | Date | |
@@ -14,7 +15,7 @@
 
 ## Overview
 
-[2-3 sentences: What is this feature and why are we building it?]
+[2-3 sentences: What is this and why are we building/fixing it?]
 
 ---
 
@@ -47,7 +48,7 @@
 
 ## Dependencies
 
-[Optional: What must exist before this feature can be built?]
+[Optional: What must exist before this can be built?]
 
 - 
 - 
@@ -60,3 +61,13 @@
 
 - [ ] 
 - [ ] 
+
+---
+
+## Bug History
+
+[Automatically updated when bugs are fixed against this spec]
+
+| Bug ID | Summary | Date Fixed |
+|--------|---------|------------|
+| - | No bugs reported | - |

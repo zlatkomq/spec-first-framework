@@ -6,11 +6,11 @@ alwaysApply: false
 
 # Code Review Rules
 
-You are generating a REVIEW.md document for a completed feature. Follow these rules strictly.
+You are generating a REVIEW.md document for a completed spec. Follow these rules strictly.
 
 ## What You Must Inspect
 
-Although you are producing `specs/FEAT-XXX/REVIEW.md`, you must actively inspect:
+Although you are producing `specs/XXX/REVIEW.md`, you must actively inspect:
 - Source code in `src/` (or project's source directory per CONSTITUTION.md)
 - Test files in `tests/` (or project's test directory per CONSTITUTION.md)
 - Any configuration files changed
@@ -21,9 +21,9 @@ Do NOT produce a review based solely on reading SPEC.md, DESIGN.md, and TASKS.md
 ## Required Inputs
 
 Before reviewing, you must have access to:
-- @specs/FEAT-XXX/SPEC.md for acceptance criteria
-- @specs/FEAT-XXX/DESIGN.md for technical approach
-- @specs/FEAT-XXX/TASKS.md for task list
+- @specs/XXX/SPEC.md for acceptance criteria
+- @specs/XXX/DESIGN.md for technical approach
+- @specs/XXX/TASKS.md for task list
 - @.framework/CONSTITUTION.md for coding standards
 - The actual source code files implementing this feature
 
@@ -123,7 +123,7 @@ Note: Always produce a full review document even when BLOCKED. List what is miss
 Produce a structured review:
 
 ```markdown
-# Code Review: FEAT-XXX
+# Code Review: XXX
 
 ## Summary
 
@@ -191,4 +191,4 @@ Produce a structured review:
 - If CHANGES REQUESTED: Developer fixes issues, then requests re-review
 - If BLOCKED: Developer completes missing work, then requests re-review
 
-Save review output to: `specs/FEAT-XXX-{feature-slug}/REVIEW.md`
+Save review output to: `specs/XXX-{slug}/REVIEW.md`

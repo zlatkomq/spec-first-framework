@@ -1,0 +1,182 @@
+---
+description: Rules for reviewing bugfix implementations
+globs: bugs/**/REVIEW.md
+alwaysApply: false
+---
+
+# Bug Review Rules
+
+You are reviewing a bugfix implementation. Follow these rules strictly.
+
+## What You Must Inspect
+
+You must actively inspect:
+- The BUG.md for reproduction steps and fix criteria
+- The original SPEC.md for acceptance criteria
+- Source code changes made for the fix
+- The regression test added
+- Any configuration or dependency changes
+
+Do NOT produce a review based solely on reading BUG.md. You must verify the actual code.
+
+## Required Inputs
+
+Before reviewing, you must have access to:
+- @bugs/BUG-XXX/BUG.md for bug details and fix criteria
+- The original @specs/XXX/SPEC.md (linked in BUG.md)
+- @.framework/CONSTITUTION.md for coding standards
+- The actual source code files modified for the fix
+- The regression test file
+
+## Review Process
+
+### Step 1: Fix Verification
+
+Verify the bug is actually fixed:
+- [ ] Reproduction steps from BUG.md would no longer produce the bug
+- [ ] The fix addresses the root cause documented in BUG.md
+- [ ] Original acceptance criteria (from SPEC.md) is satisfied
+
+### Step 2: Regression Test Verification
+
+Check the regression test:
+- [ ] Test exists and is named appropriately (references BUG-XXX)
+- [ ] Test covers the exact reproduction scenario
+- [ ] Test would fail without the fix (based on logic review)
+- [ ] Test passes with the fix in place
+- [ ] Test follows CONSTITUTION.md testing patterns
+
+If regression test is missing, set Verdict = CHANGES REQUESTED.
+
+### Step 3: Minimal Change Verification
+
+Ensure the fix is appropriately scoped:
+- [ ] Only necessary files were modified
+- [ ] No unrelated changes bundled in
+- [ ] No feature additions disguised as bugfix
+- [ ] No unnecessary refactoring
+
+### Step 4: CONSTITUTION.md Compliance
+
+Check code quality:
+- [ ] Coding standards followed
+- [ ] Error handling appropriate
+- [ ] No new security issues introduced
+- [ ] File locations correct
+
+### Step 5: No Regression Check
+
+Verify no new issues:
+- [ ] Existing tests still pass
+- [ ] No new linting errors
+- [ ] No obvious side effects from the change
+
+## Review Verdicts
+
+### APPROVED
+All checks pass. Bug is fixed correctly with regression test.
+
+### CHANGES REQUESTED
+One or more checks failed. List specific issues with:
+- What failed
+- Where (file path + function/method)
+- What needs to change
+
+### BLOCKED
+Cannot complete review due to:
+- Missing regression test
+- Incomplete fix (not all tasks done)
+- Cannot verify reproduction scenario
+- Required files not accessible
+
+## Output Format
+
+Save to: `bugs/BUG-XXX-{slug}/REVIEW.md`
+
+```markdown
+# Bug Review: BUG-XXX
+
+## Summary
+
+| Category | Status |
+|----------|--------|
+| Fix Verification | ✅ / ❌ |
+| Regression Test | ✅ / ❌ |
+| Minimal Change | ✅ / ❌ |
+| CONSTITUTION Compliance | ✅ / ❌ |
+| No Regressions | ✅ / ❌ |
+
+**Verdict:** APPROVED / CHANGES REQUESTED / BLOCKED
+
+## Bug Details
+
+| Field | Value |
+|-------|-------|
+| Bug ID | BUG-XXX |
+| Related Spec | [FEAT-XXX](link) |
+| Severity | Critical / Major / Minor |
+
+## Fix Verification
+
+| Criterion | Status | Evidence |
+|-----------|--------|----------|
+| Reproduction steps fixed | PASS/FAIL | [explanation] |
+| Root cause addressed | PASS/FAIL | [explanation] |
+| Acceptance criteria satisfied | PASS/FAIL | [file path + function] |
+
+## Regression Test
+
+| Check | Status | Location |
+|-------|--------|----------|
+| Test exists | ✅ / ❌ | path/to/test.py (test_bug_XXX) |
+| Covers scenario | ✅ / ❌ | [explanation] |
+| Would fail without fix | ✅ / ❌ | [explanation] |
+
+## Files Changed
+
+| File | Change Type | Review Status |
+|------|-------------|---------------|
+| path/to/file.py | Modified | ✅ / ❌ |
+| path/to/test.py | Created | ✅ / ❌ |
+
+## Issues Found
+
+### Issue 1: [Title] (if any)
+- **Severity:** Critical / Major / Minor
+- **Location:** path/to/file.py (function_name)
+- **Problem:** [Description]
+- **Fix:** [What needs to change]
+
+## Recommendations
+
+[Optional: Non-blocking suggestions for improvement]
+```
+
+## Post-Approval Actions
+
+When the review verdict is APPROVED, instruct the user:
+
+1. **Update BUG.md status**: Change Status from CONFIRMED to FIXED
+2. **Update BUG.md Date Fixed**: Set to today's date
+3. **Update original SPEC.md**: Add entry to Bug History table:
+   ```
+   | [BUG-XXX](../bugs/BUG-XXX-slug/BUG.md) | [summary] | [date] |
+   ```
+
+Provide the exact text to add to the SPEC.md Bug History section.
+
+## Constraints
+
+- Do NOT approve without a regression test
+- Do NOT approve if reproduction scenario is not addressed
+- Do NOT fix code yourself - only report issues
+- Do NOT add new requirements
+- Do NOT skip verification steps
+
+## Severity Definitions
+
+| Severity | Definition | Blocks Approval? |
+|----------|------------|------------------|
+| Critical | Fix doesn't work, introduces new bugs, security issue | Yes |
+| Major | Missing regression test, incomplete fix | Yes |
+| Minor | Style issues, minor improvements | No |

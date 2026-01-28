@@ -65,13 +65,14 @@ Later, enforcement can be added:
 - Automated validation of document structure
 - Required approvals in git workflow
 
-### 4. Feature-Level Granularity
+### 4. Spec-Level Granularity
 
-The framework operates per-feature, not per-project. This means:
+The framework operates per-spec, not per-project. This means:
 - Works for new projects of any size
 - Specs stay focused and manageable
-- Parallel work on multiple features is natural
+- Parallel work on multiple specs is natural
 - Scales from solo developers to large teams
+- Supports multiple work types with dedicated workflows (features, bugfixes) and shared workflows (refactors, migrations, performance)
 
 ### 5. Documents as Source of Truth
 
@@ -98,7 +99,7 @@ The methodology is the asset. The IDE-specific rules are just the implementation
 
 ### Not a Heavy Process
 
-Total framework overhead per feature:
+Total framework overhead per spec:
 - SPEC.md: 10-20 minutes
 - DESIGN.md: 15-30 minutes
 - TASKS.md: 10-15 minutes
@@ -120,7 +121,7 @@ This is less time than debugging misunderstood requirements or reworking code th
 - Consistent development velocity
 - Auditable process for compliance requirements
 - Knowledge capture in specifications, not just code
-- Reduced bus factor — anyone can pick up a feature
+- Reduced bus factor — anyone can pick up a spec
 
 ### For Agencies & Consultancies
 
@@ -194,7 +195,7 @@ The gates catch problems early when they're cheap to fix.
 3. **Pick a feature** and run it through the full workflow
 4. **Learn and iterate** — refine rules based on what you discover
 
-The first feature will feel slow. By the third feature, it will feel natural. By the tenth, you won't imagine working any other way.
+The first spec will feel slow. By the third spec, it will feel natural. By the tenth, you won't imagine working any other way.
 
 ## Roadmap
 
@@ -210,7 +211,7 @@ This is under evaluation to determine if it adds value or unnecessary complexity
 
 ### Brownfield Support (Separate Repository)
 
-A dedicated repository for legacy/existing codebases is planned. It will reuse most of the per-feature workflow (SPEC → DESIGN → TASKS → Implementation → Review) but add a layer to the CONSTITUTION.md creation process based on legacy assessment.
+A dedicated repository for legacy/existing codebases is planned. It will reuse most of the per-spec workflow (SPEC → DESIGN → TASKS → Implementation → Review) but add a layer to the CONSTITUTION.md creation process based on legacy assessment.
 
 Additional components:
 - Codebase analysis rules and templates
@@ -233,8 +234,8 @@ Additional components:
 
 ### Jira Integration (Planned)
 
-Connect features to Jira via MCP server for bidirectional sync:
-- Link FEAT-XXX specs to Jira tickets
+Connect specs to Jira via MCP server for bidirectional sync:
+- Link specs to Jira tickets
 - Sync status changes between TASKS.md and Jira subtasks
 - Pull requirements from Jira into SPEC.md
 - Push completion status back to Jira
