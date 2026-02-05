@@ -6,6 +6,16 @@
 project/
 │
 ├── .cursor/
+│   ├── commands/                       # Cursor slash commands (invoke rules + context)
+│   │   ├── constitute.md
+│   │   ├── specify.md
+│   │   ├── design.md
+│   │   ├── tasks.md
+│   │   ├── implement.md
+│   │   ├── review.md
+│   │   ├── bug.md
+│   │   ├── bugfix.md
+│   │   └── bugreview.md
 │   └── rules/
 │       ├── spec-creation.mdc           # Rules for creating SPEC.md
 │       ├── design-creation.mdc         # Rules for creating DESIGN.md
@@ -72,6 +82,7 @@ project/
 
 | Folder | Purpose | When Created |
 |--------|---------|--------------|
+| `.cursor/commands/` | Cursor slash commands (run rule + template flow) | Project setup |
 | `.cursor/rules/` | AI behavior rules (.mdc files) | Project setup |
 | `.framework/templates/` | Document templates | Project setup |
 | `.framework/CONSTITUTION.md` | Project standards | Step 0 (once) |
@@ -209,6 +220,7 @@ project/
 
 | I need to... | Look in... |
 |--------------|------------|
+| Run workflow via slash commands | `.cursor/commands/` or [Commands & Workflow Example](docs/COMMANDS-WORKFLOW-EXAMPLE.md) |
 | Change AI behavior | `.cursor/rules/*.mdc` |
 | Change document structure | `.framework/templates/*.template.md` |
 | Check project standards | `.framework/CONSTITUTION.md` |
