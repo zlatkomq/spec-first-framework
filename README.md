@@ -5,8 +5,10 @@ A structured methodology for AI-assisted software development. Ensures traceabil
 ## Quick Start
 
 1. Copy `.cursor/` and `.framework/` folders into your project
-2. Create `CONSTITUTION.md` using: `@constitution-creation.mdc` + your project description
+2. Create `CONSTITUTION.md` using: `/constitute` or `@constitution-creation.mdc` + your project description
 3. For each spec, follow the workflow: SPEC → DESIGN → TASKS → Implementation → Review
+
+**Commands** (in `.cursor/commands/`): `/constitute`, `/specify`, `/design`, `/tasks`, `/implement`, `/review`, `/bug`, `/bugfix`, `/bugreview` — see [Commands & Workflow Example](docs/COMMANDS-WORKFLOW-EXAMPLE.md).
 
 ## Workflow
 
@@ -45,6 +47,7 @@ Update original SPEC.md Bug History → Done
 ```
 your-project/
 ├── .cursor/
+│   ├── commands/              # Slash commands: /specify, /design, /tasks, etc.
 │   └── rules/
 │       ├── spec-creation.mdc
 │       ├── design-creation.mdc
@@ -79,45 +82,43 @@ your-project/
 
 ## Usage
 
+All steps can be run via the slash commands below. You can also invoke the rules directly (e.g. `@spec-creation.mdc`); see [Commands & Workflow Example](docs/COMMANDS-WORKFLOW-EXAMPLE.md) for details.
+
 ### Step 0: Project Setup (once)
 
 ```
-@constitution-creation.mdc Create CONSTITUTION.md:
-- Python 3.12, FastAPI
-- PostgreSQL
-- pytest, 80% coverage
-- REST API
+/constitute Python 3.12, FastAPI, PostgreSQL, pytest 80% coverage, REST API
 ```
 
 ### Step 1: Create Specification
 
 ```
-@spec-creation.mdc Create SPEC.md for 001 user authentication:
-[paste requirements from PO/client]
+/specify 001-user-authentication: [paste requirements from PO/client]
 ```
 
 ### Step 2: Create Technical Design
 
 ```
-@design-creation.mdc Create DESIGN.md based on @specs/001-user-authentication/SPEC.md
+/design 001
 ```
 
 ### Step 3: Create Task Breakdown
 
 ```
-@task-creation.mdc Create TASKS.md based on @specs/001-user-authentication/DESIGN.md
+/tasks 001
 ```
 
 ### Step 4: Implement
 
 ```
-@implementation.mdc Implement T1 from @specs/001-user-authentication/TASKS.md
+/implement T1 from 001
 ```
+Repeat for T2, T3, …
 
 ### Step 5: Review
 
 ```
-@code-review.mdc Review 001 against @specs/001-user-authentication/SPEC.md
+/review 001
 ```
 
 ---
@@ -127,21 +128,19 @@ your-project/
 ### Step 1: Create Bug Report
 
 ```
-@bugfixing.mdc Create BUG.md for issue in @specs/FEAT-001-user-registration/SPEC.md:
-Email validation passes for "user@domain" (missing TLD).
-Steps: Enter "test@domain", click register, succeeds but shouldn't.
+/bug 001-user-registration: Email validation passes for "user@domain" (missing TLD). Steps: Enter "test@domain", click register, succeeds but shouldn't.
 ```
 
 ### Step 2: Implement Fix
 
 ```
-@bug-implementation.mdc Implement T1 from @bugs/BUG-001-email-validation/BUG.md
+/bugfix T1 from BUG-001
 ```
 
 ### Step 3: Review Fix
 
 ```
-@bug-review.mdc Review @bugs/BUG-001-email-validation/BUG.md
+/bugreview BUG-001
 ```
 
 After approval, update the original SPEC.md Bug History table.
@@ -164,6 +163,7 @@ Note: Dedicated workflows for Refactor, Performance, and Migration may be added 
 ## Documentation
 
 - [FOLDER-STRUCTURE.md](FOLDER-STRUCTURE.md) — Detailed folder and file descriptions
+- [Commands & Workflow Example](docs/COMMANDS-WORKFLOW-EXAMPLE.md) — Using slash commands (`/specify`, `/design`, etc.)
 - [framework-workflow-final.mermaid](framework-workflow-final.mermaid) — Visual workflow diagram
 - [framework-legacy-analysis.mermaid](framework-legacy-analysis.mermaid) — Brownfield analysis flow (coming soon)
 
