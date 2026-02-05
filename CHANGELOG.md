@@ -2,6 +2,53 @@
 
 All notable changes to the Spec-First AI Development Framework will be documented in this file.
 
+## [0.6.0] - 2026-02-05
+
+### Summary
+
+Added **Cursor slash commands** as the primary way to run the spec-first workflow. Commands wrap rules and templates so you can drive the full flow (feature and bugfix) with simple prompts like `/specify`, `/design`, `/implement`, etc.
+
+### What's New
+
+#### Cursor Commands (`.cursor/commands/`)
+- `/constitute` — Create or update `.framework/CONSTITUTION.md`
+- `/specify` — Create `specs/XXX-slug/SPEC.md`
+- `/design` — Create `specs/XXX-slug/DESIGN.md`
+- `/tasks` — Create `specs/XXX-slug/TASKS.md`
+- `/implement` — Implement one task from TASKS.md
+- `/review` — Generate `specs/XXX-slug/REVIEW.md`
+- `/bug` — Create `bugs/BUG-XXX-slug/BUG.md`
+- `/bugfix` — Implement one task from BUG.md
+- `/bugreview` — Generate `bugs/BUG-XXX-slug/REVIEW.md`
+
+#### Documentation
+- `docs/COMMANDS-WORKFLOW-EXAMPLE.md` — Full command reference and workflow examples
+- README Usage and Bugfix Usage sections rewritten to use commands
+- README Quick Start and folder structure updated to include `.cursor/commands/`
+- `FOLDER-STRUCTURE.md` updated with commands folder and link to commands doc
+
+### Improvements
+
+- High-level workflow overview in README is now command-based and stable (details live in rules and commands doc)
+- Rules (`@rule.mdc`) remain available for custom or advanced usage
+
+### How to Use Commands
+
+Run any step via the slash command; the command invokes the right rule and context. Example:
+
+```
+/constitute Python 3.12, FastAPI, PostgreSQL, pytest 80% coverage
+/specify 001-user-auth: login, logout, session handling
+/design 001
+/tasks 001
+/implement T1 from 001
+/review 001
+```
+
+See [docs/COMMANDS-WORKFLOW-EXAMPLE.md](docs/COMMANDS-WORKFLOW-EXAMPLE.md) for full examples and [README.md](README.md) for the workflow overview.
+
+---
+
 ## [0.5.0] - 2026-01-28
 
 ### Summary
