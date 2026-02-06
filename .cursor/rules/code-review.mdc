@@ -120,53 +120,7 @@ Note: Always produce a full review document even when BLOCKED. List what is miss
 
 ## Output Format
 
-Produce a structured review:
-
-```markdown
-# Code Review: XXX
-
-## Summary
-
-| Category | Status |
-|----------|--------|
-| Task Completion | ✅ / ❌ |
-| Acceptance Criteria | ✅ / ❌ |
-| CONSTITUTION Compliance | ✅ / ❌ |
-| DESIGN Alignment | ✅ / ❌ |
-| Code Quality | ✅ / ❌ |
-
-**Verdict:** APPROVED / CHANGES REQUESTED / BLOCKED
-
-## Task Completion
-
-| Task | Status | Location |
-|------|--------|----------|
-| T1: [description] | ✅ / ❌ | path/to/file.py (function) |
-| T2: [description] | ✅ / ❌ | path/to/file.py (class) |
-| ... | ... | ... |
-
-## Acceptance Criteria
-
-| Criterion | Status | Evidence |
-|-----------|--------|----------|
-| Given X, when Y, then Z | PASS/FAIL | path/to/file.py (handler_function) |
-| ... | ... | ... |
-
-## Issues Found
-
-### Issue 1: [Title]
-- **Severity:** Critical / Major / Minor
-- **Location:** path/to/file.py (ClassName.method_name)
-- **Problem:** [Description]
-- **Fix:** [What needs to change]
-- **Task:** Revisit T3
-
-### Issue 2: ...
-
-## Recommendations
-
-[Optional: Non-blocking suggestions for improvement]
-```
+Produce REVIEW.md following the structure in @.framework/templates/REVIEW.template.md.
 
 ## Constraints
 

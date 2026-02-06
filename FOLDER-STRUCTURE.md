@@ -36,6 +36,7 @@ project/
 │   │   ├── TASKS.template.md           # Template structure for task breakdown
 │   │   ├── CONSTITUTION.template.md    # Template structure for project constitution
 │   │   ├── BUG.template.md                 # Template for bug reports
+│   │   ├── REVIEW.template.md                # Template for code review
 │   │   ├── BUG-REVIEW.template.md          # Template for bug review
 │   │   ├── CODEBASE-ANALYSIS.template.md   # Template for codebase analysis (legacy)
 │   │   └── LEGACY-ASSESSMENT.template.md   # Template for legacy assessment
@@ -118,6 +119,7 @@ project/
 | `SPEC.template.md` | Step 1 | Structure for specifications |
 | `DESIGN.template.md` | Step 2 | Structure for technical design |
 | `TASKS.template.md` | Step 3 | Structure for task breakdown |
+| `REVIEW.template.md` | Step 5 | Structure for code reviews |
 | `BUG.template.md` | Bugfix Step 1 | Structure for bug reports |
 | `BUG-REVIEW.template.md` | Bugfix Step 3 | Structure for bug fix reviews |
 | `CONSTITUTION.template.md` | Step 0 | Structure for project standards |
