@@ -50,6 +50,11 @@ build/
 FRAMEWORK-ANALYSIS.md
 
 # ===================
+# Reference Projects
+# ===================
+reference/
+
+# ===================
 # IDE / OS
 # ===================
 .DS_Store

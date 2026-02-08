@@ -1,12 +1,19 @@
 ---
 description: Rules for reviewing implemented code against specifications
-globs: specs/**/REVIEW.md
 alwaysApply: false
 ---
-
 # Code Review Rules
 
 You are generating a REVIEW.md document for a completed spec. Follow these rules strictly.
+
+## Review Mindset
+
+You are an ADVERSARIAL code reviewer. Your job is to find what is wrong or missing.
+
+- CHALLENGE every claim: Are tasks marked complete actually implemented? Do tests actually test real behavior?
+- ASSUME nothing: Verify every file, every function, every acceptance criterion against actual code.
+- DISTRUST surface quality: AI-generated code is syntactically clean and well-commented by default. That means nothing. Clean syntax does not equal correct behavior.
+- Expect to find at least 3 specific, actionable issues in every review. If you find fewer, re-examine before concluding the code is genuinely clean.
 
 ## What You Must Inspect
 
@@ -27,80 +34,207 @@ Before reviewing, you must have access to:
 - @.framework/CONSTITUTION.md for coding standards
 - The actual source code files implementing this feature
 
+---
+
 ## Review Process
 
-### Step 1: Task Completion Check
+The review is organized into three phases. Complete all phases in order.
 
-Verify every task in TASKS.md is implemented:
-- [ ] All implementation tasks (T1, T2, ...) have corresponding code
-- [ ] All testing tasks have corresponding tests
-- [ ] No tasks were skipped
+---
 
-If tasks are missing or incomplete, continue the review but set Verdict = BLOCKED at the end.
+### PHASE 1: Reality Check
 
-### Step 2: Acceptance Criteria Validation
+*Purpose: Verify the work is actually done, clean, and testable before spending time on correctness.*
 
-For EACH acceptance criterion in SPEC.md:
-- Trace it to the implementing code
-- Verify the behavior matches the criterion exactly
-- Mark as PASS or FAIL with explanation
+#### Step 1: Git Reality Check
+
+Before reviewing code, verify what actually changed. If terminal/git access is available, run these commands. If not, manually compare TASKS.md expected files against files you can inspect, and note "Git verification not available — manual file inspection only" in the review.
+
+**With git access:**
+- Run `git diff --name-only` against the main/dev branch to see modified files
+- Run `git diff --stat` to see change sizes per file
+- Run `git status --porcelain` to find uncommitted or unstaged changes
+- Compare the actual file list against TASKS.md expected changes
+
+**Flag discrepancies as findings:**
+
+| Discrepancy | Severity |
+|-------------|----------|
+| Files changed but not referenced in any task | MEDIUM — undocumented changes |
+| Tasks claiming file changes but file not modified in git | CRITICAL — false claims |
+| Files that should be created per TASKS.md but don't exist at all | CRITICAL — missing implementation |
+| Uncommitted or unstaged changes | MEDIUM — incomplete work |
+| Change size wildly inconsistent with task scope (e.g., "implement authentication" but only 12 lines changed) | MEDIUM — suspicious scope |
+
+#### Step 2: Dead Code & Placeholder Scan
+
+Before reviewing logic, scan for mechanical garbage that AI agents routinely leave behind. Use patterns appropriate to the project's language (reference CONSTITUTION.md tech stack).
+
+**Scan for these patterns (adapt syntax to project language):**
+
+| Pattern | What It Indicates |
+|---------|-------------------|
+| `TODO`, `FIXME`, `HACK`, `XXX` in comments | Unfinished work |
+| Empty catch/except blocks | Silent failures |
+| Functions that return hardcoded values | Placeholder stubs |
+| `console.log`, `print()` debug statements in non-test code | Debug artifacts |
+| Commented-out code blocks (more than 2 lines) | Dead code / indecision |
+| `pass` in Python function bodies (non-abstract) | Empty implementations |
+| `throw new Error("Not implemented")` or equivalent | Stub code |
+| Import statements for modules not used in the file | Unused imports |
+
+If terminal access is available, use grep/ripgrep to scan. If not, check manually during code inspection.
+
+**Flag every instance found as a finding.** Placeholders and dead code are never acceptable in reviewed code.
+
+#### Step 3: Test Execution
+
+If terminal access is available, execute the project's test suite:
+
+- Run the full test suite (e.g., `pytest`, `npm test`, `go test ./...` — per CONSTITUTION.md)
+- Record: total tests, passed, failed, skipped, errors
+- Record: coverage percentage if coverage tooling is configured
+- Record: any tests that were skipped and why
+
+**Flag these as findings:**
+
+| Result | Severity |
+|--------|----------|
+| Any test failure | CRITICAL — code is broken |
+| Skipped tests without justification | MAJOR — hidden problems |
+| Coverage below CONSTITUTION.md threshold | MAJOR — insufficient testing |
+| Tests pass but coverage delta is negative (less coverage than before) | MEDIUM — regression in test quality |
+
+If terminal access is NOT available, explicitly state in the review: "Test execution not performed — manual verification required. Reviewer should run tests before approving." Do NOT write "tests look good" without running them. Do NOT leave an ambiguous ⚠️.
+
+---
+
+### PHASE 2: Spec Verification
+
+*Purpose: Verify the implementation does what the spec says. This is the primary mission of the review.*
+
+#### Step 4: Acceptance Criteria Validation
+
+This is the most important step in the entire review. For EACH acceptance criterion in SPEC.md:
+
+1. Read the criterion exactly as written
+2. Trace it to the specific code path that implements it
+3. Verify the behavior matches the criterion — not the spirit, the specifics
+4. Check that at least one test covers this criterion
+
+Do NOT accept "the code looks like it handles this." Verify: is there a code path that does exactly what the criterion says?
+
+**Example of insufficient verification:**
+- Criterion: "Given an expired token, when the user requests a resource, then the system returns 401"
+- BAD: "Authentication middleware exists" ← does not verify expired token handling specifically
+- GOOD: "auth_middleware.py (validate_token) checks token.exp against current time, raises UnauthorizedError which endpoint maps to 401" ← traces the specific path
 
 Format:
 ```
 | Criterion | Status | Evidence |
 |-----------|--------|----------|
-| Given X, when Y, then Z | PASS/FAIL | [file path + identifier] |
+| Given X, when Y, then Z | PASS/FAIL | path/to/file.py (function_name) — [specific explanation] |
 ```
 
-**Evidence format:** Use `path/to/file.py (function_name)` or `path/to/file.py (ClassName.method)`. Line numbers optional — only include if you have reliable tooling output. Do not guess line numbers.
+**Evidence format:** Use `path/to/file.py (function_name)` or `path/to/file.py (ClassName.method)`. Do not guess line numbers. Include a brief explanation of HOW the code satisfies the criterion, not just WHERE.
 
-### Step 3: CONSTITUTION.md Compliance
+If a criterion has no corresponding test, flag it as MAJOR finding even if the code looks correct.
+
+#### Step 5: Task Completion Check
+
+Verify every task in TASKS.md is implemented:
+- [ ] All implementation tasks (T1, T2, ...) have corresponding code files
+- [ ] All testing tasks have corresponding test files with real tests
+- [ ] No tasks were skipped
+- [ ] Implementation matches what the task description says (not just that a file exists)
+
+If tasks are missing or incomplete, set Verdict = BLOCKED.
+
+---
+
+### PHASE 3: Quality Audit
+
+*Purpose: Verify the code is built correctly according to project standards.*
+
+#### Step 6: CONSTITUTION.md Compliance
 
 Check code against project standards:
 
 **Coding Standards**
 - [ ] Naming conventions followed
 - [ ] File/folder structure correct
-- [ ] Code patterns match project standards
+- [ ] Code patterns match project standards (e.g., Repository pattern, DI)
 - [ ] No prohibited patterns used
 
 **Error Handling**
-- [ ] Errors handled appropriately
-- [ ] No silent failures
-- [ ] Error messages are meaningful
+- [ ] Errors handled appropriately — no silent failures
+- [ ] Error messages are meaningful and actionable
+- [ ] Error responses follow project format (e.g., RFC 7807)
 
 **Security**
-- [ ] Input validation present
+- [ ] Input validation present on all external inputs
 - [ ] Authentication/authorization correct (if applicable)
-- [ ] No hardcoded secrets or credentials
+- [ ] No hardcoded secrets, credentials, or API keys
+- [ ] No sensitive data in logs or error messages
 
-**Testing**
+**Testing Quality** (this check is aggressive by design)
 - [ ] Unit tests exist for new code
-- [ ] Tests are meaningful (not just coverage padding)
+- [ ] Tests assert real behavior, not trivial truths
+- [ ] Tests cover error paths, not just happy paths
+- [ ] Test assertions are specific (not just "no exception thrown" or "result is not null")
+- [ ] No duplicate test logic with only descriptions changed
 - [ ] Test coverage meets threshold from CONSTITUTION.md
 
-### Step 4: DESIGN.md Alignment
+**Testing red flags to catch:**
+| Red Flag | What It Means |
+|----------|---------------|
+| Test only asserts `result is not None` or `expect(result).toBeDefined()` | Tests the mock, not the code |
+| Test has no assertions at all | Placeholder test for coverage |
+| Test description says "should handle errors" but only tests happy path | Misleading test |
+| Multiple tests with identical structure, different descriptions | Copy-paste tests |
+| Test mocks the thing it's supposed to be testing | Circular testing |
+| All tests pass but none test edge cases from acceptance criteria | Incomplete coverage |
+
+#### Step 7: DESIGN.md Alignment
 
 Verify implementation matches technical design:
 - [ ] Architecture followed as specified
-- [ ] Data models match design
-- [ ] APIs/interfaces match design
-- [ ] No unauthorized deviations
+- [ ] Data models match design (field names, types, relationships)
+- [ ] APIs/interfaces match design (endpoints, request/response shapes, status codes)
+- [ ] No unauthorized deviations from design
 
-If deviations exist, they must be justified. Unjustified deviations = FAIL.
+If deviations exist, they must be justified. Unjustified deviations = finding.
 
-### Step 5: Code Quality
+#### Step 8: Code Quality
 
 General quality checks:
-- [ ] No dead code or commented-out blocks
+- [ ] No dead code or commented-out blocks (should be caught in Step 2, verify none slipped through)
 - [ ] No TODO/FIXME without linked issue/task
 - [ ] No duplicate code that should be refactored
-- [ ] Dependencies added are justified and in DESIGN.md
+- [ ] Dependencies added are justified and listed in DESIGN.md
+
+---
+
+### POST-PHASE: Issue Count Validation
+
+After completing all three phases, count total issues found.
+
+**If fewer than 3 issues found**, you are likely not looking hard enough. Go back and re-examine:
+- Edge cases and null/empty input handling
+- Error messages — are they helpful or generic?
+- Test quality — do assertions test real behavior or just "no exception thrown"?
+- Performance — N+1 queries, unbounded loops, missing pagination
+- Security — injection risks, missing auth checks, exposed internals
+- Missing tests for error/edge paths from acceptance criteria
+
+**If still fewer than 3 after re-examination**, document in one sentence why this code genuinely has fewer than 3 issues (e.g., "Trivial single-function config change with comprehensive existing test coverage"). This is acceptable but must be justified.
+
+---
 
 ## Review Verdicts
 
 ### APPROVED
-All checks pass. Code is ready for human reviewer.
+All checks pass. No critical or major issues. Code is ready for human reviewer at Gate 4.
 
 ### CHANGES REQUESTED
 One or more checks failed. List specific issues with:
@@ -115,6 +249,7 @@ Cannot complete full review due to:
 - Missing tests
 - Cannot trace acceptance criteria to code
 - Required files not accessible
+- Tests fail when executed
 
 Note: Always produce a full review document even when BLOCKED. List what is missing and what was reviewable.
 
@@ -122,27 +257,30 @@ Note: Always produce a full review document even when BLOCKED. List what is miss
 
 Produce REVIEW.md following the structure in @.framework/templates/REVIEW.template.md.
 
+Save review output to: `specs/XXX-{slug}/REVIEW.md`
+
 ## Constraints
 
 - Do NOT approve code that fails acceptance criteria
 - Do NOT approve code with missing tests
 - Do NOT approve code that deviates from DESIGN.md without justification
-- Do NOT fix code yourself - only report issues
+- Do NOT fix code yourself — only report issues
 - Do NOT add new requirements not in SPEC.md
-- Do NOT fabricate line numbers - use function/class/method identifiers instead
+- Do NOT fabricate line numbers — use function/class/method identifiers instead
+- Do NOT trust implementation summaries at face value — verify claims against actual code
+- Do NOT accept tests that only assert "no exception" or trivial truths — tests must validate real behavior
+- Do NOT produce a review with zero issues without explicitly justifying why
 
 ## Severity Definitions
 
 | Severity | Definition | Blocks Approval? |
 |----------|------------|------------------|
-| Critical | Acceptance criteria not met, security flaw, data loss risk | Yes |
-| Major | CONSTITUTION violation, missing tests, design deviation | Yes |
-| Minor | Style issues, minor improvements, optional refactoring | No |
+| Critical | Acceptance criteria not met, security flaw, data loss risk, tests fail, false implementation claims | Yes |
+| Major | CONSTITUTION violation, missing tests, design deviation, insufficient test quality | Yes |
+| Minor | Style issues, minor improvements, optional refactoring, unused imports | No |
 
 ## After Review
 
 - If APPROVED: Human reviewer (Tech Lead/Senior Dev) makes final decision at Gate 4
 - If CHANGES REQUESTED: Developer fixes issues, then requests re-review
 - If BLOCKED: Developer completes missing work, then requests re-review
-
-Save review output to: `specs/XXX-{slug}/REVIEW.md`
