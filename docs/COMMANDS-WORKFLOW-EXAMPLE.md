@@ -14,6 +14,7 @@ How to use the Cursor commands to run the full spec-first workflow. Each command
 | `/tasks` | Create `specs/XXX-slug/TASKS.md` | Spec/design reference (e.g. 006 or path) |
 | `/implement` | Implement one task from TASKS.md | Task reference (e.g. T3 from 006) |
 | `/review` | Generate `specs/XXX-slug/REVIEW.md` | Spec reference (e.g. 006 or path) |
+| `/flow` | **Run full guided workflow** (BMAD-style): loads step files, runs them on [C] Continue / [B] Back / [X] Exit. Resumes from last completed step. | Spec reference (e.g. 001 or path) + optional requirement — see [Workflow return and continue](WORKFLOW-RETURN-AND-CONTINUE.md) |
 | `/bug` | Create `bugs/BUG-XXX-slug/BUG.md` | Original spec reference + bug description |
 | `/bugfix` | Implement one task from BUG.md | Task reference (e.g. T1 from BUG-001) |
 | `/bugreview` | Generate `bugs/BUG-XXX-slug/REVIEW.md` | Bug reference (e.g. BUG-001 or path) |
@@ -151,10 +152,44 @@ If you run a command with no message, the AI will ask for the missing input:
 
 ## Flow Summary
 
-**Feature:**  
+**Feature (standalone commands):**  
 `/constitute` (once) → `/specify` → `/design` → `/tasks` → `/implement` (per task) → `/review`
+
+**Feature (guided workflow — recommended):**  
+`/constitute` (once) → `/flow 001-slug: requirements` → runs all steps with menus: [C] Continue, [B] Back, [X] Exit.  
+Resume anytime with `/flow 001`.
 
 **Bugfix:**  
 `/bug` → `/bugfix` (per task) → `/bugreview`
 
-Each command only runs the subflow (rule + template); all detailed rules live in the `.mdc` files.
+Each standalone command runs one subflow (rule + template). `/flow` runs the full feature workflow step by step using `.framework/steps/`. See [Workflow return and continue](WORKFLOW-RETURN-AND-CONTINUE.md) for details.
+
+---
+
+## Guided Workflow Example (using /flow)
+
+```
+/flow 002-chatbot: simple chatbot widget with mocked data
+```
+
+**What happens:**
+
+1. Runner creates `specs/002-chatbot/` and `.workflow-state.md`, then loads step-01-spec.
+2. Step 1: AI asks clarifying questions, creates SPEC.md (DRAFT). You review and approve. Menu: [C] Continue.
+3. Press **[C]** → Step 2: AI creates DESIGN.md. You approve. [C] Continue.
+4. Press **[C]** → Step 3: AI creates TASKS.md. You approve. [C] Continue.
+5. Press **[C]** → Step 4: AI implements tasks. You confirm all done. [C] Continue.
+6. Press **[C]** → Step 5: AI generates REVIEW.md. If approved: [C] Complete. If issues: [F] Fix or [B] Back.
+
+**Resume after a break:**
+
+```
+/flow 002
+```
+→ "Last completed: step-02-design. Next: Tasks. [C] Continue."
+
+**Go back and fix:**
+
+At any step, choose [B] to go back. Fix the issue, then [C] through the remaining steps.
+
+---

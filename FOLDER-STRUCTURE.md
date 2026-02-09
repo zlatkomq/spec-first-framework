@@ -50,19 +50,25 @@ project/
 │
 ├── specs/
 │   ├── 001-user-authentication/
+│   │   ├── .workflow-state.md          # Workflow progress (created by /flow, committed to git)
 │   │   ├── SPEC.md                     # What to build
 │   │   ├── DESIGN.md                   # How to build it
-│   │   └── TASKS.md                    # Implementation breakdown
+│   │   ├── TASKS.md                    # Implementation breakdown
+│   │   └── REVIEW.md                   # Code review results
 │   │
 │   ├── 002-password-reset/
+│   │   ├── .workflow-state.md
 │   │   ├── SPEC.md
 │   │   ├── DESIGN.md
-│   │   └── TASKS.md
+│   │   ├── TASKS.md
+│   │   └── REVIEW.md
 │   │
 │   └── XXX-description/                # Pattern: {ID}-{slug}/
+│       ├── .workflow-state.md          # Tracks stepsCompleted + tasksCompleted
 │       ├── SPEC.md
 │       ├── DESIGN.md
-│       └── TASKS.md
+│       ├── TASKS.md
+│       └── REVIEW.md
 │
 ├── bugs/                               # Bug specifications (separate from features)
 │   ├── BUG-001-description/
@@ -137,7 +143,9 @@ project/
 | `DESIGN.md` | Developer + AI | Tech Lead | How to build it |
 | `TASKS.md` | Developer + AI | Tech Lead | Implementation steps |
 | `BUG.md` | Developer + AI | Tech Lead | Bug report and fix plan |
+| `REVIEW.md` (features) | Developer + AI | Reviewer | Adversarial code review |
 | `REVIEW.md` (bugs) | Developer + AI | Reviewer | Bug fix verification |
+| `.workflow-state.md` | `/flow` command | — (auto-managed) | Workflow progress tracker |
 
 ---
 
@@ -177,8 +185,13 @@ BUG-003-timeout-on-large-upload/
 
 ### Document Files
 
-- Always UPPERCASE for framework documents: `SPEC.md`, `DESIGN.md`, `TASKS.md`
+- Always UPPERCASE for framework documents: `SPEC.md`, `DESIGN.md`, `TASKS.md`, `REVIEW.md`
 - Distinguishes framework docs from regular project docs
+
+### Git Policy
+
+- `.workflow-state.md` is **committed to git** (not .gitignored). It provides team visibility into where each spec is in the workflow. It's a lightweight YAML frontmatter file — no noise in diffs.
+- All spec artifacts (`SPEC.md`, `DESIGN.md`, `TASKS.md`, `REVIEW.md`) are committed.
 
 ---
 

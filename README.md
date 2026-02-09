@@ -8,7 +8,9 @@ A structured methodology for AI-assisted software development. Ensures traceabil
 2. Create `CONSTITUTION.md` using: `/constitute` or `@constitution-creation.mdc` + your project description
 3. For each spec, follow the workflow: SPEC → DESIGN → TASKS → Implementation → Review
 
-**Commands** (in `.cursor/commands/`): `/constitute`, `/specify`, `/design`, `/tasks`, `/implement`, `/review`, `/bug`, `/bugfix`, `/bugreview` — see [Commands & Workflow Example](docs/COMMANDS-WORKFLOW-EXAMPLE.md).
+**Commands** (in `.cursor/commands/`): `/constitute`, `/specify`, `/design`, `/tasks`, `/implement`, `/review`, `/flow`, `/bug`, `/bugfix`, `/bugreview` — see [Commands & Workflow Example](docs/COMMANDS-WORKFLOW-EXAMPLE.md).
+
+**Guided workflow (recommended):** Use **`/flow 001-slug: requirements`** to run the full feature workflow step by step (BMAD-style: state + step files + menus). Resume anytime with **`/flow 001`**. Go back with **[B]**, continue with **[C]**. See [Workflow return and continue](docs/WORKFLOW-RETURN-AND-CONTINUE.md).
 
 ## Workflow
 
@@ -59,16 +61,25 @@ your-project/
 │       ├── bug-review.mdc
 │       └── constitution-creation.mdc
 ├── .framework/
+│   ├── steps/                     # BMAD-style step files for /flow
+│   │   ├── step-00-continue.md    #   Resume logic
+│   │   ├── step-01-spec.md        #   Create SPEC.md
+│   │   ├── step-02-design.md      #   Create DESIGN.md
+│   │   ├── step-03-tasks.md       #   Create TASKS.md
+│   │   ├── step-04-implement.md   #   Implement tasks
+│   │   └── step-05-review.md      #   Code review
 │   ├── templates/
 │   │   ├── SPEC.template.md
 │   │   ├── DESIGN.template.md
 │   │   ├── TASKS.template.md
 │   │   ├── BUG.template.md
 │   │   ├── BUG-REVIEW.template.md
-│   │   └── CONSTITUTION.template.md
+│   │   ├── CONSTITUTION.template.md
+│   │   └── workflow-state.template.md  # State file template for /flow
 │   └── CONSTITUTION.md          ← You create this
 ├── specs/
 │   └── XXX-description/
+│       ├── .workflow-state.md   ← Created by /flow (tracks progress)
 │       ├── SPEC.md
 │       ├── DESIGN.md
 │       ├── TASKS.md
@@ -164,6 +175,7 @@ Note: Dedicated workflows for Refactor, Performance, and Migration may be added 
 
 - [FOLDER-STRUCTURE.md](FOLDER-STRUCTURE.md) — Detailed folder and file descriptions
 - [Commands & Workflow Example](docs/COMMANDS-WORKFLOW-EXAMPLE.md) — Using slash commands (`/specify`, `/design`, etc.)
+- [Workflow return and continue](docs/WORKFLOW-RETURN-AND-CONTINUE.md) — Resume or go back a step, then continue (`/flow 001`)
 - [framework-workflow-final.mermaid](framework-workflow-final.mermaid) — Visual workflow diagram
 - [framework-legacy-analysis.mermaid](framework-legacy-analysis.mermaid) — Brownfield analysis flow (coming soon)
 
