@@ -24,9 +24,18 @@
 ## Tasks
 
 - [ ] T1: [description] (DESIGN: [section])
+  - Produces: `[ClassName.method(param: Type) -> ReturnType]`
 - [ ] T2: [description] (DESIGN: [section])
+  - Consumes: T1.[ComponentName]
+  - Produces: `[ClassName.method(param: Type) -> ReturnType]`
 - [ ] T3: [description] (DESIGN: [section])
-- [ ] T4: [description] (DESIGN: [section]) 
+  - Consumes: T1.[ComponentName], T2.[ComponentName]
+  - Produces: `[endpoint or interface]`
+- [ ] T4: [description] (DESIGN: [section])
+
+Produces/Consumes only required for tasks with inter-task dependencies. Consumes references use task ID (e.g. T1.UserRepository), not duplicated signatures.
+
+Task markers: `[ ]` not started | `[x]` complete (verified) | `[~]` implemented but unverified
 
 ---
 

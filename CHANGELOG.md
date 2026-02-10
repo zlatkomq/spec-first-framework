@@ -2,6 +2,39 @@
 
 All notable changes to the Spec-First AI Development Framework will be documented in this file.
 
+## [0.7.1] - Pipeline Hardening (2026-02-09)
+
+### Summary
+
+Six targeted changes to close gaps in the task-creation, implementation, and code-review pipeline. Prevents AI test fabrication, adds interface contracts between tasks, mandates integration tests for multi-component specs, adds file inventory before review, makes CONSTITUTION compliance checks evidence-based, and enables cross-spec code reuse.
+
+### Changes
+
+#### Gap 4: Raw Test Output as Evidence (most critical)
+- **implementation.mdc:** Per-task validation gate 2 now requires pasting raw terminal output (stdout/stderr) in the implementation summary. If terminal is unavailable, task status is `IMPLEMENTED-UNVERIFIED` with `[~]` marker instead of `[x]`.
+- **task-creation.mdc:** Documented `[~]` marker convention (not started / complete / unverified).
+- **TASKS.template.md:** Added task marker legend.
+- **definition-of-done.md:** Added "No unverified tasks" check — blocks Continue if any `[~]` tasks remain.
+
+#### Gap 1: Interface Contracts Between Tasks
+- **task-creation.mdc:** New "Interface Contracts" section. Tasks that create public components must declare `Produces:` signatures (derived from DESIGN.md). Dependent tasks use `Consumes: T[N].ComponentName` (task-ID references, not duplicated signatures). Validation checks and adversarial self-validation item 6 (contract check) added.
+- **TASKS.template.md:** Updated task format to show Produces/Consumes fields.
+
+#### Gap 3: Mandatory Integration Tests
+- **task-creation.mdc:** Integration test mandate is now mechanically checkable: if DESIGN.md lists >1 New component that interact, integration test task is mandatory. Added adversarial self-validation item 7 (integration coverage check).
+
+#### Gap 5: File Inventory Before Review (Phase 0)
+- **code-review.mdc:** New Phase 0 before Phase 1. Read and quote first 3 lines of each expected file to verify access. 30% threshold: if >30% of files not reviewable, verdict is BLOCKED.
+- **REVIEW.template.md:** Added Phase 0 section with file inventory table and coverage metrics.
+
+#### Gap 2: Evidence-Based CONSTITUTION Checks
+- **code-review.mdc:** Step 6 split into Category A (mechanically verifiable — grep, show output) and Category B (requires judgment — show code, then explain). Neither allows bare assertions.
+
+#### Gap 6: Multi-Spec Sequencing
+- **task-creation.mdc:** Previous Spec Intelligence now loads key source files from previous spec's Dev Agent Record File List (not just REVIEW.md). Added adversarial self-validation item 8 (cross-spec reinvention check).
+
+---
+
 ## [0.7.0] - BMAD Fusion (2026-02-09)
 
 ### Summary

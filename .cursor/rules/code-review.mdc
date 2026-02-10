@@ -38,7 +38,29 @@ Before reviewing, you must have access to:
 
 ## Review Process
 
-The review is organized into three phases. Complete all phases in order.
+The review is organized into four phases (Phase 0 through Phase 3). Complete all phases in order.
+
+---
+
+### PHASE 0: File Inventory
+
+*Purpose: Verify access to every relevant file before any review begins. Do not review code you haven't read.*
+
+Before starting the review:
+
+1. **Build expected file list:** From TASKS.md (task descriptions + Dev Agent Record File List), list every file that should exist.
+2. **Verify existence and access:** For each file, read it and quote the first 3 lines (imports/header). If you can read the header, you have access. If you cannot, the file is flagged as NOT REVIEWABLE.
+3. **Track coverage:** Report: "Verified access to N/M files." List any files NOT reviewable with the reason (missing, unreadable, etc.).
+4. **30% threshold:** If more than 30% of expected files cannot be reviewed, verdict is BLOCKED — the spec is too large for reliable single-pass review, or files are missing. Recommend: split into smaller specs or review in sections.
+5. **No unreviewed claims:** Do NOT make claims about code in files you haven't read. If a file is not reviewable, any checks that depend on it are marked "NOT VERIFIED — file not reviewed."
+
+Report in the review:
+
+| Metric | Count |
+|--------|-------|
+| Expected files (from TASKS.md) | [N] |
+| Files verified accessible | [N] |
+| Files not reviewable | [N] — [list paths] |
 
 ---
 
@@ -158,24 +180,27 @@ If tasks are missing or incomplete, set Verdict = BLOCKED.
 
 #### Step 6: CONSTITUTION.md Compliance
 
-Check code against project standards:
+Check code against project standards. Checks are split into two categories. Neither category allows bare assertions without evidence.
 
-**Coding Standards**
-- [ ] Naming conventions followed
-- [ ] File/folder structure correct
-- [ ] Code patterns match project standards (e.g., Repository pattern, DI)
-- [ ] No prohibited patterns used
+##### Category A: Mechanically Verifiable (grep/ripgrep — show output)
 
-**Error Handling**
-- [ ] Errors handled appropriately — no silent failures
-- [ ] Error messages are meaningful and actionable
-- [ ] Error responses follow project format (e.g., RFC 7807)
+These checks MUST use grep/ripgrep if terminal is available. Show the command and output. If no terminal, manually scan each file and list findings with specific evidence (file + line).
 
-**Security**
-- [ ] Input validation present on all external inputs
-- [ ] Authentication/authorization correct (if applicable)
-- [ ] No hardcoded secrets, credentials, or API keys
-- [ ] No sensitive data in logs or error messages
+- **Naming conventions:** Extract each naming rule from CONSTITUTION.md (e.g. snake_case for functions, PascalCase for classes). Grep source files for violations. Show the grep command and output.
+- **File/folder structure:** List actual file tree of new/modified files (ls or tree). Compare against CONSTITUTION.md folder structure specification. Flag files in wrong locations.
+- **Import patterns:** If CONSTITUTION.md prohibits certain patterns (e.g. "no direct SQL queries in service layer"), grep for violations. Show output.
+- **Prohibited patterns:** Already covered in Phase 1 dead code scan — reference those results here, do not re-scan.
+
+##### Category B: Requires Judgment (show evidence, then explain)
+
+These checks require semantic understanding. The AI MUST show the actual code (class signatures, function bodies, error handlers) and THEN explain how it satisfies or violates the standard. Do NOT just assert compliance.
+
+- **Architectural patterns:** If CONSTITUTION.md specifies patterns (Repository, DI, etc.), show the class/function signatures found and explain how they follow (or violate) the pattern. Quote actual code.
+- **Error handling patterns:** Show the actual error handling code for each component. Explain whether it matches CONSTITUTION.md's error strategy. Do not write "errors handled appropriately" — show the try/catch or error check.
+- **Error responses:** Show actual error response format in code. Compare against CONSTITUTION.md format (e.g., RFC 7807).
+- **Security checks:** Show input validation code, auth checks, and data handling. Explain what is validated and what is not. Do not assert "validation present."
+- **Secrets/credentials:** Grep for hardcoded strings, API keys, passwords. Show output.
+- **Sensitive data in logs:** Grep for logging statements that might include user data. Show output.
 
 **Testing Quality** (this check is aggressive by design)
 - [ ] Unit tests exist for new code

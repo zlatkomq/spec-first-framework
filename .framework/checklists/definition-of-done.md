@@ -18,6 +18,7 @@ All items must pass before implementation is considered complete.
 - [ ] **Tests pass:** All new tests pass (or "not executed — manual run required" if no terminal access)
 - [ ] **No regressions:** Full test suite passes — no existing tests broken
 - [ ] **Test quality:** Tests assert real behavior, not trivial truths (no `expect(result).toBeDefined()` without meaningful checks)
+- [ ] **No unverified tasks:** All tasks are fully verified `[x]` (no `[~]` IMPLEMENTED-UNVERIFIED remaining). If any tasks could not be verified, list them and note: "Manual test execution required before review."
 
 ## Documentation and Tracking
 

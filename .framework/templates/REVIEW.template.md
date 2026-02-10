@@ -4,6 +4,7 @@
 
 | Category | Status |
 |----------|--------|
+| Phase 0: File Inventory | COMPLETE / PARTIAL / BLOCKED |
 | Phase 1: Reality Check | ✅ / ❌ |
 | Phase 2: Spec Verification | ✅ / ❌ |
 | Phase 3: Quality Audit | ✅ / ❌ |
@@ -11,6 +12,25 @@
 **Verdict:** APPROVED / CHANGES REQUESTED / BLOCKED
 
 **Issues Found:** [count] ([count] Critical, [count] Major, [count] Minor)
+
+---
+
+## Phase 0: File Inventory
+
+| Metric | Count |
+|--------|-------|
+| Expected files (from TASKS.md) | [count] |
+| Files verified accessible | [count] |
+| Files not reviewable | [count] |
+
+| File | Expected | Accessible | First 3 Lines (verification) |
+|------|----------|------------|-------------------------------|
+| path/to/file | Yes | Yes | `import x; class Foo...` |
+| path/to/file | Yes | No | NOT REVIEWABLE — [reason] |
+
+[If all files accessible: "All expected files verified accessible."]
+[If gaps <= 30%: "WARNING: [N] files not reviewed. Findings for those files are incomplete."]
+[If gaps > 30%: "BLOCKED — more than 30% of files not reviewable. Recommend splitting spec or reviewing in sections."]
 
 ---
 

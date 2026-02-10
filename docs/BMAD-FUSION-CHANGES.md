@@ -99,6 +99,21 @@ This document summarizes all changes introduced in the **BMAD fusion** release (
 
 ---
 
+## 9. Pipeline Hardening (v0.7.1)
+
+Six targeted changes to prevent the most common AI failure modes in the pipeline.
+
+| Gap | What Changed | File(s) |
+|-----|-------------|---------|
+| **Raw test output** | Implementation summary requires pasting raw terminal stdout/stderr. No terminal = `IMPLEMENTED-UNVERIFIED` `[~]` status. DoD blocks on unverified tasks. | `implementation.mdc`, `task-creation.mdc`, `TASKS.template.md`, `definition-of-done.md` |
+| **Interface contracts** | Tasks declare `Produces:` (signatures) and `Consumes: T[N].ComponentName` (task-ID refs, no drift). Adversarial validation catches missing contracts. | `task-creation.mdc`, `TASKS.template.md` |
+| **Integration tests** | Mandatory if DESIGN.md has >1 New component that interact. Mechanically checkable from component table. | `task-creation.mdc` |
+| **File inventory (Phase 0)** | Review reads and quotes first 3 lines of every expected file before Phase 1. >30% not reviewable = BLOCKED. | `code-review.mdc`, `REVIEW.template.md` |
+| **Evidence-based checks** | CONSTITUTION compliance split into Category A (grep, show output) and Category B (show code, then explain). No bare assertions. | `code-review.mdc` |
+| **Multi-spec sequencing** | Task creation loads previous spec's source files (from Dev Agent Record File List) to prevent reinvention. Cross-spec reinvention check in adversarial validation. | `task-creation.mdc` |
+
+---
+
 ## Quick Reference
 
 - **New commands:** `/change`, `/adversarial`

@@ -26,8 +26,12 @@ Do NOT duplicate CONSTITUTION.md or DESIGN.md content into TASKS.md — the deve
 If other spec folders exist in `specs/` (this is not the first spec):
 1. Find the most recently completed spec (one with a REVIEW.md that has verdict APPROVED)
 2. Read that REVIEW.md — extract: recurring review feedback, patterns flagged, quality issues found
-3. Read that spec's TASKS.md Dev Agent Record (if exists) — extract: code patterns established, reuse opportunities, lessons learned
-4. Summarize actionable intelligence in the "Previous Spec Learnings" section of TASKS.md
+3. Read that spec's TASKS.md Dev Agent Record (if exists) — extract:
+   - **File List**: All files created/modified by the previous spec
+   - **Decisions Made**: Implementation patterns and conventions established
+   - **Code reuse opportunities**: Components that the current spec might use
+4. **Load key source files**: For each file in the previous spec's Dev Agent Record File List that is likely relevant to the current spec (same domain area, shared components), read the file to understand its public interface. This prevents reinventing existing code.
+5. Summarize actionable intelligence in the "Previous Spec Learnings" section of TASKS.md
 
 If this is the first spec, write "First spec — no previous learnings available."
 
@@ -66,13 +70,43 @@ Always use the template structure from @.framework/templates/TASKS.template.md
 - One task = one component/function/endpoint, not multiple
 - If a task feels too big, split it
 
+**Task markers:**
+- `[ ]` = not started
+- `[x]` = complete (tests verified passing)
+- `[~]` = IMPLEMENTED-UNVERIFIED (code written, tests exist, but tests not executed — manual verification required)
+
+### Interface Contracts
+
+Tasks that create components used by other tasks MUST declare what they produce.
+Tasks that depend on another task's component MUST declare what they consume BY TASK ID.
+
+The AI infers Produces signatures from DESIGN.md (architecture section, sequence diagrams, component interaction tables). If DESIGN.md does not contain enough detail to derive a concrete signature, flag this in the adversarial self-validation as: "DESIGN.md insufficient — cannot derive interface for T[N]. Design may need more detail."
+
+Consumes references use the task ID + component name (e.g. `T3.RegistrationService`). The AI implementing a consuming task looks up the producing task's Produces declaration. This prevents signature drift — do NOT duplicate the full signature in Consumes.
+
+Format:
+```
+- [ ] T3: Create RegistrationService (DESIGN: Services)
+  - Produces: `RegistrationService.register(dto: CreateUserDTO) -> User`
+- [ ] T4: Create UserRepository (DESIGN: Data Access)
+  - Produces: `UserRepository.save(user: User) -> User`, `UserRepository.find_by_email(email: str) -> User | None`
+- [ ] T5: Create registration endpoint (DESIGN: API Layer)
+  - Consumes: T3.RegistrationService, T4.UserRepository
+  - Produces: `POST /api/v1/auth/register` endpoint
+```
+
+`Produces`/`Consumes` are only required when a task creates or depends on another task's public interface. Purely internal tasks (config files, constants) skip this.
+
 ### Testing (MANDATORY)
 - Unit tests are ALWAYS required - never skip
 - Create at least one unit test task per major component/function
-- Create integration test tasks for flows that span multiple components
 - Format: `- [ ] Tx: Unit tests for [specific component/logic]` (continue numbering from last implementation task)
-- Integration tests can be marked "No integration tests required." ONLY if DESIGN.md explicitly states this is a purely isolated component
 - Reference CONSTITUTION.md for coverage requirements
+
+**Integration test mandate:**
+- If DESIGN.md's Architecture section lists more than one component with Change Type "New", at least one integration test task is MANDATORY that tests the real call chain between them without mocks.
+- This is mechanically checkable: count New components in the DESIGN.md component table. If count > 1 and they interact (appear in the same sequence diagram or dependency list), an integration test task must exist.
+- "No integration tests required" is ONLY acceptable for specs where DESIGN.md describes a single New component with zero runtime dependencies on other New components in this spec.
 
 ### Definition of Done
 - Keep the standard checklist from template
@@ -102,6 +136,9 @@ Before completing, verify:
 - [ ] Every task is atomic (one prompt = one task)
 - [ ] Testing tasks are present (unit tests mandatory)
 - [ ] Tasks are ordered by dependency
+- [ ] Every task creating a public component has a Produces declaration
+- [ ] Every Consumes reference uses task-ID format (T[N].ComponentName)
+- [ ] Every Consumes reference maps to a Produces declaration on the referenced task
 - [ ] Definition of Done is complete
 - [ ] Status set to DRAFT
 
@@ -114,6 +151,9 @@ After generating TASKS.md, run this internal check BEFORE presenting to the user
 3. **Coverage check**: Does every acceptance criterion from SPEC.md have at least one task that addresses it? Flag any uncovered ACs.
 4. **Test coverage check**: Is there a test task for every significant component? Flag components without dedicated test tasks.
 5. **Dependency check**: Are tasks ordered correctly? Would any task fail because a prerequisite task hasn't been completed yet?
+6. **Contract check**: Does every inter-task dependency have matching Produces/Consumes? If T5 calls T3's output, T3 must declare it and T5 must reference T3 by ID. If Produces cannot be derived from DESIGN.md, flag the design as insufficiently detailed.
+7. **Integration coverage check**: Count New components in DESIGN.md's Architecture section. If count > 1 and they interact, does at least one test task test them together without mocks? If not, add one. Do not rationalize skipping this — check the component table mechanically.
+8. **Reinvention check (cross-spec)**: For each New component in this spec's tasks, did a previous spec already create something similar? Check the previous spec's Dev Agent Record File List and key source files. If overlap exists, reference the existing code in a Consumes declaration rather than recreating it.
 
 If any issues are found, fix them in TASKS.md before presenting. Note any significant findings when presenting the document to the user.
 

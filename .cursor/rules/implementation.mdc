@@ -57,7 +57,7 @@ STOP implementation and inform the user if any of these occur:
 | Ambiguous requirement in DESIGN.md | HALT — quote the ambiguous section and ask for clarification. Do not guess. |
 | Required file from another task doesn't exist yet | HALT — the task has an unmet dependency. Inform the user which task must be completed first. |
 | DESIGN.md contradicts CONSTITUTION.md | HALT — quote both and ask which takes precedence. |
-| You cannot verify your implementation works | HALT — explain what you can't verify and why. |
+| You cannot verify your implementation works | HALT — mark task as IMPLEMENTED-UNVERIFIED `[~]`. Inform user that manual test execution is required. |
 
 After halting, wait for user direction. Do not attempt workarounds unless explicitly told to.
 
@@ -91,7 +91,7 @@ Testing tasks produce tests only. If a test reveals a bug, document it; do not s
 Before marking ANY task complete (updating the checkbox to [x]), ALL of these gates must pass:
 
 1. **Tests exist**: Tests for this task's functionality ACTUALLY EXIST as files on disk
-2. **Tests pass**: If terminal access is available, run the tests and confirm 100% pass. If terminal access is not available, state "Tests written but not executed — manual verification required"
+2. **Tests pass**: If terminal access is available, run the tests and paste the raw terminal output (stdout/stderr) in the implementation summary under "Test output (raw)." The summary shows the PASSING output. If tests fail, fix the code and re-run until they pass. If terminal access is NOT available, task status is IMPLEMENTED-UNVERIFIED (not complete). The task checkbox gets a different marker: `- [~] T3: ... (IMPLEMENTED-UNVERIFIED)`. Only fully verified tasks (marked `[x]`) count toward "all tasks complete."
 3. **Implementation matches spec**: The implementation does EXACTLY what the task description specifies — no more, no less
 4. **Acceptance criteria satisfied**: All acceptance criteria from SPEC.md that relate to this task are addressed
 5. **No regressions**: If terminal access is available, run the full test suite. No existing tests should fail.
@@ -132,7 +132,7 @@ These rules exist because AI coding agents have specific failure modes. Follow t
 **Test Claims:**
 - Do NOT say "tests pass" unless you actually ran them and they passed
 - Do NOT say "tests would pass" as a substitute for running them
-- If you cannot run tests, say "Tests written but not executed — manual run required"
+- If you cannot run tests, say "NOT EXECUTED — task status is IMPLEMENTED-UNVERIFIED" and mark the task `[~]`
 - NEVER fabricate test output or coverage numbers
 
 **Implementation Claims:**
@@ -243,9 +243,15 @@ At the end of every implementation, provide:
 **Supporting changes:**
 - [Any wiring, imports, registrations — or "None"]
 
-**Tests:** (for testing tasks only)
+**Tests:**
 - [Test count and what they cover]
-- [Run status: "Executed — all pass" / "Executed — N failures (details below)" / "Not executed — manual run required"]
+- [Run status: "Executed — all pass" / "Executed — N failures (details below)" / "NOT EXECUTED — IMPLEMENTED-UNVERIFIED"]
+
+**Test output (raw):**
+```terminal
+[paste actual stdout/stderr from PASSING test run here]
+```
+If terminal was not available: "NOT EXECUTED — task status is IMPLEMENTED-UNVERIFIED."
 
 **Existing code reuse:**
 - [Functions/modules found and reused — or "No existing code applicable"]
