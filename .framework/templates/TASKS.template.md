@@ -9,6 +9,9 @@
 | Status | DRAFT / APPROVED |
 | Author | |
 | Date | |
+| Approved By | |
+| Approval Date | |
+| Jira Ticket | |
 
 ---
 
@@ -39,6 +42,24 @@ Unit tests are always mandatory - never skip this section.
 
 ---
 
+## Previous Spec Learnings
+
+[Populated from the most recent completed spec's REVIEW.md and Dev Agent Record. Leave empty if first spec.]
+
+- Patterns established in prior specs
+- Review feedback to apply
+- Code reuse opportunities
+
+---
+
+## References
+
+[Cite all technical details with source paths and sections]
+
+- [Source: DESIGN.md#Section] for each technical detail referenced in tasks
+
+---
+
 ## Definition of Done
 
 - [ ] All tasks completed (T1-Tx)
@@ -46,3 +67,17 @@ Unit tests are always mandatory - never skip this section.
 - [ ] Test coverage meets CONSTITUTION.md threshold
 - [ ] Code reviewed and approved
 - [ ] No open questions remaining
+
+---
+
+## Dev Agent Record
+
+[Updated by the AI agent during implementation — do not fill during task creation]
+
+### Agent Model Used
+
+### Implementation Log
+
+### Decisions Made
+
+### File List

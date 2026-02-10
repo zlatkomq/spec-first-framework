@@ -10,6 +10,9 @@
 | Status | DRAFT / APPROVED |
 | Author | |
 | Date | |
+| Approved By | |
+| Approval Date | |
+| Jira Ticket | |
 
 ---
 
@@ -68,6 +71,16 @@
 
 [Automatically updated when bugs are fixed against this spec]
 
-| Bug ID | Summary | Date Fixed |
-|--------|---------|------------|
-| - | No bugs reported | - |
+| Bug ID | Severity | Date Fixed | Description |
+|--------|----------|------------|-------------|
+| - | - | No bugs reported | - |
+
+---
+
+## Amendment History
+
+[Automatically updated when change requests are implemented against this spec]
+
+| CR ID | Date | Description | Approved By |
+|-------|------|-------------|-------------|
+| - | - | No amendments | - |

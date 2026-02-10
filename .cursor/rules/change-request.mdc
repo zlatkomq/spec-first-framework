@@ -1,0 +1,160 @@
+---
+description: Rules for handling change requests against existing specs
+alwaysApply: false
+---
+
+# Change Request Rules
+
+You are creating a Change Proposal document and, on approval, updating the affected spec artifacts. Follow these rules strictly.
+
+## Required Inputs
+
+Before proceeding, you must have:
+- An existing, approved SPEC.md (@specs/XXX/SPEC.md)
+- Access to @.framework/CONSTITUTION.md for project standards
+- The change description from the user (what changed and why)
+
+If SPEC.md does not exist or is not APPROVED, STOP and inform the user.
+
+## Step 0: Classification Verification
+
+If a Jira ticket reference is provided:
+1. Read the Jira ticket description (or user-provided description of the ticket)
+2. Read SPEC.md acceptance criteria
+3. Compare: does the requested change fix a violation of an existing acceptance criterion?
+   - **YES** -- Flag: "This may be a **Bug**, not a Change Request. The requested change addresses behavior that violates AC #X: '[quote the criterion]'. Consider using `/bug` instead."
+   - **NO** -- Correctly classified as a Change Request. Proceed.
+4. Ask the user to confirm classification before proceeding. Do not skip this step.
+
+If no Jira ticket reference is provided, skip this step.
+
+## Step 1: Gather Change Context
+
+Ask the user if not already provided:
+- **What changed?** Specific description of the requested change
+- **Why?** Business or technical reason for the change
+- **Who requested it?** (Client, internal discovery, technical limitation, etc.)
+
+Categorize the change trigger:
+- Technical limitation discovered during implementation
+- New requirement from client/stakeholder
+- Misunderstanding of original requirements
+- Strategic pivot or priority change
+- Failed approach requiring different solution
+
+## Step 2: Impact Analysis
+
+Systematically analyze impact against all existing artifacts:
+
+### SPEC.md Impact
+- Do any acceptance criteria need modification, addition, or removal?
+- Does the scope section need updating?
+- Are user stories affected?
+- Does this change conflict with existing requirements?
+
+### DESIGN.md Impact (if exists)
+- Are architecture decisions affected?
+- Do data models need changes?
+- Are API contracts affected?
+- Do component boundaries shift?
+
+### TASKS.md Impact (if exists)
+- Do existing tasks need modification?
+- Are new tasks needed?
+- Should completed tasks be revisited?
+- Does the task order change?
+
+### Downstream Impact
+- Does this affect any bugs already filed against this spec?
+- Does this invalidate any completed implementation work?
+- Does this change the Definition of Done?
+
+## Step 3: Evaluate Path Forward
+
+Present the user with evaluated options:
+
+### Option A: Direct Adjustment
+- Modify existing artifacts within current scope
+- Effort estimate: [Low/Medium/High]
+- Risk: [Low/Medium/High]
+- Viable? [Yes/No + reason]
+
+### Option B: Partial Rollback
+- Revert specific completed work to simplify the change
+- What would be rolled back and why
+- Effort estimate: [Low/Medium/High]
+- Risk: [Low/Medium/High]
+- Viable? [Yes/No + reason]
+
+### Option C: Scope Reduction
+- Reduce scope to accommodate the change within constraints
+- What would be deferred
+- Effort estimate: [Low/Medium/High]
+- Risk: [Low/Medium/High]
+- Viable? [Yes/No + reason]
+
+Recommend one option with clear rationale.
+
+## Step 4: Generate Change Proposal
+
+Use the template from @.framework/templates/CHANGE-PROPOSAL.template.md
+
+For each affected artifact, show specific changes in old/new format:
+
+```
+Artifact: SPEC.md
+Section: Acceptance Criteria
+
+OLD:
+- Given X, when Y, then Z
+
+NEW:
+- Given X, when Y, then Z
+- Given X, when W, then V  (added)
+
+Rationale: [why this change is needed]
+```
+
+### Scope Classification
+
+Classify the change:
+- **Minor**: Developer can implement directly. Changes are localized to one artifact section.
+- **Moderate**: Requires PM or Tech Lead review. Changes span multiple artifacts or affect architecture.
+- **Major**: Requires architecture rethink. Fundamental changes to approach or scope.
+
+## Step 5: Approval and Implementation
+
+Present the complete Change Proposal to the user.
+
+Ask: "Do you approve this Change Proposal? (approve / revise / reject)"
+
+- **If revise**: Gather feedback, return to Step 3 or 4 as appropriate.
+- **If reject**: Save the Change Proposal as REJECTED. STOP.
+- **If approve**: Proceed to artifact updates.
+
+### Post-Approval Checklist
+
+On approval, execute these steps in order:
+
+- [ ] Update SPEC.md with approved changes (acceptance criteria, scope, etc.)
+- [ ] Update DESIGN.md with approved changes (if affected)
+- [ ] Update TASKS.md with approved changes (if affected — add/modify/remove tasks)
+- [ ] Update original SPEC.md: Add entry to Amendment History table:
+      `| CR-XXX | [today's date] | [one-line description of change] | [approver name] |`
+- [ ] Regenerate SPEC-CURRENT.md: compile frozen SPEC.md + all FIXED bugs (from Bug History) + all IMPLEMENTED CRs (from Amendment History) into `specs/XXX/SPEC-CURRENT.md`
+- [ ] Save Change Proposal document to `{spec_folder}/CHANGE-PROPOSAL-{date}.md`
+
+## Output
+
+Save the Change Proposal to: `specs/XXX-{slug}/CHANGE-PROPOSAL-{date}.md`
+
+Use today's date in YYYY-MM-DD format for the filename.
+
+## Constraints
+
+- Do NOT modify artifacts without explicit user approval
+- Do NOT skip the classification check when a Jira ticket is provided
+- Do NOT approve your own change proposal — present it and wait for user decision
+- Do NOT change acceptance criteria without documenting the rationale
+- Do NOT skip the Amendment History update — this is the audit trail
+- Do NOT skip SPEC-CURRENT.md regeneration — this keeps the developer convenience view current

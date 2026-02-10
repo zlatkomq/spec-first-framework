@@ -154,14 +154,13 @@ Save to: `bugs/BUG-XXX-{slug}/REVIEW.md`
 
 ## Post-Approval Actions
 
-When the review verdict is APPROVED, instruct the user:
+When the review verdict is APPROVED, instruct the user to complete this checklist:
 
-1. **Update BUG.md status**: Change Status from CONFIRMED to FIXED
-2. **Update BUG.md Date Fixed**: Set to today's date
-3. **Update original SPEC.md**: Add entry to Bug History table:
-   ```
-   | [BUG-XXX](../bugs/BUG-XXX-slug/BUG.md) | [summary] | [date] |
-   ```
+- [ ] Update BUG.md: Status → FIXED
+- [ ] Update BUG.md: Date Fixed → [today's date]
+- [ ] Update original SPEC.md: Add entry to Bug History table:
+      `| BUG-XXX | [severity] | [today's date] | [one-line description of bug and fix] |`
+- [ ] Regenerate SPEC-CURRENT.md: compile frozen SPEC.md + all FIXED bugs (from Bug History) + all IMPLEMENTED CRs (from Amendment History) into `specs/XXX/SPEC-CURRENT.md` as the current-state convenience view. Use the template from @.framework/templates/SPEC-CURRENT.template.md for the header.
 
 Provide the exact text to add to the SPEC.md Bug History section.
 

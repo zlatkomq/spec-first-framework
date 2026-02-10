@@ -71,18 +71,33 @@ REVIEW: APPROVED
 [X] Exit
 ```
 
-**IF verdict is CHANGES REQUESTED or BLOCKED:**
+**IF verdict is CHANGES REQUESTED (3-10 issues):**
 
 ```
-REVIEW: {verdict}
+REVIEW: CHANGES REQUESTED — {issue_count} issues ({critical} Critical, {major} Major, {minor} Minor)
 
 Findings:
 {list of critical/major issues with affected tasks/files}
 
-[F] Fix — go back to Implementation (step 4) to address findings
+[F] Fix automatically — AI fixes HIGH/MEDIUM issues in code, then re-reviews from scratch
+[A] Create action items — add [AI-Review] tasks to TASKS.md, go back to Implementation (step 4)
 [B] Back to Tasks — re-edit TASKS.md (step 3)
 [B2] Back to Design — re-edit DESIGN.md (step 2)
 [B3] Back to Spec — re-edit SPEC.md (step 1)
+[X] Exit — pause workflow; resume later with /flow
+```
+
+**IF verdict is BLOCKED (>10 issues or missing work):**
+
+```
+REVIEW: BLOCKED — {reason}
+
+{If >10 issues: "More than 10 issues found. The implementation needs fundamental rework."}
+{If missing work: list what is missing}
+
+[B] Back to Tasks — re-create TASKS.md (step 3) [RECOMMENDED for >10 issues]
+[B2] Back to Design — re-think design (step 2)
+[B3] Back to Spec — revisit requirements (step 1)
 [X] Exit — pause workflow; resume later with /flow
 ```
 
@@ -103,14 +118,23 @@ Findings:
   - Update `{stateFile}`: append `'step-05-review'` to `stepsCompleted`.
   - STOP.
 
-**CHANGES REQUESTED / BLOCKED path:**
+**CHANGES REQUESTED path:**
 
-- **IF [F] Fix:**
-  1. Trim `stepsCompleted` in `{stateFile}` to keep entries up to `'step-03-tasks'`.
-  2. Do NOT clear `tasksCompleted` — keep the task progress so step-04 knows which tasks are done and can let the user selectively re-implement the affected ones.
-  3. Read fully and follow: `./step-04-implement.md`.
-  - (Step-04 will detect REVIEW.md with CHANGES REQUESTED and display the findings. The user can then re-implement specific tasks using [R] or [T]. After all fixes, they continue back to step-05 for a fresh review.)
-- **IF [B] Back to Tasks:**
+- **IF [F] Fix automatically:**
+  1. Fix all Critical and Major issues directly in the code.
+  2. Add/update tests as needed for the fixes.
+  3. Update the Dev Agent Record in {tasksFile}: add fix entries to Implementation Log, update File List.
+  4. Add an "Auto-Fix Tracking" section to REVIEW.md documenting what was fixed.
+  5. Re-run the FULL review from scratch (go back to section 2 of this step). A fresh review — not a partial re-check.
+- **IF [A] Create action items:**
+  1. For each Critical and Major issue, inject a task into the Tasks section of {tasksFile}:
+     `- [ ] [AI-Review][{Severity}] {Description} [{file:function}]`
+  2. Add an "Action Items Created" section to REVIEW.md listing the injected tasks.
+  3. Trim `stepsCompleted` in `{stateFile}` to keep entries up to `'step-03-tasks'`.
+  4. Do NOT clear `tasksCompleted` — keep task progress.
+  5. Read fully and follow: `./step-04-implement.md`.
+  - (Step-04 will detect the [AI-Review] tasks and prioritize them.)
+- **IF [F] or [A] not chosen — IF [B] Back to Tasks:**
   1. Trim `stepsCompleted` to keep entries up to `'step-02-design'`.
   2. Clear `tasksCompleted` in `{stateFile}` (set to `[]`).
   3. Read fully and follow: `./step-03-tasks.md`.
@@ -126,6 +150,15 @@ Findings:
   - Display: "Workflow paused with review findings. Run `/flow {spec_id}` to resume and address issues."
   - Do NOT append `'step-05-review'` to `stepsCompleted` (review is not passed).
   - STOP.
+
+**BLOCKED path:**
+
+- [F] Fix and [A] Action Items are NOT offered for BLOCKED reviews — the implementation needs fundamental rework.
+- **IF [B] Back to Tasks:** (same as above)
+- **IF [B2] Back to Design:** (same as above)
+- **IF [B3] Back to Spec:** (same as above)
+- **IF [X] Exit:** (same as above)
+
 - **IF anything else:** Answer, then redisplay menu.
 
 ---

@@ -186,6 +186,42 @@ Minimum 3 issues expected. If fewer, see Issue Count Justification below.
 
 [Required only if fewer than 3 issues found. One sentence explaining what was re-examined and why this code genuinely has fewer issues.]
 
+[If more than 10 issues found: "BLOCKED — More than 10 issues found. The implementation needs fundamental rework, not incremental fixes. Recommend going back to TASKS.md (step 3)."]
+
+---
+
+## Dev Agent Record Cross-Reference
+
+| Check | Result |
+|-------|--------|
+| Files in Dev Agent Record File List | [count] |
+| Files in git diff | [count] |
+| Discrepancies | [count] |
+
+| File | In Record | In Git | Status |
+|------|-----------|--------|--------|
+| path/to/file | Yes/No | Yes/No | Match / Undocumented / False claim |
+
+---
+
+## Auto-Fix Tracking
+
+[Populated only if [F] Fix was chosen. Otherwise: "No auto-fixes applied."]
+
+| Issue # | Description | Fix Applied | Files Changed |
+|---------|-------------|-------------|---------------|
+| | | | |
+
+---
+
+## Action Items Created
+
+[Populated only if [A] Action Items was chosen. Otherwise: "No action items created."]
+
+| Task | Severity | Description | File |
+|------|----------|-------------|------|
+| [AI-Review][Critical] ... | Critical | ... | path/to/file |
+
 ---
 
 ## Recommendations

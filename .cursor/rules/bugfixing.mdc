@@ -17,6 +17,18 @@ Before creating a BUG.md, you must have:
 
 If the bug description is unclear or the original spec is not provided, ASK for clarification. Do not guess.
 
+## Step 0: Classification Verification
+
+If a Jira ticket reference is provided (or the bug was reported via a Jira ticket):
+1. Read the Jira ticket description (or user-provided description)
+2. Read SPEC.md acceptance criteria
+3. Compare: does the reported behavior violate an existing acceptance criterion?
+   - **YES** -- This is correctly classified as a bug. Proceed.
+   - **NO** -- Flag: "This may be a **Change Request**, not a bug. The reported behavior is not covered by any existing acceptance criterion in SPEC.md. Consider using `/change` instead."
+4. Ask the user to confirm classification before proceeding. Do not skip this step.
+
+If no Jira ticket reference is provided, skip directly to Pre-Creation Checks.
+
 ## Pre-Creation Checks
 
 1. Verify the referenced SPEC.md exists and is APPROVED

@@ -12,9 +12,33 @@ You are creating a task breakdown document. Follow these rules strictly.
 
 Before creating a TASKS.md, you must have:
 - Approved DESIGN.md (@specs/XXX/DESIGN.md)
+- Approved SPEC.md (@specs/XXX/SPEC.md) — for acceptance criteria traceability
 - Access to @.framework/CONSTITUTION.md for project standards
 
 If DESIGN.md is not approved (Status != APPROVED), STOP and inform the user.
+
+## Context Gathering (Before Task Creation)
+
+Do NOT duplicate CONSTITUTION.md or DESIGN.md content into TASKS.md — the developer already loads those documents during implementation. Instead, gather only **genuinely new context** that doesn't exist elsewhere:
+
+### Previous Spec Intelligence
+
+If other spec folders exist in `specs/` (this is not the first spec):
+1. Find the most recently completed spec (one with a REVIEW.md that has verdict APPROVED)
+2. Read that REVIEW.md — extract: recurring review feedback, patterns flagged, quality issues found
+3. Read that spec's TASKS.md Dev Agent Record (if exists) — extract: code patterns established, reuse opportunities, lessons learned
+4. Summarize actionable intelligence in the "Previous Spec Learnings" section of TASKS.md
+
+If this is the first spec, write "First spec — no previous learnings available."
+
+### Git History Analysis
+
+If git is available:
+1. Check the last 5 commit messages to understand recent work patterns
+2. Note: conventions used (naming, structure), libraries added, file organization patterns
+3. Include actionable intelligence in the "Previous Spec Learnings" section if relevant
+
+If git is not available, skip this step.
 
 ## Template
 
@@ -80,6 +104,18 @@ Before completing, verify:
 - [ ] Tasks are ordered by dependency
 - [ ] Definition of Done is complete
 - [ ] Status set to DRAFT
+
+## Adversarial Self-Validation
+
+After generating TASKS.md, run this internal check BEFORE presenting to the user:
+
+1. **Reinvention check**: Are any tasks creating functionality that already exists in the codebase? Search for similar functions/modules before assuming new code is needed.
+2. **Vagueness check**: Are any task descriptions ambiguous enough that two developers might implement them differently? If yes, make them more specific.
+3. **Coverage check**: Does every acceptance criterion from SPEC.md have at least one task that addresses it? Flag any uncovered ACs.
+4. **Test coverage check**: Is there a test task for every significant component? Flag components without dedicated test tasks.
+5. **Dependency check**: Are tasks ordered correctly? Would any task fail because a prerequisite task hasn't been completed yet?
+
+If any issues are found, fix them in TASKS.md before presenting. Note any significant findings when presenting the document to the user.
 
 ## Output
 

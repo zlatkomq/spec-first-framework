@@ -54,7 +54,18 @@ Create (or update) TASKS.md by applying the task-creation rules and template. Br
 
 ### 3. Create TASKS.md
 
-- Apply {ruleRef} using {templateRef}. Save to `{outputFile}` with Status: DRAFT.
+- Apply {ruleRef} using {templateRef}. This includes:
+  - Context gathering (previous spec intelligence, git history analysis)
+  - Task creation with DESIGN.md traceability
+  - Adversarial self-validation (reinvention check, vagueness check, coverage check)
+- Save to `{outputFile}` with Status: DRAFT.
+
+### 3.5. Present validation findings
+
+- If the adversarial self-validation in {ruleRef} found any issues, present them alongside the TASKS.md:
+  - "The following gaps were found during self-validation and have been addressed: [list]"
+  - "The following potential concerns remain for your review: [list if any]"
+- This gives the user visibility into what the AI caught and fixed automatically.
 
 ### 4. Approval gate
 

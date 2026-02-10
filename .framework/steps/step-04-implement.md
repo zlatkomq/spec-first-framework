@@ -6,6 +6,7 @@ nextStepFile: './step-05-review.md'
 # References
 ruleRef: '@.cursor/rules/implementation.mdc'
 constitutionRef: '@.framework/CONSTITUTION.md'
+dodChecklist: '@.framework/checklists/definition-of-done.md'
 stateFile: '{spec_folder}/.workflow-state.md'
 specFile: '{spec_folder}/SPEC.md'
 designFile: '{spec_folder}/DESIGN.md'
@@ -48,8 +49,9 @@ Implement tasks from TASKS.md one at a time. After each task, present a menu so 
   - Read it. Check the verdict.
   - If verdict is **CHANGES REQUESTED** or **BLOCKED**:
     - Display the review findings (Critical and Major issues) to the user.
-    - Display: "These issues were found during code review. Address the relevant tasks below."
-    - The user should focus on the tasks related to the findings.
+    - Check {tasksFile} for `[AI-Review]` prefixed tasks — these are action items injected by the code review.
+    - If `[AI-Review]` tasks exist: display count and severity breakdown. These tasks will be prioritized before regular incomplete tasks.
+    - Display: "These issues were found during code review. [AI-Review] tasks will be prioritized first."
 - If `{reviewFile}` does not exist or verdict is not CHANGES REQUESTED/BLOCKED: skip this section.
 
 ### 3. Present task list with progress
@@ -79,12 +81,19 @@ If ALL tasks are already complete, skip directly to section 5 (completion menu).
 
 **IF [N] Start next task or [T] Specific task or [R] Re-implement:**
 
-1. Identify the target task (next incomplete task for [N], user-specified for [T]/[R]).
+1. Identify the target task. Priority order:
+   - `[AI-Review]` tasks first (if any exist from code review)
+   - Next incomplete regular task for [N]
+   - User-specified task for [T]/[R]
 2. Announce: "Implementing T{n}: {description}"
-3. Apply {ruleRef} for this task; implement the code; provide the implementation summary (as specified in {ruleRef}).
-6. Mark the task done:
-   - Update `tasksCompleted` in `{stateFile}` frontmatter: add `'T{n}'` to the array (if not already present).
-   - Update the task checkbox in {tasksFile} if practical.
+3. Apply {ruleRef} for this task; implement the code AND tests; provide the implementation summary (as specified in {ruleRef}).
+4. Run per-task validation gates (as specified in {ruleRef}): tests exist, tests pass, implementation matches spec, ACs satisfied, no regressions.
+5. If validation gates pass:
+   - Mark the task done: update `tasksCompleted` in `{stateFile}`, update checkbox in {tasksFile}.
+   - Update Dev Agent Record in {tasksFile}: add Implementation Log entry, update File List.
+6. If validation gates fail:
+   - Do NOT mark the task complete. Fix the issue and re-validate.
+   - If 3 validation failures on the same task: HALT per {ruleRef}.
 
 After completing the task, **return to section 3** (present task list with updated progress). This gives the user a menu after EVERY task — they can continue to the next task, pick a different task, or exit.
 
@@ -94,14 +103,27 @@ After completing the task, **return to section 3** (present task list with updat
 - Display: "Workflow paused. {N} of {total} tasks completed. Run `/flow {spec_id}` to resume."
 - STOP.
 
-### 5. All tasks complete — Present MENU
+### 5. Definition of Done validation
 
 When all tasks in TASKS.md are checked off (all task IDs are in `tasksCompleted`):
+
+Before presenting the completion menu, run the Definition of Done checklist from {dodChecklist}:
+- All tasks/subtasks marked complete
+- All acceptance criteria from {specFile} satisfied
+- Tests exist for core functionality
+- All tests pass, no regressions
+- Dev Agent Record File List includes every changed file
+- Dev Agent Record contains implementation notes
+- No HALT conditions remaining
+
+If any DoD item fails: display the failures and offer [R] to re-implement affected tasks. Do NOT allow [C] Continue until DoD passes.
+
+### 6. All tasks complete — Present MENU
 
 Display:
 
 ```
-All {total} tasks implemented.
+All {total} tasks implemented. Definition of Done: PASS.
 
 [C] Continue — proceed to Code Review (Step 5 of 5)
 [R] Re-implement a specific task (e.g. "T3" — fix or redo)

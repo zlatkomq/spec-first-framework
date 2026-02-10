@@ -52,6 +52,7 @@ STOP implementation and inform the user if any of these occur:
 | Condition | Action |
 |-----------|--------|
 | 3 consecutive failed attempts at the same sub-problem | HALT — explain what's failing and ask for guidance. Do not keep retrying the same approach. |
+| Same task fails validation gates 3 times | HALT — suggest going back to TASKS.md (step 3) or DESIGN.md (step 2). The problem is likely in the spec, not the implementation. Do not keep patching. |
 | Missing dependency not in DESIGN.md | HALT — do not install undocumented dependencies. Ask if the dependency should be added. |
 | Ambiguous requirement in DESIGN.md | HALT — quote the ambiguous section and ask for clarification. Do not guess. |
 | Required file from another task doesn't exist yet | HALT — the task has an unmet dependency. Inform the user which task must be completed first. |
@@ -60,12 +61,19 @@ STOP implementation and inform the user if any of these occur:
 
 After halting, wait for user direction. Do not attempt workarounds unless explicitly told to.
 
-## Task Type Handling
+## Test-Accompaniment Mandate
+
+Every implementation task MUST produce tests alongside code. The AI may write tests first, code first, or interleaved — the ORDER is not prescribed. But the OUTCOME is non-negotiable: when a task is marked complete, tests for that task's functionality must exist and pass.
+
+- Implementation tasks produce code AND tests for that code
+- Testing tasks (if separate) produce additional test coverage
+- No task is complete without corresponding test coverage
 
 ### If the task is an Implementation task (code):
 - Implement the specified component/function/endpoint
+- Write tests that verify the implementation works correctly
 - Ensure existing tests still compile (fix imports if needed)
-- Do NOT add new tests unless the task explicitly says so
+- Tests must assert real behavior, not trivial truths
 
 ### If the task is a Testing task:
 
@@ -77,6 +85,40 @@ Follow this sequence:
 4. **Do NOT change implementation code** unless fixing a bug the test reveals — and report that bug in your summary
 
 Testing tasks produce tests only. If a test reveals a bug, document it; do not silently fix production code during a testing task.
+
+## Per-Task Validation Gates
+
+Before marking ANY task complete (updating the checkbox to [x]), ALL of these gates must pass:
+
+1. **Tests exist**: Tests for this task's functionality ACTUALLY EXIST as files on disk
+2. **Tests pass**: If terminal access is available, run the tests and confirm 100% pass. If terminal access is not available, state "Tests written but not executed — manual verification required"
+3. **Implementation matches spec**: The implementation does EXACTLY what the task description specifies — no more, no less
+4. **Acceptance criteria satisfied**: All acceptance criteria from SPEC.md that relate to this task are addressed
+5. **No regressions**: If terminal access is available, run the full test suite. No existing tests should fail.
+
+**If ANY gate fails: do NOT mark the task complete.** Fix the issue first. If you cannot fix it, HALT.
+
+## Review Continuation Detection
+
+Before starting implementation, check if REVIEW.md exists in the spec folder:
+
+- If REVIEW.md exists with verdict **CHANGES REQUESTED** or **BLOCKED**:
+  - Display the review findings (Critical and Major issues) to the user
+  - Check TASKS.md for `[AI-Review]` prefixed tasks — these are action items from the previous code review
+  - **Prioritize [AI-Review] tasks** before regular incomplete tasks
+  - Display: "[N] review action items found. Addressing these first."
+- If REVIEW.md does not exist, or verdict is APPROVED: proceed normally
+
+## Dev Agent Record Updates
+
+After completing each task (passing all validation gates), update the Dev Agent Record section in TASKS.md:
+
+1. **Agent Model Used**: Record the model name and version (e.g., "claude-4-sonnet / 2026-02-10")
+2. **Implementation Log**: Add entry: `- T[N]: [what was implemented] [files: path/to/file1, path/to/file2]`
+3. **Decisions Made**: Add any implementation decisions with rationale (e.g., "Used bcrypt over argon2 — CONSTITUTION.md specifies bcrypt")
+4. **File List**: Add all new/modified/deleted files with change type (new/modified/deleted)
+
+This record is machine-parseable for future Jira integration and provides the audit trail for code review.
 
 ## Honesty Requirements
 

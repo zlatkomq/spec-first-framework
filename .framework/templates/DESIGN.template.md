@@ -10,6 +10,9 @@
 | Author | |
 | Reviewer | |
 | Date | |
+| Approved By | |
+| Approval Date | |
+| Jira Ticket | |
 
 ---
 

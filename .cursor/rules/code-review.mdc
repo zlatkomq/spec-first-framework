@@ -215,19 +215,37 @@ General quality checks:
 
 ---
 
-### POST-PHASE: Issue Count Validation
+### POST-PHASE: Dev Agent Record Cross-Reference
 
-After completing all three phases, count total issues found.
+Cross-reference the Dev Agent Record File List (from TASKS.md) with git diff (if available):
 
-**If fewer than 3 issues found**, you are likely not looking hard enough. Go back and re-examine:
+| Discrepancy | Severity |
+|-------------|----------|
+| Files in git diff but NOT in Dev Agent Record File List | MEDIUM — undocumented changes |
+| Files in Dev Agent Record File List but NOT in git diff | HIGH — false claims in record |
+| Uncommitted changes not documented anywhere | MEDIUM — incomplete tracking |
+
+This catches cases where the AI agent claimed to change files it didn't, or changed files it didn't document.
+
+### POST-PHASE: Issue Count Policy
+
+After completing all three phases, count total issues found. Apply this policy:
+
+**Fewer than 3 issues:** You are likely NOT LOOKING HARD ENOUGH. Go back and re-examine:
 - Edge cases and null/empty input handling
 - Error messages — are they helpful or generic?
 - Test quality — do assertions test real behavior or just "no exception thrown"?
 - Performance — N+1 queries, unbounded loops, missing pagination
 - Security — injection risks, missing auth checks, exposed internals
 - Missing tests for error/edge paths from acceptance criteria
+- Architecture violations or unauthorized deviations
+- Documentation gaps
 
-**If still fewer than 3 after re-examination**, document in one sentence why this code genuinely has fewer than 3 issues (e.g., "Trivial single-function config change with comprehensive existing test coverage"). This is acceptable but must be justified.
+If still fewer than 3 after re-examination, document in one sentence why this code genuinely has fewer than 3 issues (e.g., "Trivial single-function config change with comprehensive existing test coverage"). This is acceptable but must be justified.
+
+**3-10 issues:** Normal range. Verdict is CHANGES REQUESTED (if any Critical or Major) or APPROVED (if all Minor).
+
+**More than 10 issues:** The implementation needs fundamental rework, not incremental fixes. Verdict is **BLOCKED** with this recommendation: "More than 10 issues found. Consider re-implementing from TASKS.md (step 3) rather than patching individual issues. The volume of findings suggests systemic problems in the implementation approach."
 
 ---
 
@@ -244,14 +262,15 @@ One or more checks failed. List specific issues with:
 - Which task to revisit (T1, T2, etc.)
 
 ### BLOCKED
-Cannot complete full review due to:
+Cannot complete full review, OR more than 10 issues found (fundamental rework needed). Reasons include:
+- More than 10 issues found (systemic implementation problems)
 - Missing or incomplete tasks
 - Missing tests
 - Cannot trace acceptance criteria to code
 - Required files not accessible
 - Tests fail when executed
 
-Note: Always produce a full review document even when BLOCKED. List what is missing and what was reviewable.
+Note: Always produce a full review document even when BLOCKED. List what is missing and what was reviewable. If BLOCKED due to >10 issues, recommend going back to TASKS.md (step 3) rather than patching.
 
 ## Output Format
 
