@@ -13,9 +13,12 @@ project/
 │   │   ├── tasks.md
 │   │   ├── implement.md
 │   │   ├── review.md
+│   │   ├── flow.md                     # Guided BMAD-style workflow (steps + menus)
 │   │   ├── bug.md
 │   │   ├── bugfix.md
-│   │   └── bugreview.md
+│   │   ├── bugreview.md
+│   │   ├── change.md                   # Change request (scope change) workflow
+│   │   └── adversarial.md              # Adversarial review of any document
 │   └── rules/
 │       ├── spec-creation.mdc           # Rules for creating SPEC.md
 │       ├── design-creation.mdc         # Rules for creating DESIGN.md
@@ -27,20 +30,33 @@ project/
 │       ├── bug-review.mdc              # Rules for reviewing bugfixes
 │       ├── codebase-analysis.mdc       # Rules for analyzing legacy codebase
 │       ├── legacy-assessment.mdc       # Rules for assessing tech debt/risks
-│       └── constitution-creation.mdc   # Rules for creating CONSTITUTION.md
+│       ├── constitution-creation.mdc   # Rules for creating CONSTITUTION.md
+│       ├── change-request.mdc          # Rules for change requests (impact, proposal, Amendment History)
+│       └── adversarial-review.mdc      # Rules for adversarial doc review (≥10 issues)
 │
 ├── .framework/
+│   ├── steps/                          # BMAD-style step files for /flow
+│   │   ├── step-00-continue.md         # Resume logic
+│   │   ├── step-01-spec.md
+│   │   ├── step-02-design.md
+│   │   ├── step-03-tasks.md
+│   │   ├── step-04-implement.md
+│   │   └── step-05-review.md
 │   ├── templates/
 │   │   ├── SPEC.template.md            # Template structure for specifications
 │   │   ├── DESIGN.template.md          # Template structure for technical design
 │   │   ├── TASKS.template.md           # Template structure for task breakdown
 │   │   ├── CONSTITUTION.template.md    # Template structure for project constitution
-│   │   ├── BUG.template.md                 # Template for bug reports
-│   │   ├── REVIEW.template.md                # Template for code review
-│   │   ├── BUG-REVIEW.template.md          # Template for bug review
+│   │   ├── BUG.template.md             # Template for bug reports
+│   │   ├── REVIEW.template.md          # Template for code review (incl. Dev Agent Record, Auto-Fix, Action Items)
+│   │   ├── BUG-REVIEW.template.md      # Template for bug review
+│   │   ├── workflow-state.template.md  # State file template for /flow (jiraTicket, sowRef)
+│   │   ├── CHANGE-PROPOSAL.template.md # Template for change proposals (classification, impact)
+│   │   ├── SPEC-CURRENT.template.md    # Template for compiled spec (SPEC + bugs + CRs)
 │   │   ├── CODEBASE-ANALYSIS.template.md   # Template for codebase analysis (legacy)
 │   │   └── LEGACY-ASSESSMENT.template.md   # Template for legacy assessment
-│   │
+│   ├── checklists/
+│   │   └── definition-of-done.md      # Step 4 DoD before [C] Continue to review
 │   └── CONSTITUTION.md                 # Project-level standards (THE source of truth)
 │
 ├── docs/
@@ -91,7 +107,9 @@ project/
 |--------|---------|--------------|
 | `.cursor/commands/` | Cursor slash commands (run rule + template flow) | Project setup |
 | `.cursor/rules/` | AI behavior rules (.mdc files) | Project setup |
+| `.framework/steps/` | Step files for `/flow` (BMAD-style menus) | Project setup |
 | `.framework/templates/` | Document templates | Project setup |
+| `.framework/checklists/` | Checklists (e.g. definition-of-done) | Project setup |
 | `.framework/CONSTITUTION.md` | Project standards | Step 0 (once) |
 | `docs/legacy-analysis/` | Legacy codebase analysis | Step 0 (brownfield only) |
 | `specs/XXX/` | Feature specifications | Per spec |
@@ -114,6 +132,8 @@ project/
 | `bugfixing.mdc` | Bugfix Step 1 | How AI creates BUG.md |
 | `bug-implementation.mdc` | Bugfix Step 2 | How AI implements bugfixes |
 | `bug-review.mdc` | Bugfix Step 3 | How AI reviews bugfixes |
+| `change-request.mdc` | Change request | How AI runs CR workflow (classification, impact, proposal, Amendment History) |
+| `adversarial-review.mdc` | Anytime | How AI reviews any doc with ≥10 issues |
 | `codebase-analysis.mdc` | Step 0 (legacy) | How AI analyzes existing code |
 | `legacy-assessment.mdc` | Step 0 (legacy) | How AI identifies tech debt |
 | `constitution-creation.mdc` | Step 0 | How AI creates CONSTITUTION.md |
@@ -125,9 +145,12 @@ project/
 | `SPEC.template.md` | Step 1 | Structure for specifications |
 | `DESIGN.template.md` | Step 2 | Structure for technical design |
 | `TASKS.template.md` | Step 3 | Structure for task breakdown |
-| `REVIEW.template.md` | Step 5 | Structure for code reviews |
+| `REVIEW.template.md` | Step 5 | Structure for code reviews (Dev Agent Record, Auto-Fix, Action Items) |
 | `BUG.template.md` | Bugfix Step 1 | Structure for bug reports |
 | `BUG-REVIEW.template.md` | Bugfix Step 3 | Structure for bug fix reviews |
+| `workflow-state.template.md` | `/flow` | State file (stepsCompleted, jiraTicket, sowRef) |
+| `CHANGE-PROPOSAL.template.md` | `/change` | Structure for change proposals |
+| `SPEC-CURRENT.template.md` | Regeneration | Header/instructions for compiled spec (SPEC + bugs + CRs) |
 | `CONSTITUTION.template.md` | Step 0 | Structure for project standards |
 | `CODEBASE-ANALYSIS.template.md` | Step 0 (legacy) | Structure for codebase analysis |
 | `LEGACY-ASSESSMENT.template.md` | Step 0 (legacy) | Structure for tech debt assessment |
@@ -145,7 +168,8 @@ project/
 | `BUG.md` | Developer + AI | Tech Lead | Bug report and fix plan |
 | `REVIEW.md` (features) | Developer + AI | Reviewer | Adversarial code review |
 | `REVIEW.md` (bugs) | Developer + AI | Reviewer | Bug fix verification |
-| `.workflow-state.md` | `/flow` command | — (auto-managed) | Workflow progress tracker |
+| `SPEC-CURRENT.md` | Regeneration (after bug/CR) | — | Compiled spec (SPEC + bugs + amendments) |
+| `.workflow-state.md` | `/flow` command | — (auto-managed) | Workflow progress (stepsCompleted, jiraTicket, sowRef) |
 
 ---
 
@@ -238,6 +262,8 @@ project/
 | Run workflow via slash commands | `.cursor/commands/` or [Commands & Workflow Example](docs/COMMANDS-WORKFLOW-EXAMPLE.md) |
 | Change AI behavior | `.cursor/rules/*.mdc` |
 | Change document structure | `.framework/templates/*.template.md` |
+| Change step flow (/flow) | `.framework/steps/*.md` |
+| Change DoD checklist | `.framework/checklists/definition-of-done.md` |
 | Check project standards | `.framework/CONSTITUTION.md` |
 | Understand legacy code | `docs/legacy-analysis/` |
 | Find requirements | `specs/XXX/SPEC.md` |

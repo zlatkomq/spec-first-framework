@@ -18,6 +18,8 @@ How to use the Cursor commands to run the full spec-first workflow. Each command
 | `/bug` | Create `bugs/BUG-XXX-slug/BUG.md` | Original spec reference + bug description |
 | `/bugfix` | Implement one task from BUG.md | Task reference (e.g. T1 from BUG-001) |
 | `/bugreview` | Generate `bugs/BUG-XXX-slug/REVIEW.md` | Bug reference (e.g. BUG-001 or path) |
+| `/change` | Handle scope change: classification check, impact analysis, Change Proposal. After approval: update SPEC/DESIGN/TASKS, Amendment History, SPEC-CURRENT.md. | Spec reference (e.g. 001) + optional Jira ref or description |
+| `/adversarial` | Review any document (spec, design, doc) with extreme skepticism; find at least 10 issues. | Document or content to review (e.g. @SPEC.md or paste) |
 
 ---
 
@@ -132,6 +134,34 @@ or
 
 ---
 
+## Change Request Example (/change)
+
+When scope changes (new requirement, client request) and no existing AC is violated:
+
+```
+/change 006
+```
+or with Jira:
+```
+/change 006: PROJ-456
+```
+
+→ Classification check (bug vs CR) → impact analysis → Change Proposal document. After human approval: SPEC/DESIGN/TASKS updated, Amendment History row added to SPEC.md, SPEC-CURRENT.md regenerated.
+
+---
+
+## Adversarial Review Example (/adversarial)
+
+To sanity-check a spec or design before approving a gate:
+
+```
+/adversarial @specs/006-chatbot/SPEC.md
+```
+
+→ AI reviews the document with extreme skepticism and reports at least 10 potential issues. Use to find gaps, ambiguities, or risks before Gate 1/2/3.
+
+---
+
 ## Minimal Prompt Examples (when you omit the message)
 
 If you run a command with no message, the AI will ask for the missing input:
@@ -147,6 +177,8 @@ If you run a command with no message, the AI will ask for the missing input:
 | `/bug` | (nothing) | Original spec reference + bug description |
 | `/bugfix` | (nothing) | Which bug task (e.g. T1 from BUG-001) |
 | `/bugreview` | (nothing) | Which bug to review (e.g. BUG-001) |
+| `/change` | (nothing) | Which spec (e.g. 001) + optional Jira ref |
+| `/adversarial` | (nothing) | What to review (e.g. @SPEC.md or paste content) |
 
 ---
 
@@ -161,6 +193,12 @@ Resume anytime with `/flow 001`.
 
 **Bugfix:**  
 `/bug` → `/bugfix` (per task) → `/bugreview`
+
+**Change request (scope change):**  
+`/change 001` or `/change 001: PROJ-123` → classification check → impact analysis → Change Proposal → after approval: SPEC/DESIGN/TASKS + Amendment History + SPEC-CURRENT.md
+
+**Adversarial review (any doc):**  
+`/adversarial` + document (e.g. @SPEC.md) → find ≥10 issues. Use before gate approval or to sanity-check.
 
 Each standalone command runs one subflow (rule + template). `/flow` runs the full feature workflow step by step using `.framework/steps/`. See [Workflow return and continue](WORKFLOW-RETURN-AND-CONTINUE.md) for details.
 
