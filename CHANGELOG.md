@@ -2,6 +2,63 @@
 
 All notable changes to the Spec-First AI Development Framework will be documented in this file.
 
+## [0.7.0] - BMAD Fusion (2026-02-09)
+
+### Summary
+
+**BMAD fusion** adds agency-ready metadata, a dedicated change-request workflow, classification checks (bug vs scope change), and stricter implementation and review gates. This release aligns the framework with agency needs: traceability (Jira/SOW), Amendment History, SPEC-CURRENT.md, Dev Agent Record, and clear review policies.
+
+### What's New
+
+#### New Commands (`.cursor/commands/`)
+- **`/change`** — Handle scope changes. Takes a spec reference and optional Jira ref. Runs classification check, impact analysis, and generates a Change Proposal. After approval: updates SPEC/DESIGN/TASKS, adds Amendment History row to SPEC.md, regenerates SPEC-CURRENT.md.
+- **`/adversarial`** — Review any content (spec, design, doc) with extreme skepticism. Finds at least 10 issues. Use before approving a gate or to sanity-check documents.
+
+#### New Rules (`.cursor/rules/`)
+- **`change-request.mdc`** — Step 0 classification check, impact analysis, Change Proposal generation, post-approval artifact updates and SPEC-CURRENT regeneration.
+- **`adversarial-review.mdc`** — Adversarial review flow (≥10 issues).
+
+#### New Templates (`.framework/templates/`)
+- **`CHANGE-PROPOSAL.template.md`** — Structure for change proposals including Classification Verification.
+- **`SPEC-CURRENT.template.md`** — Header and instructions for compiled spec (SPEC + bugs + CRs).
+
+#### New Checklist (`.framework/checklists/`)
+- **`definition-of-done.md`** — Implementation completion checklist (tests, documentation, quality, status) used by step 4 before allowing Continue to review.
+
+#### Agency Metadata (Phase 1)
+- **SPEC.template.md, DESIGN.template.md, TASKS.template.md:** Added Approved By, Approval Date, Jira Ticket. SPEC adds Bug History table and Amendment History table.
+- **workflow-state.template.md:** Added `jiraTicket` and `sowRef` in frontmatter and body.
+
+### Improvements
+
+#### Bugfix & Classification
+- **bugfixing.mdc:** When a Jira ref is present, Step 0 classification check compares ticket vs SPEC.md ACs. If no AC is violated, flags "may be CR" and suggests `/change`.
+- **bug-review.mdc:** Post-approval checklist now includes: update BUG.md status/date, add Bug History row to SPEC.md, regenerate SPEC-CURRENT.md using SPEC-CURRENT.template.md.
+
+#### TASKS (Phase 3)
+- **task-creation.mdc:** Context gathering (previous spec intelligence, git history); adversarial self-validation (reinvention, vagueness, coverage, test coverage, dependency order). No duplication of CONSTITUTION/DESIGN into TASKS.
+- **TASKS.template.md:** Previous Spec Learnings, References, Dev Agent Record (Agent Model Used, Implementation Log, Decisions Made, File List).
+- **step-03-tasks.md:** New step 3.5 — present validation findings (auto-fixed vs remaining concerns) before approval gate.
+
+#### Implementation (Phase 4)
+- **implementation.mdc:** Test-accompaniment mandate; per-task validation gates (tests exist, pass, match spec, ACs satisfied, no regressions); review continuation (REVIEW.md + [AI-Review] tasks); Dev Agent Record updates after each task; "same task fails validation 3 times" → HALT and suggest back to TASKS/DESIGN.
+- **step-04-implement.md:** Priority for [AI-Review] tasks; per-task validation and Dev Agent Record update; DoD checklist before "all tasks complete" menu; DoD must pass before [C] Continue.
+
+#### Review (Phase 5)
+- **code-review.mdc:** Dev Agent Record File List vs git diff cross-check. Issue-count policy: &lt;3 → re-examine/justify; 3–10 → CHANGES REQUESTED or APPROVED; &gt;10 → BLOCKED with "re-implement from TASKS" recommendation.
+- **step-05-review.md:** CHANGES REQUESTED menu: [F] Fix automatically (fix code, update Dev Agent Record, Auto-Fix Tracking, re-run review) or [A] Create action items (inject [AI-Review] tasks into TASKS.md, add Action Items Created to REVIEW, go to step-04). BLOCKED menu has no [F]/[A].
+- **REVIEW.template.md:** Dev Agent Record cross-reference table; Auto-Fix Tracking section; Action Items Created section.
+
+### How to Use
+
+- **Change request:** `/change 001` or `/change 001: PROJ-123`. Follow the Change Proposal; after approval, SPEC/DESIGN/TASKS and Amendment History are updated and SPEC-CURRENT.md is regenerated.
+- **Adversarial review:** `/adversarial` with the document you want reviewed (e.g. spec, design). Use before gate approval or to find weaknesses.
+- **Classification:** When creating a bug with a Jira ref, the framework will suggest `/change` if the ticket does not violate any AC.
+
+See [README.md](README.md) § BMAD Fusion for an overview and [docs/COMMANDS-WORKFLOW-EXAMPLE.md](docs/COMMANDS-WORKFLOW-EXAMPLE.md) for command usage.
+
+---
+
 ## [0.6.0] - 2026-02-05
 
 ### Summary

@@ -8,7 +8,7 @@ A structured methodology for AI-assisted software development. Ensures traceabil
 2. Create `CONSTITUTION.md` using: `/constitute` or `@constitution-creation.mdc` + your project description
 3. For each spec, follow the workflow: SPEC → DESIGN → TASKS → Implementation → Review
 
-**Commands** (in `.cursor/commands/`): `/constitute`, `/specify`, `/design`, `/tasks`, `/implement`, `/review`, `/flow`, `/bug`, `/bugfix`, `/bugreview` — see [Commands & Workflow Example](docs/COMMANDS-WORKFLOW-EXAMPLE.md).
+**Commands** (in `.cursor/commands/`): `/constitute`, `/specify`, `/design`, `/tasks`, `/implement`, `/review`, `/flow`, `/bug`, `/bugfix`, `/bugreview`, `/change`, `/adversarial` — see [Commands & Workflow Example](docs/COMMANDS-WORKFLOW-EXAMPLE.md).
 
 **Guided workflow (recommended):** Use **`/flow 001-slug: requirements`** to run the full feature workflow step by step (BMAD-style: state + step files + menus). Resume anytime with **`/flow 001`**. Go back with **[B]**, continue with **[C]**. See [Workflow return and continue](docs/WORKFLOW-RETURN-AND-CONTINUE.md).
 
@@ -44,6 +44,62 @@ STEP 3: Bug Review → Gate 2 (Reviewer approves)
 Update original SPEC.md Bug History → Done
 ```
 
+### Change Request Workflow
+
+```
+SCOPE CHANGE IDENTIFIED
+         ↓
+/change 001: [Jira ticket or description]
+         ↓
+Classification check (bug vs CR)
+         ↓
+Impact analysis → Change Proposal document
+         ↓
+User approves → Update SPEC/DESIGN/TASKS, Amendment History, SPEC-CURRENT.md
+```
+
+## BMAD Fusion (Agency & Quality Enhancements)
+
+This framework includes **BMAD fusion** enhancements: agency-ready metadata, change requests, classification checks, and stricter implementation/review gates.
+
+### Agency Metadata
+
+All spec artifacts support traceability fields for billing and audit:
+
+- **Gate metadata:** Approved By, Approval Date, Jira Ticket on SPEC, DESIGN, and TASKS
+- **Workflow state:** `jiraTicket` and `sowRef` in `.workflow-state.md` for Jira/SOW linking
+- **Bug History** and **Amendment History** in SPEC.md — updated automatically when bugs are fixed or change requests are implemented
+
+### New Commands
+
+| Command | Purpose |
+|---------|---------|
+| `/change {spec}` | Handle scope changes. Produces a Change Proposal with impact analysis. On approval, updates artifacts and regenerates SPEC-CURRENT.md. |
+| `/adversarial` | Review any content (spec, design, doc) with extreme skepticism. Finds at least 10 issues. Use before approving a gate or to sanity-check a document. |
+
+### Classification Check
+
+When `/bug` or `/change` is run with a Jira ticket (or ticket description), the framework compares the ticket against SPEC.md acceptance criteria and flags misclassification:
+
+- **Bug reported but no AC violated** → "This may be a Change Request. Consider `/change`."
+- **CR requested but it fixes an AC violation** → "This may be a Bug. Consider `/bug`."
+
+Reduces billing disputes and keeps bug vs scope-change work clearly separated.
+
+### SPEC-CURRENT.md
+
+After a bug is fixed or a change request is implemented, the framework can regenerate **SPEC-CURRENT.md**: a compiled view of the current specification (frozen SPEC + all applied bug fixes + all applied amendments). Use it as the single "current state" reference without editing SPEC.md by hand.
+
+### Implementation & Review Enhancements
+
+- **Test-accompaniment:** Every implementation task must produce tests alongside code; per-task validation gates (tests exist, pass, ACs satisfied) before marking complete.
+- **Dev Agent Record:** TASKS.md includes a structured Implementation Log, Decisions Made, and File List — updated after each task for audit and future Jira sync.
+- **Review continuation:** If code review finds issues, you can choose **[F] Fix automatically** (AI fixes and re-reviews) or **[A] Create action items** (injects `[AI-Review]` tasks into TASKS.md; step 4 prioritizes them on re-entry).
+- **Issue count policy:** Review verdicts: &lt;3 issues (re-examine/justify), 3–10 (CHANGES REQUESTED), &gt;10 (BLOCKED — recommend re-implementing from TASKS rather than patching).
+- **Definition of Done:** Step 4 runs a checklist (see `.framework/checklists/definition-of-done.md`) before allowing Continue to review.
+
+See [CHANGELOG.md](CHANGELOG.md) for the full list of changes in this release.
+
 ## Folder Structure
 
 ```
@@ -59,7 +115,9 @@ your-project/
 │       ├── bugfixing.mdc
 │       ├── bug-implementation.mdc
 │       ├── bug-review.mdc
-│       └── constitution-creation.mdc
+│       ├── constitution-creation.mdc
+│       ├── change-request.mdc
+│       └── adversarial-review.mdc
 ├── .framework/
 │   ├── steps/                     # BMAD-style step files for /flow
 │   │   ├── step-00-continue.md    #   Resume logic
@@ -72,10 +130,15 @@ your-project/
 │   │   ├── SPEC.template.md
 │   │   ├── DESIGN.template.md
 │   │   ├── TASKS.template.md
+│   │   ├── REVIEW.template.md
 │   │   ├── BUG.template.md
 │   │   ├── BUG-REVIEW.template.md
 │   │   ├── CONSTITUTION.template.md
-│   │   └── workflow-state.template.md  # State file template for /flow
+│   │   ├── workflow-state.template.md
+│   │   ├── CHANGE-PROPOSAL.template.md   # For /change
+│   │   └── SPEC-CURRENT.template.md      # Compiled spec view
+│   ├── checklists/
+│   │   └── definition-of-done.md         # Step 4 DoD before review
 │   └── CONSTITUTION.md          ← You create this
 ├── specs/
 │   └── XXX-description/
@@ -164,10 +227,12 @@ After approval, update the original SPEC.md Bug History table.
 |-----------|----------|
 | New feature or enhancement | Feature workflow (SPEC.md) |
 | Code violates existing acceptance criteria | Bugfix workflow (BUG.md) |
+| Scope change, new requirement, or client request | Change request: `/change {spec}` |
 | Acceptance criteria was missing or wrong | Feature workflow (narrow spec) |
 | Refactoring without behavior change | Feature workflow (Type: Refactor) |
 | Performance optimization | Feature workflow (Type: Performance) |
 | Database/system migration | Feature workflow (Type: Migration) |
+| Sanity-check a spec/design/doc before approving | `/adversarial` (finds 10+ issues) |
 
 Note: Dedicated workflows for Refactor, Performance, and Migration may be added in future versions.
 
@@ -176,6 +241,7 @@ Note: Dedicated workflows for Refactor, Performance, and Migration may be added 
 - [FOLDER-STRUCTURE.md](FOLDER-STRUCTURE.md) — Detailed folder and file descriptions
 - [Commands & Workflow Example](docs/COMMANDS-WORKFLOW-EXAMPLE.md) — Using slash commands (`/specify`, `/design`, etc.)
 - [Workflow return and continue](docs/WORKFLOW-RETURN-AND-CONTINUE.md) — Resume or go back a step, then continue (`/flow 001`)
+- [BMAD Fusion — Change Request Summary](docs/BMAD-FUSION-CHANGES.md) — Full list of BMAD fusion changes (templates, rules, steps)
 - [framework-workflow-final.mermaid](framework-workflow-final.mermaid) — Visual workflow diagram
 - [framework-legacy-analysis.mermaid](framework-legacy-analysis.mermaid) — Brownfield analysis flow (coming soon)
 
