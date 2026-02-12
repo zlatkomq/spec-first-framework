@@ -62,18 +62,16 @@ check_git() {
 clone_repo() {
   local repo="$1"
   local branch="$2"
-  local tmpdir
 
-  tmpdir=$(mktemp -d)
+  CLONE_DIR=$(mktemp -d)
   info "Fetching framework from ${BOLD}${branch}${NC} ..."
 
-  if ! git clone --depth 1 --branch "$branch" "$repo" "$tmpdir" 2>/dev/null; then
-    rm -rf "$tmpdir"
+  if ! git clone --depth 1 --branch "$branch" "$repo" "$CLONE_DIR" 2>/dev/null; then
+    rm -rf "$CLONE_DIR"
     fatal "Failed to clone ${repo} (branch: ${branch}). Check the URL and branch name."
   fi
-
-  echo "$tmpdir"
 }
+
 
 # ---------------------------------------------------------------------------
 # File copy logic
@@ -197,8 +195,10 @@ cmd_init() {
   echo ""
 
   # Clone
-  local tmpdir
-  tmpdir=$(clone_repo "$repo" "$branch")
+  # local tmpdir
+  # tmpdir=$(clone_repo "$repo" "$branch")
+  clone_repo "$repo" "$branch"
+  local tmpdir="$CLONE_DIR"
 
   # Get commit hash
   local commit
@@ -273,8 +273,10 @@ cmd_update() {
   fi
 
   # Clone
-  local tmpdir
-  tmpdir=$(clone_repo "$repo" "$branch")
+  # local tmpdir
+  # tmpdir=$(clone_repo "$repo" "$branch")
+  clone_repo "$repo" "$branch"
+  local tmpdir="$CLONE_DIR"
 
   # Get commit hash
   local commit
