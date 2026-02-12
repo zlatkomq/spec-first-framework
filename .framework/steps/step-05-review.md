@@ -179,12 +179,13 @@ REVIEW: BLOCKED — {reason}
   6. Add an "Auto-Fix Tracking" section to REVIEW.md documenting what was fixed. Include: "Fix attempt {fixAttempts} of 3."
   7. Set `fixLoopActive` to `true` in `{stateFile}`. Re-run the FULL review from scratch (go back to section 2 of this step). A fresh review — not a partial re-check.
 - **IF [A] Create action items:**
-  1. For each Critical and Major issue, inject a task into the Tasks section of {tasksFile}:
+  1. Reset `fixAttempts` to `0`, `previousIssueCount` to `0`, and `fixLoopActive` to `false` in `{stateFile}`.
+  2. For each Critical and Major issue, inject a task into the Tasks section of {tasksFile}:
      `- [ ] [AI-Review][{Severity}] {Description} [{file:function}]`
-  2. Add an "Action Items Created" section to REVIEW.md listing the injected tasks.
-  3. Trim `stepsCompleted` in `{stateFile}` to keep entries up to `'step-03-tasks'`.
-  4. Do NOT clear `tasksCompleted` — keep task progress.
-  5. Read fully and follow: `./step-04-implement.md`.
+  3. Add an "Action Items Created" section to REVIEW.md listing the injected tasks.
+  4. Trim `stepsCompleted` in `{stateFile}` to keep entries up to `'step-03-tasks'`.
+  5. Do NOT clear `tasksCompleted` — keep task progress.
+  6. Read fully and follow: `./step-04-implement.md`.
   - (Step-04 will detect the [AI-Review] tasks and prioritize them.)
 - **IF [F] or [A] not chosen — IF [B] Back to Tasks:**
   1. Reset `fixAttempts` to `0`, `previousIssueCount` to `0`, and `fixLoopActive` to `false` in `{stateFile}`.

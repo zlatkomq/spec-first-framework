@@ -19,6 +19,10 @@ Adds a maximum iteration cap (3 attempts) to the `[F] Fix automatically` cycle i
   - All `[B]` back-navigation handlers (4 explicit, 3 inherited via "same as above") now reset `fixAttempts`, `previousIssueCount`, and `fixLoopActive` to prevent stale state.
 - **REVIEW.template.md:** Added `Attempt` column to Auto-Fix Tracking table for per-attempt audit trail.
 
+#### Fix counter reset gaps
+- **step-00-continue.md:** `[B] Back to step N` handler now resets `fixAttempts`, `previousIssueCount`, and `fixLoopActive` — prevents stale counters when resuming via `/flow` and navigating back.
+- **step-05-review.md:** `[A] Create action items` handler now explicitly resets fix counters (step 1), consistent with all `[B]` handlers. Removes implicit dependency on section 2 fresh-entry detection.
+
 ---
 
 ## [0.7.1] - Pipeline Hardening (2026-02-09)

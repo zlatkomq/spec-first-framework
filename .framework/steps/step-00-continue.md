@@ -113,6 +113,7 @@ Completed: {list of tasksCompleted, e.g. T1, T2, T3}
     - Back to Tasks (3): keep up to `['step-01-spec', 'step-02-design']`.
     - Back to Implement (4): keep up to `['step-01-spec', 'step-02-design', 'step-03-tasks']`.
   - If going back to step 3 or earlier: also clear `tasksCompleted` (set to `[]`).
+  - Reset `fixAttempts` to `0`, `previousIssueCount` to `0`, and `fixLoopActive` to `false` in `{stateFile}`.
   - Update `{stateFile}` with trimmed `stepsCompleted` (and `tasksCompleted` if cleared).
   - Read fully and follow the corresponding step file (e.g. `step-02-design.md`).
 
