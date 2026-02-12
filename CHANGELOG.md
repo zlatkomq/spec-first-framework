@@ -2,6 +2,25 @@
 
 All notable changes to the Spec-First AI Development Framework will be documented in this file.
 
+## [0.7.2] - Cap Review Fix-Loop (2026-02-12)
+
+### Summary
+
+Adds a maximum iteration cap (3 attempts) to the `[F] Fix automatically` cycle in step 5 (code review). Prevents an infinite fix-review loop when AI-generated fixes keep introducing new issues.
+
+### Changes
+
+#### Review fix-loop cap
+- **workflow-state.template.md:** Added `fixAttempts`, `previousIssueCount`, and `fixLoopActive` fields to frontmatter and descriptions. These track auto-fix iterations and enable fresh-entry detection.
+- **step-05-review.md:**
+  - Section 2 now checks `fixLoopActive` flag to distinguish fresh entry (reset counters) from `[F]` re-review loop (preserve counters).
+  - CHANGES REQUESTED menu conditionally shows `[F]` only when `fixAttempts < 3`. When capped, displays convergence-based recommendation: diverging issues recommend `[B] Back to Tasks`, converging issues recommend `[A] Create action items`.
+  - `[F]` handler expanded to 7 steps: increments counter, records issue count, sets `fixLoopActive = true` before redirecting to section 2.
+  - All `[B]` back-navigation handlers (4 explicit, 3 inherited via "same as above") now reset `fixAttempts`, `previousIssueCount`, and `fixLoopActive` to prevent stale state.
+- **REVIEW.template.md:** Added `Attempt` column to Auto-Fix Tracking table for per-attempt audit trail.
+
+---
+
 ## [0.7.1] - Pipeline Hardening (2026-02-09)
 
 ### Summary

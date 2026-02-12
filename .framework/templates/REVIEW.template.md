@@ -228,9 +228,9 @@ Minimum 3 issues expected. If fewer, see Issue Count Justification below.
 
 [Populated only if [F] Fix was chosen. Otherwise: "No auto-fixes applied."]
 
-| Issue # | Description | Fix Applied | Files Changed |
-|---------|-------------|-------------|---------------|
-| | | | |
+| Attempt | Issue # | Description | Fix Applied | Files Changed |
+|---------|---------|-------------|-------------|---------------|
+| | | | | |
 
 ---
 

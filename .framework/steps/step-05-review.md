@@ -47,6 +47,12 @@ Generate an adversarial REVIEW.md by applying the code-review rules. Inspect act
 
 ### 2. Execute review (from scratch)
 
+**Counter management (auto-fix loop detection):**
+- Read `fixLoopActive` from `{stateFile}`.
+- If `fixLoopActive` is `false`: this is a **fresh entry**. Set `fixAttempts` to `0` and `previousIssueCount` to `0` in `{stateFile}`.
+- If `fixLoopActive` is `true`: this is a **[F] re-review loop**. Preserve current `fixAttempts` and `previousIssueCount`. Set `fixLoopActive` back to `false` in `{stateFile}` (consumed).
+- If `fixAttempts` > 0, display: "Note: This is auto-fix attempt {fixAttempts} of 3."
+
 **IMPORTANT:** Even if a previous REVIEW.md exists, run the full review again from the beginning. Code may have changed since the last review.
 
 Apply {ruleRef} in full (all phases and post-phase validation per rule).
@@ -73,14 +79,57 @@ REVIEW: APPROVED
 
 **IF verdict is CHANGES REQUESTED (3-10 issues):**
 
+Read `fixAttempts` and `previousIssueCount` from `{stateFile}`.
+
+**If `fixAttempts` < 3** — show [F] with attempt counter:
+
 ```
 REVIEW: CHANGES REQUESTED — {issue_count} issues ({critical} Critical, {major} Major, {minor} Minor)
 
 Findings:
 {list of critical/major issues with affected tasks/files}
 
-[F] Fix automatically — AI fixes HIGH/MEDIUM issues in code, then re-reviews from scratch
+[F] Fix automatically — AI fixes issues in code, then re-reviews (attempt {fixAttempts+1} of 3)
 [A] Create action items — add [AI-Review] tasks to TASKS.md, go back to Implementation (step 4)
+[B] Back to Tasks — re-edit TASKS.md (step 3)
+[B2] Back to Design — re-edit DESIGN.md (step 2)
+[B3] Back to Spec — re-edit SPEC.md (step 1)
+[X] Exit — pause workflow; resume later with /flow
+```
+
+**If `fixAttempts` >= 3** — do NOT show [F]. Compare `{issue_count}` against `previousIssueCount` and display a prescriptive recommendation:
+
+If `{issue_count}` > `previousIssueCount` (diverging — fixes are making things worse):
+
+```
+REVIEW: CHANGES REQUESTED — {issue_count} issues ({critical} Critical, {major} Major, {minor} Minor)
+
+⚠ Auto-fix limit reached (3 attempts). Issue count INCREASED ({previousIssueCount} → {issue_count}).
+The implementation approach is likely wrong.
+Recommended: [B] Back to Tasks to rework the implementation plan.
+
+Findings:
+{list of critical/major issues with affected tasks/files}
+
+[A] Create action items — add [AI-Review] tasks to TASKS.md, go back to Implementation (step 4)
+[B] Back to Tasks — re-edit TASKS.md (step 3) [RECOMMENDED]
+[B2] Back to Design — re-edit DESIGN.md (step 2)
+[B3] Back to Spec — re-edit SPEC.md (step 1)
+[X] Exit — pause workflow; resume later with /flow
+```
+
+If `{issue_count}` <= `previousIssueCount` (converging — progress was made, but not enough):
+
+```
+REVIEW: CHANGES REQUESTED — {issue_count} issues ({critical} Critical, {major} Major, {minor} Minor)
+
+⚠ Auto-fix limit reached (3 attempts). Issue count decreased ({previousIssueCount} → {issue_count}) but issues remain.
+Recommended: [A] Create action items for targeted manual resolution.
+
+Findings:
+{list of critical/major issues with affected tasks/files}
+
+[A] Create action items — add [AI-Review] tasks to TASKS.md, go back to Implementation (step 4) [RECOMMENDED]
 [B] Back to Tasks — re-edit TASKS.md (step 3)
 [B2] Back to Design — re-edit DESIGN.md (step 2)
 [B3] Back to Spec — re-edit SPEC.md (step 1)
@@ -111,8 +160,9 @@ REVIEW: BLOCKED — {reason}
   3. Display: "Human reviewer should make the final decision at Gate 4."
   4. STOP. Workflow is done.
 - **IF [B] Back to Implement:**
-  1. Trim `stepsCompleted` in `{stateFile}` to keep entries up to `'step-03-tasks'`.
-  2. Read fully and follow: `./step-04-implement.md`.
+  1. Reset `fixAttempts` to `0`, `previousIssueCount` to `0`, and `fixLoopActive` to `false` in `{stateFile}`.
+  2. Trim `stepsCompleted` in `{stateFile}` to keep entries up to `'step-03-tasks'`.
+  3. Read fully and follow: `./step-04-implement.md`.
   - (Step-04 will detect REVIEW.md with findings and display them.)
 - **IF [X] Exit:**
   - Update `{stateFile}`: append `'step-05-review'` to `stepsCompleted`.
@@ -120,12 +170,14 @@ REVIEW: BLOCKED — {reason}
 
 **CHANGES REQUESTED path:**
 
-- **IF [F] Fix automatically:**
-  1. Fix all Critical and Major issues directly in the code.
-  2. Add/update tests as needed for the fixes.
-  3. Update the Dev Agent Record in {tasksFile}: add fix entries to Implementation Log, update File List.
-  4. Add an "Auto-Fix Tracking" section to REVIEW.md documenting what was fixed.
-  5. Re-run the FULL review from scratch (go back to section 2 of this step). A fresh review — not a partial re-check.
+- **IF [F] Fix automatically:** (only available when `fixAttempts` < 3)
+  1. Increment `fixAttempts` in `{stateFile}` (`fixAttempts` = `fixAttempts` + 1).
+  2. Record the current review's total issue count as `previousIssueCount` in `{stateFile}` (to compare with the next review cycle's count).
+  3. Fix all Critical and Major issues directly in the code.
+  4. Add/update tests as needed for the fixes.
+  5. Update the Dev Agent Record in {tasksFile}: add fix entries to Implementation Log, update File List.
+  6. Add an "Auto-Fix Tracking" section to REVIEW.md documenting what was fixed. Include: "Fix attempt {fixAttempts} of 3."
+  7. Set `fixLoopActive` to `true` in `{stateFile}`. Re-run the FULL review from scratch (go back to section 2 of this step). A fresh review — not a partial re-check.
 - **IF [A] Create action items:**
   1. For each Critical and Major issue, inject a task into the Tasks section of {tasksFile}:
      `- [ ] [AI-Review][{Severity}] {Description} [{file:function}]`
@@ -135,17 +187,20 @@ REVIEW: BLOCKED — {reason}
   5. Read fully and follow: `./step-04-implement.md`.
   - (Step-04 will detect the [AI-Review] tasks and prioritize them.)
 - **IF [F] or [A] not chosen — IF [B] Back to Tasks:**
-  1. Trim `stepsCompleted` to keep entries up to `'step-02-design'`.
-  2. Clear `tasksCompleted` in `{stateFile}` (set to `[]`).
-  3. Read fully and follow: `./step-03-tasks.md`.
+  1. Reset `fixAttempts` to `0`, `previousIssueCount` to `0`, and `fixLoopActive` to `false` in `{stateFile}`.
+  2. Trim `stepsCompleted` to keep entries up to `'step-02-design'`.
+  3. Clear `tasksCompleted` in `{stateFile}` (set to `[]`).
+  4. Read fully and follow: `./step-03-tasks.md`.
 - **IF [B2] Back to Design:**
-  1. Trim `stepsCompleted` to keep entries up to `'step-01-spec'`.
-  2. Clear `tasksCompleted` in `{stateFile}` (set to `[]`).
-  3. Read fully and follow: `./step-02-design.md`.
+  1. Reset `fixAttempts` to `0`, `previousIssueCount` to `0`, and `fixLoopActive` to `false` in `{stateFile}`.
+  2. Trim `stepsCompleted` to keep entries up to `'step-01-spec'`.
+  3. Clear `tasksCompleted` in `{stateFile}` (set to `[]`).
+  4. Read fully and follow: `./step-02-design.md`.
 - **IF [B3] Back to Spec:**
-  1. Set `stepsCompleted` to `[]`.
-  2. Clear `tasksCompleted` in `{stateFile}` (set to `[]`).
-  3. Read fully and follow: `./step-01-spec.md`.
+  1. Reset `fixAttempts` to `0`, `previousIssueCount` to `0`, and `fixLoopActive` to `false` in `{stateFile}`.
+  2. Set `stepsCompleted` to `[]`.
+  3. Clear `tasksCompleted` in `{stateFile}` (set to `[]`).
+  4. Read fully and follow: `./step-01-spec.md`.
 - **IF [X] Exit:**
   - Display: "Workflow paused with review findings. Run `/flow {spec_id}` to resume and address issues."
   - Do NOT append `'step-05-review'` to `stepsCompleted` (review is not passed).
