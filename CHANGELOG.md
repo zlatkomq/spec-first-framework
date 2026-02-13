@@ -2,11 +2,16 @@
 
 All notable changes to the Spec-First AI Development Framework will be documented in this file.
 
-## [0.7.2] - Cap Review Fix-Loop (2026-02-12)
+## [0.7.2] - Cap Review Fix-Loop + CLI (2026-02-12)
 
 ### Summary
 
-Adds a maximum iteration cap (3 attempts) to the `[F] Fix automatically` cycle in step 5 (code review). Prevents an infinite fix-review loop when AI-generated fixes keep introducing new issues.
+Adds a maximum iteration cap (3 attempts) to the `[F] Fix automatically` cycle in step 5 (code review). Prevents an infinite fix-review loop when AI-generated fixes keep introducing new issues. Adds CLI installation instructions to README.
+
+### Documentation
+
+#### CLI installation
+- **README.md:** Added Installation section with `spec-first` CLI commands (`init`, `update`, `update --branch`, `version`). Quick Start now references the CLI as the primary installation method.
 
 ### Changes
 

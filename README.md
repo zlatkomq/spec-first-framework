@@ -2,9 +2,45 @@
 
 A structured methodology for AI-assisted software development. Ensures traceability, quality gates, and consistent outputs across projects.
 
+## Installation
+
+### Install the CLI
+
+```bash
+sudo curl -fsSL https://raw.githubusercontent.com/zlatkomq/spec-first-framework/main/spec-first.sh -o /usr/local/bin/spec-first && sudo chmod +x /usr/local/bin/spec-first
+```
+
+### Initialize a project
+
+```bash
+cd your-project
+spec-first init
+```
+
+### Update to latest framework
+
+```bash
+spec-first update
+```
+
+### Switch to a different branch
+
+```bash
+spec-first update --branch <branch-name>
+```
+
+### CLI Commands
+
+| Command | Description |
+|---------|-------------|
+| `spec-first init` | Install framework into current project |
+| `spec-first update` | Pull latest rules/templates (preserves specs, bugs, constitution) |
+| `spec-first update --branch <name>` | Switch to a different framework branch |
+| `spec-first version` | Show installed framework version |
+
 ## Quick Start
 
-1. Copy `.cursor/` and `.framework/` folders into your project
+1. Install the framework with `spec-first init` (or manually copy `.cursor/` and `.framework/` folders into your project)
 2. Create `CONSTITUTION.md` using: `/constitute` or `@constitution-creation.mdc` + your project description
 3. For each spec, follow the workflow: SPEC → DESIGN → TASKS → Implementation → Review
 
