@@ -64,6 +64,16 @@ Always use the template structure from @.framework/templates/SPEC.template.md
 - Format as checklist: `- [ ] Question here?`
 - These must be resolved before moving to DESIGN.md
 
+### Bug History
+- Include empty table from template (columns: Bug ID, Severity, Date Fixed, Description)
+- This section is updated by the bug review workflow, not manually during spec creation
+- Do not remove or modify the placeholder row
+
+### Amendment History
+- Include empty table from template (columns: CR ID, Date, Description, Approved By)
+- This section is updated by the change request workflow, not manually during spec creation
+- Do not remove or modify the placeholder row
+
 ## Constraints
 
 - Do not generate SPEC content without user-provided requirements or explicit confirmation. If updating an existing SPEC, require user confirmation before overwriting.

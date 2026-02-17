@@ -145,7 +145,7 @@ All {total} tasks implemented. Definition of Done: PASS.
   2. Redisplay this menu (no state changes).
 - **IF [R] Re-implement task:**
   - User specifies task. Re-apply {ruleRef} for that task.
-  - After done, redisplay this menu (section 5).
+  - After done, redisplay this menu (section 6).
 - **IF [B] Back to Tasks:**
   1. Trim `stepsCompleted` in `{stateFile}` to keep entries up to `'step-02-design'`.
   2. Clear `tasksCompleted` in `{stateFile}` (set to `[]`).
