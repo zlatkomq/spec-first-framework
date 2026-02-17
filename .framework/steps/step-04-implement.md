@@ -126,6 +126,7 @@ Display:
 All {total} tasks implemented. Definition of Done: PASS.
 
 [C] Continue — proceed to Code Review (Step 5 of 5)
+[V] View TASKS.md — display for reference (read-only)
 [R] Re-implement a specific task (e.g. "T3" — fix or redo)
 [B] Back to Tasks — re-edit TASKS.md (step 3)
 [B2] Back to Design — re-edit DESIGN.md (step 2)
@@ -137,6 +138,9 @@ All {total} tasks implemented. Definition of Done: PASS.
 - **IF [C] Continue:**
   1. Update `{stateFile}`: append `'step-04-implement'` to `stepsCompleted`.
   2. Read fully and follow: `{nextStepFile}` (step-05-review.md).
+- **IF [V] View TASKS.md:**
+  1. Read and display the full content of {tasksFile}.
+  2. Redisplay this menu (no state changes).
 - **IF [R] Re-implement task:**
   - User specifies task. Re-apply {ruleRef} for that task.
   - After done, redisplay this menu (section 5).

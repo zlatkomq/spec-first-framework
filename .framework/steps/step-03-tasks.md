@@ -82,6 +82,7 @@ Display:
 TASKS.md is APPROVED.
 
 [C] Continue — proceed to Implementation (Step 4 of 5)
+[V] View DESIGN.md — display for reference (read-only)
 [B] Back to Design — re-edit DESIGN.md (step 2)
 [B2] Back to Spec — re-edit SPEC.md (step 1)
 [X] Exit — pause workflow; resume later with /flow
@@ -92,6 +93,9 @@ TASKS.md is APPROVED.
 - **IF [C] Continue:**
   1. Update `{stateFile}`: append `'step-03-tasks'` to `stepsCompleted`.
   2. Read fully and follow: `{nextStepFile}` (step-04-implement.md).
+- **IF [V] View DESIGN.md:**
+  1. Read and display the full content of {designFile}.
+  2. Redisplay this menu (no state changes).
 - **IF [B] Back to Design:**
   1. Trim `stepsCompleted` in `{stateFile}` to keep only entries up to `'step-01-spec'`.
   2. Clear `tasksCompleted` in `{stateFile}` (set to `[]`).
