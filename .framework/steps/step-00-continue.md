@@ -84,15 +84,6 @@ On [X]: STOP.
 3. Extract `nextStepFile` from the frontmatter.
 4. That is the next step to run.
 
-**Step name to file mapping:**
-
-| stepsCompleted entry | Step file | nextStepFile |
-|----------------------|-----------|--------------|
-| `step-01-spec` | `step-01-spec.md` | `step-02-design.md` |
-| `step-02-design` | `step-02-design.md` | `step-03-tasks.md` |
-| `step-03-tasks` | `step-03-tasks.md` | `step-04-implement.md` |
-| `step-04-implement` | `step-04-implement.md` | `step-05-review.md` |
-
 ### 5. Check for partial implementation progress
 
 If the next step is `step-04-implement.md` (i.e. last completed is `step-03-tasks`) AND `tasksCompleted` is non-empty:
