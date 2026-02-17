@@ -94,10 +94,12 @@ TASKS.md is APPROVED.
   2. Read fully and follow: `{nextStepFile}` (step-04-implement.md).
 - **IF [B] Back to Design:**
   1. Trim `stepsCompleted` in `{stateFile}` to keep only entries up to `'step-01-spec'`.
-  2. Read fully and follow: `./step-02-design.md`.
+  2. Clear `tasksCompleted` in `{stateFile}` (set to `[]`).
+  3. Read fully and follow: `./step-02-design.md`.
 - **IF [B2] Back to Spec:**
   1. Set `stepsCompleted` in `{stateFile}` to `[]` (empty).
-  2. Read fully and follow: `./step-01-spec.md`.
+  2. Clear `tasksCompleted` in `{stateFile}` (set to `[]`).
+  3. Read fully and follow: `./step-01-spec.md`.
 - **IF [X] Exit:**
   - Update `{stateFile}`: append `'step-03-tasks'` to `stepsCompleted` (if TASKS is APPROVED).
   - Display: "Workflow paused. Run `/flow {spec_id}` to resume."
