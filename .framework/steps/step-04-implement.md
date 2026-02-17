@@ -91,6 +91,7 @@ If ALL tasks are already complete, skip directly to section 5 (completion menu).
 5. If validation gates pass:
    - Mark the task done: update `tasksCompleted` in `{stateFile}`, update checkbox in {tasksFile}.
    - Update Dev Agent Record in {tasksFile}: add Implementation Log entry, update File List.
+   - If task is marked `[~]` IMPLEMENTED-UNVERIFIED (per {ruleRef}): do NOT add to `tasksCompleted`. The task remains incomplete for workflow purposes.
 6. If validation gates fail:
    - Do NOT mark the task complete. Fix the issue and re-validate.
    - If 3 validation failures on the same task: HALT per {ruleRef}.
@@ -114,6 +115,7 @@ Before presenting the completion menu, run the Definition of Done checklist from
 - All tests pass, no regressions
 - Dev Agent Record File List includes every changed file
 - Dev Agent Record contains implementation notes
+- No `[~]` IMPLEMENTED-UNVERIFIED tasks remaining — all tasks must be fully verified `[x]`
 - No HALT conditions remaining
 
 If any DoD item fails: display the failures and offer [R] to re-implement affected tasks. Do NOT allow [C] Continue until DoD passes.

@@ -168,6 +168,7 @@ Verify every task in TASKS.md is implemented:
 - [ ] All implementation tasks (T1, T2, ...) have corresponding code files
 - [ ] All testing tasks have corresponding test files with real tests
 - [ ] No tasks were skipped
+- [ ] No tasks marked `[~]` (IMPLEMENTED-UNVERIFIED) — these count as INCOMPLETE. If any exist, verdict = BLOCKED (unverified code cannot pass review).
 - [ ] Implementation matches what the task description says (not just that a file exists)
 
 If tasks are missing or incomplete, set Verdict = BLOCKED.

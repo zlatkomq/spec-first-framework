@@ -173,7 +173,12 @@ REVIEW: BLOCKED — {reason}
 - **IF [F] Fix automatically:** (only available when `fixAttempts` < 3)
   1. Increment `fixAttempts` in `{stateFile}` (`fixAttempts` = `fixAttempts` + 1).
   2. Record the current review's total issue count as `previousIssueCount` in `{stateFile}` (to compare with the next review cycle's count).
-  3. Fix all Critical and Major issues directly in the code.
+  3. Fix Critical and Major issues in the code, one finding at a time, following these constraints:
+     a. **Scope each fix** to the specific file(s) and function(s) cited in the finding. Do not refactor surrounding code or make unrelated improvements.
+     b. **No architectural changes.** If a finding requires structural/architectural rework to fix, skip it and note: "Finding {N} requires architectural change — escalate to [A]." Continue with remaining findings.
+     c. **Validate after each fix:** run tests to confirm they still pass. If a fix breaks tests, revert it and note: "Finding {N} fix caused regression — escalate to [A]."
+     d. **Halt condition:** if 3 individual fixes fail validation (break tests or cannot be scoped), STOP fixing. Add all remaining unfixed findings to the Auto-Fix Tracking section as "Deferred — escalate to [A]" and present the menu with [A] recommended.
+     e. **Allowed supporting changes** (same as implementation.mdc): wiring into index/exports, import statements, fixing compile errors caused by the fix. List these explicitly in Auto-Fix Tracking.
   4. Add/update tests as needed for the fixes.
   5. Update the Dev Agent Record in {tasksFile}: add fix entries to Implementation Log, update File List.
   6. Add an "Auto-Fix Tracking" section to REVIEW.md documenting what was fixed. Include: "Fix attempt {fixAttempts} of 3."
