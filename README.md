@@ -268,9 +268,22 @@ After approval, update the original SPEC.md Bug History table.
 | Refactoring without behavior change | Feature workflow (Type: Refactor) |
 | Performance optimization | Feature workflow (Type: Performance) |
 | Database/system migration | Feature workflow (Type: Migration) |
+| Trivial fix you made yourself (typo, config, one-liner) | Quick fix convention (no workflow) |
 | Sanity-check a spec/design/doc before approving | `/adversarial` (finds 10+ issues) |
 
 Note: Dedicated workflows for Refactor, Performance, and Migration may be added in future versions.
+
+### Quick Fixes (No Workflow Needed)
+
+For obvious fixes you make yourself (typos, config tweaks, one-liners):
+
+1. Fix it
+2. Commit with prefix: `quickfix(FEAT-XXX): description`
+3. Optionally update SPEC.md Bug History table
+
+No commands, no AI, no ceremony. The git log is your traceability. Find all quick fixes for a spec with `git log --grep="quickfix(FEAT-001)"`.
+
+Use `/bug` instead if the fix needs investigation, touches many files, or carries risk.
 
 ## Documentation
 
