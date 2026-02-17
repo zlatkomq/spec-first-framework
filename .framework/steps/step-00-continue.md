@@ -26,7 +26,36 @@ Read `{stateFile}` frontmatter. Extract:
 - `tasksCompleted` — array of completed task IDs (e.g. `['T1', 'T2']`).
 - `specId`, `specSlug`, `specFolder`.
 
-### 2. Handle workflow completion
+### 2. Validate stepsCompleted
+
+The canonical step order is:
+
+```
+step-01-spec, step-02-design, step-03-tasks, step-04-implement, step-05-review
+```
+
+Verify that `stepsCompleted` is a valid contiguous prefix of this sequence:
+- The first N elements of `stepsCompleted` must match the first N entries of the canonical order, in order.
+- Any entry not in the canonical list is invalid.
+- Any gap (e.g. `step-01-spec` then `step-03-tasks`, skipping `step-02-design`) is invalid.
+- Any out-of-order entry is invalid.
+
+**If validation fails**, display a clear error with the specific problem:
+
+```
+Workflow state is corrupted: {specific problem, e.g. "step-02-design is missing between step-01-spec and step-03-tasks"}.
+
+[R] Reset — clear stepsCompleted and start from Step 1 (Spec)
+[X] Exit — pause workflow; fix .workflow-state.md manually
+```
+
+On [R]: set `stepsCompleted` to `[]`, clear `tasksCompleted` (set to `[]`), reset `fixAttempts` to `0`, `previousIssueCount` to `0`, and `fixLoopActive` to `false` in `{stateFile}`. Then read fully and follow: `./step-01-spec.md`.
+
+On [X]: STOP.
+
+**If validation passes**, continue to section 3.
+
+### 3. Handle workflow completion
 
 If `stepsCompleted` contains `'step-05-review'`:
 
@@ -46,7 +75,7 @@ On [B]: ask "Which step? [1] Spec [2] Design [3] Tasks [4] Implement [5] Review"
 
 On [X]: STOP.
 
-### 3. Determine next step
+### 4. Determine next step
 
 1. Get the last element from `stepsCompleted` (e.g. `'step-02-design'`).
 2. Load that step file from `.framework/steps/` and read its frontmatter.
@@ -62,20 +91,20 @@ On [X]: STOP.
 | `step-03-tasks` | `step-03-tasks.md` | `step-04-implement.md` |
 | `step-04-implement` | `step-04-implement.md` | `step-05-review.md` |
 
-### 4. Check for partial implementation progress
+### 5. Check for partial implementation progress
 
 If the next step is `step-04-implement.md` (i.e. last completed is `step-03-tasks`) AND `tasksCompleted` is non-empty:
 
 - This means the user exited mid-implementation. Some tasks are already done.
 - Read {tasksFile} to get the total task count.
-- Include task progress in the status display (section 5).
+- Include task progress in the status display (section 6).
 
 If `stepsCompleted` contains `step-03-tasks` but NOT `step-04-implement`, and `tasksCompleted` is non-empty:
 
 - Same situation: user was in step-04, completed some tasks, then exited before finishing all of them.
 - Step-04 was never fully completed, so it's the next step.
 
-### 5. Present status and menu
+### 6. Present status and menu
 
 Display:
 
@@ -99,10 +128,10 @@ Completed: {list of tasksCompleted, e.g. T1, T2, T3}
 [X] Exit
 ```
 
-### 6. Menu handling
+### 7. Menu handling
 
 - **IF [C] Continue:**
-  - Read fully and follow the `nextStepFile` determined in section 3.
+  - Read fully and follow the `nextStepFile` determined in section 4.
   - Do NOT append anything to `stepsCompleted` here — the next step will do that when the user completes it.
 
 - **IF [B] Back to step N:**
@@ -128,6 +157,8 @@ Completed: {list of tasksCompleted, e.g. T1, T2, T3}
 ## SUCCESS CRITERIA
 
 - State correctly read and analyzed.
+- `stepsCompleted` validated as a contiguous prefix of the canonical step order before any routing.
+- Corrupted state detected and reported with clear error message and recovery options.
 - Next step correctly determined from last completed step's frontmatter.
 - Partial implementation progress displayed when applicable.
 - User clearly informed of progress.
@@ -137,6 +168,7 @@ Completed: {list of tasksCompleted, e.g. T1, T2, T3}
 ## FAILURE CONDITIONS
 
 - Modifying content from completed steps.
+- Accepting a corrupted `stepsCompleted` (gaps, out-of-order, or unknown entries) without error.
 - Loading wrong next step.
 - Not trimming state when going back.
 - Not clearing `tasksCompleted` when going back to Tasks or earlier.
