@@ -81,6 +81,8 @@ New tasks added by this CR start as `[ ]`.
 
 **Forward cascade rule**: Invalidation propagates FORWARD (producer → consumer), never backward. If T2 is INVALIDATED and T4 consumes T2's output, T4 is also INVALIDATED — even if T4's own definition didn't change. But if T4 is INVALIDATED, T2 (which T4 consumes) is NOT automatically invalidated. Walk the full chain: if T4 is invalidated and T6 consumes T4, T6 is also invalidated.
 
+**Circular dependency guard**: If a circular dependency is detected during chain walking, INVALIDATE all tasks in the cycle and flag: "Circular dependency detected between [task IDs] — fix in TASKS.md before proceeding."
+
 Record the per-task classification for use in Step 4 and post-approval state updates.
 
 ### Downstream Impact
@@ -176,6 +178,7 @@ On approval, execute these steps in order:
 - [ ] Update TASKS.md with approved changes (if affected — add/modify/remove tasks)
 - [ ] Sync TASKS.md checkboxes with task classification (if `tasksCompleted` was non-empty):
   - UNAFFECTED completed tasks → keep `[x]`
+  - UNAFFECTED `[~]` tasks → keep `[~]`
   - INVALIDATED tasks → reset to `[ ]` (even if previously `[x]` or `[~]`)
   - REMOVED tasks → already deleted from TASKS.md above
   - New tasks from CR → `[ ]`
