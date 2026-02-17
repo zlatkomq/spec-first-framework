@@ -65,6 +65,16 @@
 | Tasks | Added / Modified / Removed / None | [details] |
 | Testing | Changed / None | [details] |
 
+#### Per-Task Impact (if implementation is in progress)
+
+<!-- Include only if tasksCompleted is non-empty in workflow state -->
+
+| Task | Status Before CR | Classification | Reason |
+|------|-----------------|----------------|--------|
+| T1: [description] | Completed / Not started | UNAFFECTED / INVALIDATED / REMOVED | [reason] |
+
+**Summary**: {N} of {M} completed tasks remain valid. {K} will be reset.
+
 ### Downstream Impact
 
 - Completed implementation affected: [Yes (describe) / No]

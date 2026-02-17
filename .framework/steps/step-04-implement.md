@@ -42,6 +42,11 @@ Implement tasks from TASKS.md one at a time. After each task, present a menu so 
 - Read {designFile} (for architecture and component details).
 - Read {constitutionRef} (for coding standards).
 - Read `{stateFile}` frontmatter. Extract `tasksCompleted` (array of completed task IDs, e.g. `['T1', 'T2']`).
+- **Reconcile state with TASKS.md checkboxes**: If `tasksCompleted` and {tasksFile} checkboxes disagree, `tasksCompleted` in {stateFile} is authoritative. Update {tasksFile} checkboxes to match:
+  - Task ID in `tasksCompleted` but checkbox is `[ ]` or `[~]` → set to `[x]`
+  - Task ID NOT in `tasksCompleted` but checkbox is `[x]` → set to `[ ]`
+  - `[~]` tasks NOT in `tasksCompleted` → leave as `[~]` (intentionally excluded per IMPLEMENTED-UNVERIFIED rule)
+  - If corrections were made, display: "Reconciled TASKS.md checkboxes with workflow state ({N} corrections)."
 
 ### 2. Check for review findings (re-entry from step-05)
 

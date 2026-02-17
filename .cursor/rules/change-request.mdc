@@ -64,6 +64,25 @@ Systematically analyze impact against all existing artifacts:
 - Should completed tasks be revisited?
 - Does the task order change?
 
+#### Per-Task Impact Classification (if `tasksCompleted` is non-empty)
+
+When completed tasks exist, classify EVERY existing task into exactly one category:
+
+- **INVALIDATED** — if ANY of the following apply:
+  1. Its description changed in the updated TASKS.md
+  2. Any of its `Consumes` interfaces changed signature in the updated artifacts
+  3. Any of its `Produces` interfaces changed signature in the updated artifacts
+  4. A task whose `Produces` it `Consumes` is itself INVALIDATED (**forward cascade** — see below)
+  5. The DESIGN.md section it references (`(DESIGN: ...)` annotation) was modified by this CR
+- **UNAFFECTED** — NONE of the above apply and its content is identical pre- and post-CR
+- **REMOVED** — no longer exists in the updated TASKS.md
+
+New tasks added by this CR start as `[ ]`.
+
+**Forward cascade rule**: Invalidation propagates FORWARD (producer → consumer), never backward. If T2 is INVALIDATED and T4 consumes T2's output, T4 is also INVALIDATED — even if T4's own definition didn't change. But if T4 is INVALIDATED, T2 (which T4 consumes) is NOT automatically invalidated. Walk the full chain: if T4 is invalidated and T6 consumes T4, T6 is also invalidated.
+
+Record the per-task classification for use in Step 4 and post-approval state updates.
+
 ### Downstream Impact
 - Does this affect any bugs already filed against this spec?
 - Does this invalidate any completed implementation work?
@@ -115,6 +134,22 @@ NEW:
 Rationale: [why this change is needed]
 ```
 
+### Task Impact Summary (if `tasksCompleted` is non-empty)
+
+Using the per-task classification from Step 2, include a Task Impact Summary so the user can see the effect on implementation progress before approving:
+
+```
+Task Impact:
+- T1 (Create user model): UNAFFECTED — no interface changes
+- T2 (Auth endpoint): INVALIDATED — Produces signature changed per CR
+- T3 (Registration endpoint): INVALIDATED — cascade: consumes T2
+- T5 (Validation layer): NEW — added by this CR
+
+Summary: 1 of 3 completed tasks remain valid. 2 completed tasks will be reset.
+```
+
+If `tasksCompleted` is empty, omit this section.
+
 ### Scope Classification
 
 Classify the change:
@@ -139,13 +174,23 @@ On approval, execute these steps in order:
 - [ ] Update SPEC.md with approved changes (acceptance criteria, scope, etc.)
 - [ ] Update DESIGN.md with approved changes (if affected)
 - [ ] Update TASKS.md with approved changes (if affected — add/modify/remove tasks)
+- [ ] Sync TASKS.md checkboxes with task classification (if `tasksCompleted` was non-empty):
+  - UNAFFECTED completed tasks → keep `[x]`
+  - INVALIDATED tasks → reset to `[ ]` (even if previously `[x]` or `[~]`)
+  - REMOVED tasks → already deleted from TASKS.md above
+  - New tasks from CR → `[ ]`
 - [ ] Update workflow state (if active): If `{spec_folder}/.workflow-state.md` exists and `stepsCompleted` is non-empty:
   1. Determine the **latest** artifact modified by this CR in step order: SPEC.md → `step-01-spec`, DESIGN.md → `step-02-design`, TASKS.md → `step-03-tasks`.
   2. If `stepsCompleted` already extends beyond that step, trim it to keep only entries up to and including that step's entry. Examples:
      - CR modified SPEC.md only → set `stepsCompleted` to `['step-01-spec']`
      - CR modified SPEC.md + DESIGN.md → set `stepsCompleted` to `['step-01-spec', 'step-02-design']`
      - CR modified TASKS.md (with or without earlier artifacts) → set `stepsCompleted` to `['step-01-spec', 'step-02-design', 'step-03-tasks']`
-  3. Clear `tasksCompleted` (set to `[]`).
+  3. Selectively update `tasksCompleted` using the per-task classification from Step 2:
+     - Start with the current `tasksCompleted` array.
+     - REMOVE task IDs classified as INVALIDATED or REMOVED.
+     - KEEP task IDs classified as UNAFFECTED.
+     - Result: `tasksCompleted` contains only UNAFFECTED IDs that were previously completed.
+     - Example: `tasksCompleted` was `['T1', 'T2', 'T3']`, T2 and T3 INVALIDATED → set to `['T1']`.
   4. Reset `fixAttempts` to `0`, `previousIssueCount` to `0`, `fixLoopActive` to `false`.
   5. Display: "Workflow state updated: progress trimmed to {last kept step}. Steps after {last kept step} will be re-run. Run `/flow {specId}` to resume."
   6. If `stepsCompleted` was NOT trimmed (already at or before the trim point), display: "Workflow state: no adjustment needed."
