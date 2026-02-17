@@ -55,7 +55,7 @@
 
 ## Issues Found
 
-[If none: "No issues found."]
+<!-- IF no issues found: "No issues found." -->
 
 ### Issue 1: [Title]
 - **Severity:** Critical / Major / Minor

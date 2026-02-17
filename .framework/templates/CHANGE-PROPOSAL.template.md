@@ -24,7 +24,7 @@
 | Matches existing AC violation | Yes (Bug) / No (CR) |
 | Classification confirmed | Yes |
 
-[If classification mismatch was flagged, document the resolution here.]
+<!-- IF classification mismatch was flagged: document the resolution here. -->
 
 ---
 

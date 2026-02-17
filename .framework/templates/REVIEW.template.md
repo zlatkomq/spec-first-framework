@@ -28,9 +28,9 @@
 | path/to/file | Yes | Yes | `import x; class Foo...` |
 | path/to/file | Yes | No | NOT REVIEWABLE — [reason] |
 
-[If all files accessible: "All expected files verified accessible."]
-[If gaps <= 30%: "WARNING: [N] files not reviewed. Findings for those files are incomplete."]
-[If gaps > 30%: "BLOCKED — more than 30% of files not reviewable. Recommend splitting spec or reviewing in sections."]
+<!-- IF all files accessible: "All expected files verified accessible." -->
+<!-- IF gaps <= 30%: "WARNING: {N} files not reviewed. Findings for those files are incomplete." -->
+<!-- IF gaps > 30%: "BLOCKED — more than 30% of files not reviewable. Recommend splitting spec or reviewing in sections." -->
 
 ---
 
@@ -54,7 +54,7 @@
 | path/to/file.py | Modified | Not changed | ❌ CRITICAL |
 | path/to/unexpected.py | Not listed | Modified | ⚠️ MEDIUM |
 
-[If git not available: "Git verification not available — manual file inspection only."]
+<!-- IF git not available: "Git verification not available — manual file inspection only." -->
 
 ### Dead Code & Placeholder Scan
 
@@ -68,7 +68,7 @@
 | Unused imports | [count] | [file, ...] |
 | Stub/not-implemented markers | [count] | [file:function, ...] |
 
-[If all clean: "No placeholder or dead code patterns found."]
+<!-- IF all clean: "No placeholder or dead code patterns found." -->
 
 ### Test Execution Results
 
@@ -81,9 +81,9 @@
 | Skipped | [count] |
 | Coverage | [percent] (threshold: [percent] per CONSTITUTION.md) |
 
-[If tests not executed: "Test execution not performed — manual verification required. Reviewer should run tests before approving."]
+<!-- IF tests not executed: "Test execution not performed — manual verification required. Reviewer should run tests before approving." -->
 
-[If failures: list each failed test with file path and brief reason]
+<!-- IF failures: list each failed test with file path and brief reason -->
 
 ---
 
@@ -100,7 +100,7 @@
 
 [List any acceptance criteria that pass in code but have no dedicated test. Each is a MAJOR finding.]
 
-[If all criteria have tests: "All acceptance criteria have corresponding tests."]
+<!-- IF all criteria have tests: "All acceptance criteria have corresponding tests." -->
 
 ### Task Completion
 
@@ -206,7 +206,7 @@ Minimum 3 issues expected. If fewer, see Issue Count Justification below.
 
 [Required only if fewer than 3 issues found. One sentence explaining what was re-examined and why this code genuinely has fewer issues.]
 
-[If more than 10 issues found: "BLOCKED — More than 10 issues found. The implementation needs fundamental rework, not incremental fixes. Recommend going back to TASKS.md (step 3)."]
+<!-- IF more than 10 issues found: "BLOCKED — More than 10 issues found. The implementation needs fundamental rework, not incremental fixes. Recommend going back to TASKS.md (step 3)." -->
 
 ---
 
