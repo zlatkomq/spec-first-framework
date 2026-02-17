@@ -26,6 +26,8 @@ Read `{stateFile}` frontmatter. Extract:
 - `tasksCompleted` — array of completed task IDs (e.g. `['T1', 'T2']`).
 - `specId`, `specSlug`, `specFolder`.
 
+Reset fix-loop counters: set `fixAttempts` to `0`, `previousIssueCount` to `0`, and `fixLoopActive` to `false` in `{stateFile}`. Resuming via `/flow` always starts a fresh review cycle — the `[F]` auto-fix loop is a within-session operation that does not survive across sessions.
+
 ### 2. Validate stepsCompleted
 
 The canonical step order is:
