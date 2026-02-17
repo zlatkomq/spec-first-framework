@@ -77,7 +77,7 @@ REVIEW: APPROVED
 [X] Exit
 ```
 
-**IF verdict is CHANGES REQUESTED (3-10 issues):**
+**IF verdict is CHANGES REQUESTED:**
 
 Read `fixAttempts` and `previousIssueCount` from `{stateFile}`.
 
@@ -136,7 +136,7 @@ Findings:
 [X] Exit — pause workflow; resume later with /flow
 ```
 
-**IF verdict is BLOCKED (>10 issues or missing work):**
+**IF verdict is BLOCKED:**
 
 ```
 REVIEW: BLOCKED — {reason}
@@ -180,8 +180,8 @@ REVIEW: BLOCKED — {reason}
   7. Set `fixLoopActive` to `true` in `{stateFile}`. Re-run the FULL review from scratch (go back to section 2 of this step). A fresh review — not a partial re-check.
 - **IF [A] Create action items:**
   1. Reset `fixAttempts` to `0`, `previousIssueCount` to `0`, and `fixLoopActive` to `false` in `{stateFile}`.
-  2. For each Critical and Major issue, inject a task into the Tasks section of {tasksFile}:
-     `- [ ] [AI-Review][{Severity}] {Description} [{file:function}]`
+  2. For each Critical and Major issue, inject a task into the Tasks section of {tasksFile}. Assign T-numbers continuing from the last existing task (e.g., if T7 is the last task, AI-Review tasks become T8, T9, etc.):
+     `- [ ] T{N}: [AI-Review][{Severity}] {Description} [{file:function}]`
   3. Add an "Action Items Created" section to REVIEW.md listing the injected tasks.
   4. Trim `stepsCompleted` in `{stateFile}` to keep entries up to `'step-03-tasks'`.
   5. Do NOT clear `tasksCompleted` — keep task progress.

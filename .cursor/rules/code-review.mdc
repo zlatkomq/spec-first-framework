@@ -252,11 +252,33 @@ Cross-reference the Dev Agent Record File List (from TASKS.md) with git diff (if
 
 This catches cases where the AI agent claimed to change files it didn't, or changed files it didn't document.
 
-### POST-PHASE: Issue Count Policy
+### POST-PHASE: Verdict Determination
 
-After completing all three phases, count total issues found. Apply this policy:
+After completing all phases, determine the verdict using severity as the primary signal and count as secondary quality pressure.
 
-**Fewer than 3 issues:** You are likely NOT LOOKING HARD ENOUGH. Go back and re-examine:
+**Step 1: Check for hard blockers (verdict = BLOCKED regardless of count)**
+- More than 30% of files not reviewable (from Phase 0)
+- Tasks missing or incomplete (from Phase 2, Step 5)
+- Tests fail when executed (from Phase 1, Step 3)
+
+If any hard blocker applies, verdict is **BLOCKED**. Still complete the full review document.
+
+**Step 2: Classify issues by severity**
+
+Count Critical, Major, and Minor issues from all phases.
+
+**Step 3: Apply severity-based verdict**
+
+| Condition | Verdict |
+|-----------|---------|
+| No Critical or Major issues, and total issues <= 10 | **APPROVED** |
+| No Critical or Major issues, but total issues > 10 (all Minor) | **CHANGES REQUESTED** — volume of minor issues suggests systemic style/quality gaps worth addressing |
+| Any Critical or Major issues, and (critical_count >= 3 OR total issues > 10) | **BLOCKED** — systemic problems; recommend going back to TASKS.md (step 3) rather than patching |
+| Any Critical or Major issues (but below escalation thresholds) | **CHANGES REQUESTED** |
+
+**Step 4: Issue count quality pressure (applied after verdict)**
+
+If fewer than 3 issues were found, you are likely NOT LOOKING HARD ENOUGH. Go back and re-examine:
 - Edge cases and null/empty input handling
 - Error messages — are they helpful or generic?
 - Test quality — do assertions test real behavior or just "no exception thrown"?
@@ -266,11 +288,7 @@ After completing all three phases, count total issues found. Apply this policy:
 - Architecture violations or unauthorized deviations
 - Documentation gaps
 
-If still fewer than 3 after re-examination, document in one sentence why this code genuinely has fewer than 3 issues (e.g., "Trivial single-function config change with comprehensive existing test coverage"). This is acceptable but must be justified.
-
-**3-10 issues:** Normal range. Verdict is CHANGES REQUESTED (if any Critical or Major) or APPROVED (if all Minor).
-
-**More than 10 issues:** The implementation needs fundamental rework, not incremental fixes. Verdict is **BLOCKED** with this recommendation: "More than 10 issues found. Consider re-implementing from TASKS.md (step 3) rather than patching individual issues. The volume of findings suggests systemic problems in the implementation approach."
+If still fewer than 3 after re-examination, document in one sentence why this code genuinely has fewer than 3 issues (e.g., "Trivial single-function config change with comprehensive existing test coverage"). This is acceptable but must be justified. **Do not override the severity-based verdict from Step 3** — if 2 Critical issues were found, the verdict is CHANGES REQUESTED regardless of total count.
 
 ---
 
@@ -287,15 +305,16 @@ One or more checks failed. List specific issues with:
 - Which task to revisit (T1, T2, etc.)
 
 ### BLOCKED
-Cannot complete full review, OR more than 10 issues found (fundamental rework needed). Reasons include:
-- More than 10 issues found (systemic implementation problems)
+Cannot complete full review, OR systemic severity issues found. Reasons include:
+- 3 or more Critical issues (systemic implementation problems)
+- More than 10 issues that include Critical or Major findings
 - Missing or incomplete tasks
 - Missing tests
 - Cannot trace acceptance criteria to code
-- Required files not accessible
+- Required files not accessible (>30% threshold)
 - Tests fail when executed
 
-Note: Always produce a full review document even when BLOCKED. List what is missing and what was reviewable. If BLOCKED due to >10 issues, recommend going back to TASKS.md (step 3) rather than patching.
+Note: Always produce a full review document even when BLOCKED. List what is missing and what was reviewable. If BLOCKED due to systemic issues, recommend going back to TASKS.md (step 3) rather than patching.
 
 ## Output Format
 
