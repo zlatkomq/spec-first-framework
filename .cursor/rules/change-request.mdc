@@ -139,6 +139,16 @@ On approval, execute these steps in order:
 - [ ] Update SPEC.md with approved changes (acceptance criteria, scope, etc.)
 - [ ] Update DESIGN.md with approved changes (if affected)
 - [ ] Update TASKS.md with approved changes (if affected — add/modify/remove tasks)
+- [ ] Update workflow state (if active): If `{spec_folder}/.workflow-state.md` exists and `stepsCompleted` is non-empty:
+  1. Determine the **latest** artifact modified by this CR in step order: SPEC.md → `step-01-spec`, DESIGN.md → `step-02-design`, TASKS.md → `step-03-tasks`.
+  2. If `stepsCompleted` already extends beyond that step, trim it to keep only entries up to and including that step's entry. Examples:
+     - CR modified SPEC.md only → set `stepsCompleted` to `['step-01-spec']`
+     - CR modified SPEC.md + DESIGN.md → set `stepsCompleted` to `['step-01-spec', 'step-02-design']`
+     - CR modified TASKS.md (with or without earlier artifacts) → set `stepsCompleted` to `['step-01-spec', 'step-02-design', 'step-03-tasks']`
+  3. Clear `tasksCompleted` (set to `[]`).
+  4. Reset `fixAttempts` to `0`, `previousIssueCount` to `0`, `fixLoopActive` to `false`.
+  5. Display: "Workflow state updated: progress trimmed to {last kept step}. Steps after {last kept step} will be re-run. Run `/flow {specId}` to resume."
+  6. If `stepsCompleted` was NOT trimmed (already at or before the trim point), display: "Workflow state: no adjustment needed."
 - [ ] Update original SPEC.md: Add entry to Amendment History table:
       `| CR-XXX | [today's date] | [one-line description of change] | [approver name] |`
 - [ ] Regenerate SPEC-CURRENT.md: compile frozen SPEC.md + all FIXED bugs (from Bug History) + all IMPLEMENTED CRs (from Amendment History) into `specs/XXX/SPEC-CURRENT.md`
@@ -158,3 +168,4 @@ Use today's date in YYYY-MM-DD format for the filename.
 - Do NOT change acceptance criteria without documenting the rationale
 - Do NOT skip the Amendment History update — this is the audit trail
 - Do NOT skip SPEC-CURRENT.md regeneration — this keeps the developer convenience view current
+- Do NOT skip the workflow state update — stale workflow progress causes silent inconsistencies
