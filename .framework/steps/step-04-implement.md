@@ -91,13 +91,15 @@ If ALL tasks are already complete, skip directly to section 5 (completion menu).
    - Next incomplete regular task for [N]
    - User-specified task for [T]/[R]
 2. Announce: "Implementing T{n}: {description}"
-3. Apply {ruleRef} for this task; implement the code AND tests; provide the implementation summary (as specified in {ruleRef}).
-4. Run per-task validation gates (as specified in {ruleRef}): tests exist, tests pass, implementation matches spec, ACs satisfied, no regressions.
-5. If validation gates pass:
+3. Set `currentTask` to `'T{n}'` in `{stateFile}`.
+4. Apply {ruleRef} for this task; implement the code AND tests; provide the implementation summary (as specified in {ruleRef}).
+5. Run per-task validation gates (as specified in {ruleRef}): tests exist, tests pass, implementation matches spec, ACs satisfied, no regressions.
+6. If validation gates pass:
    - Mark the task done: update `tasksCompleted` in `{stateFile}`, update checkbox in {tasksFile}.
    - Update Dev Agent Record in {tasksFile}: add Implementation Log entry, update File List.
    - If task is marked `[~]` IMPLEMENTED-UNVERIFIED (per {ruleRef}): do NOT add to `tasksCompleted`. The task remains incomplete for workflow purposes.
-6. If validation gates fail:
+   - Clear `currentTask` (set to `''`) in `{stateFile}`.
+7. If validation gates fail:
    - Do NOT mark the task complete. Fix the issue and re-validate.
    - If 3 validation failures on the same task: HALT per {ruleRef}.
 

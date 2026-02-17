@@ -24,9 +24,14 @@ Resume the feature workflow from where it was left off. Determine the next step 
 Read `{stateFile}` frontmatter. Extract:
 - `stepsCompleted` — array of completed step names.
 - `tasksCompleted` — array of completed task IDs (e.g. `['T1', 'T2']`).
+- `currentTask` — task ID in progress when session ended (empty if none).
 - `specId`, `specSlug`, `specFolder`.
 
 Reset fix-loop counters: set `fixAttempts` to `0`, `previousIssueCount` to `0`, and `fixLoopActive` to `false` in `{stateFile}`. Resuming via `/flow` always starts a fresh review cycle — the `[F]` auto-fix loop is a within-session operation that does not survive across sessions.
+
+If `currentTask` is non-empty, the previous session was interrupted mid-task:
+- Display: "⚠ {currentTask} was in progress when the previous session ended. Check `git diff` for partial changes before continuing. You may need to revert incomplete work on {currentTask}."
+- Clear `currentTask` (set to `''`) in `{stateFile}`.
 
 ### 2. Validate stepsCompleted
 

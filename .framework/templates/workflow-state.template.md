@@ -1,6 +1,7 @@
 ---
 stepsCompleted: []
 tasksCompleted: []
+currentTask: ''
 specId: ''
 specSlug: ''
 specFolder: ''
@@ -15,6 +16,7 @@ Workflow state for this spec. Managed by `/flow` — do not edit manually.
 
 - **stepsCompleted**: Which workflow steps are done (e.g. `['step-01-spec', 'step-02-design']`).
 - **tasksCompleted**: Which implementation tasks are done (e.g. `['T1', 'T2']`). Tracked per-task during step 4. Reset if tasks are re-created (going back to step 3).
+- **currentTask**: The task ID currently being implemented (e.g. `'T3'`). Set when a task starts, cleared when it completes or is marked `[~]`. If set on resume, indicates the previous session was interrupted mid-task.
 - **jiraTicket**: Jira ticket ID linked to this spec (e.g. `PROJ-123`). Set when starting `/flow` or manually.
 - **sowRef**: Statement of Work deliverable reference (optional). Links this spec to a contractual deliverable.
 - **fixAttempts**: Number of times [F] Fix automatically has been used in the current step 5 session. Resets to 0 on fresh entry or any [B] exit. Capped at 3.
