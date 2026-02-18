@@ -1,5 +1,7 @@
 # Definition of Done Checklist
 
+> This document defines what "done" means conceptually. The operational verification gate is [verification-checklist.md](verification-checklist.md) — that checklist is what step-04-implement.md actually runs.
+
 Referenced by the verification gate in step-04-implement.md before allowing [C] Continue to code review.
 All items must pass before implementation is considered complete.
 
@@ -15,8 +17,8 @@ All items must pass before implementation is considered complete.
 ## Testing
 
 - [ ] **Tests exist:** Every implementation task has corresponding test coverage
-- [ ] **Tests pass:** All new tests pass (or "not executed — manual run required" if no terminal access)
-- [ ] **No regressions:** Full test suite passes — no existing tests broken
+- [ ] **Tests pass:** All new tests pass. Terminal access is required to verify this.
+- [ ] **No regressions:** Full test suite passes — no existing tests broken. Terminal access required.
 - [ ] **Test quality:** Tests assert real behavior, not trivial truths (no `expect(result).toBeDefined()` without meaningful checks)
 ## Documentation
 

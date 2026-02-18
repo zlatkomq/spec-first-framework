@@ -8,6 +8,10 @@ alwaysApply: false
 
 You are implementing a bugfix based on an approved BUG.md. Follow these rules strictly.
 
+## Terminal Access Prerequisite
+
+Terminal access is required for verified bugfix implementation. You must be able to run tests to confirm the fix works and the regression test passes. If you cannot execute commands, HALT and inform the user that manual verification is needed.
+
 ## Required Inputs
 
 Before implementing, you must have:
@@ -79,8 +83,9 @@ def test_bug_001_safari_validation_fails():
    - Ensure the fix aligns with DESIGN.md architecture
 
 3. **Verify locally**
-   - Confirm reproduction steps no longer produce the bug
-   - Ensure existing tests still pass
+   - Run reproduction steps and confirm they no longer produce the bug
+   - Run the full test suite — existing tests must still pass
+   - Paste raw terminal output as evidence
 
 ### For Regression Test Tasks (T2)
 
@@ -154,7 +159,7 @@ After implementing each task, provide:
 - [ ] Only the specified task is implemented
 - [ ] Fix is minimal and focused
 - [ ] Root cause is documented in BUG.md
-- [ ] Regression test is added and named appropriately
-- [ ] Existing tests still pass
+- [ ] Regression test passes (terminal output recorded)
+- [ ] Existing tests still pass (terminal output recorded)
 - [ ] Code follows CONSTITUTION.md standards
 - [ ] Implementation summary is provided

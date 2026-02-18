@@ -1,5 +1,7 @@
 # BMAD Fusion — Change Request Summary
 
+> **Note:** This document describes the v0.7.x architecture. Several features listed here (Dev Agent Record, per-task step-level validation, [A] Create action items, AI-Review task injection, File Inventory Phase 0, evidence-based CONSTITUTION split) were simplified or removed in v0.8.0. See [README.md](../README.md) and [CHANGELOG.md](../CHANGELOG.md) for the current model.
+
 This document summarizes all changes introduced in the **BMAD fusion** release (v0.7.0). Use it to understand what was added or changed and where to find the relevant files.
 
 ---
