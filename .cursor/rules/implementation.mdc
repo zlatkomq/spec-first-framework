@@ -208,12 +208,35 @@ If you find yourself wanting to write a TODO or placeholder, that means the task
 - [ ] Files saved in correct location and actually exist
 - [ ] All claims in summary are truthful and verifiable
 
-## Required Summary
+## Per-Task Anchor Entry
 
-At the end of implementation (after all tasks are complete), provide:
+After completing each task (checkbox updated to `[x]` and per-task validation gates passed), append a compact anchor entry to IMPLEMENTATION-SUMMARY.md. This creates a living context document that the AI re-reads before starting each subsequent task, counteracting context window degradation on large specs.
+
+### Format
 
 ```
-## Implementation Summary
+### T{N}: {task title}
+**Files:** {created: [list] | modified: [list]}
+**Patterns:** {pattern established or followed | "None"}
+**Decisions:** {decisions affecting future tasks | "None"}
+**Deviations:** {deviations from DESIGN.md with reason | "None"}
+```
+
+### Rules
+- **Token budget:** Each entry MUST be 100-200 tokens. List paths only, no file contents or test details.
+- **Patterns field:** Only note patterns a future task would need to follow or build on.
+- **Decisions field:** Only note decisions that constrain or inform future tasks. Do not repeat what DESIGN.md already says.
+- **Deviations field:** Only note deviations FROM DESIGN.md with reason. "None" is the expected value for most tasks.
+- **First task:** Creates the file with `## Implementation Summary` header followed by the first anchor entry.
+- **Subsequent tasks:** Append below the previous entry.
+- **Re-read before each task:** Before starting each task, read the entire IMPLEMENTATION-SUMMARY.md if it exists to reload context. Treat it as authoritative — not conversation history.
+
+## Required Summary (Finalization)
+
+At the end of implementation (after all tasks are complete and verification passes), finalize IMPLEMENTATION-SUMMARY.md by appending aggregate sections below the per-task anchor entries. Separate with a `---` horizontal rule and `## Aggregate` heading:
+
+```
+## Aggregate
 
 **Tasks implemented:** [list task IDs and descriptions]
 
@@ -243,7 +266,7 @@ At the end of implementation (after all tasks are complete), provide:
 - [Observations about DESIGN.md — or "None"]
 ```
 
-This summary is required for code review. Every claim must be verifiable against the actual files. The step file will persist this summary to IMPLEMENTATION-SUMMARY.md in the spec folder for cross-spec learning. On re-implementation (from review or retry), the file is overwritten with the current attempt's summary.
+This summary is required for code review. Every claim must be verifiable against the actual files. On fresh entry or retry, the entire file is rebuilt from scratch (per-task entries during implementation, aggregate sections at finalization). On re-entry from review, fix task entries are appended and the aggregate section is replaced with current-state data.
 
 ## Implementation Feedback
 

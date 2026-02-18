@@ -102,13 +102,19 @@ Implementation has failed verification 3 times.
 
 Apply {ruleRef} with full context ({tasksFile}, {constitutionRef}, {designFile}, {specFile} for AC reference).
 
+**Summary file lifecycle:**
+- **Fresh entry or retry:** Delete any existing `{summaryFile}` — per-task entries are rebuilt from scratch as tasks complete.
+- **Re-entry from review:** Keep the existing `{summaryFile}`. It accurately reflects the implementation that passed verification. The AI reads it for full context, then appends entries only for fix tasks.
+
 The AI:
 
 1. Reads {tasksFile} to identify all incomplete tasks (`[ ]` checkboxes).
-2. Implements each task in dependency order (following the Produces/Consumes chain).
-3. Updates each task's checkbox to `[x]` in {tasksFile} as it completes.
-4. After completing a logical group of tasks, commits changes (encouraged per {ruleRef}, not mandatory).
-5. When all tasks are done, proceeds to section 4.
+2. **Before starting each task:** if `{summaryFile}` exists, re-read it as the authoritative record of patterns, decisions, and files from prior tasks. Do not rely on conversation history for cross-task context.
+3. Implements each task in dependency order (following the Produces/Consumes chain).
+4. Updates each task's checkbox to `[x]` in {tasksFile} as it completes.
+5. **After completing each task:** appends a per-task anchor entry to `{summaryFile}` (format defined in {ruleRef}). Creates the file if it doesn't exist yet.
+6. After completing a logical group of tasks, commits changes (encouraged per {ruleRef}, not mandatory).
+7. When all tasks are done, proceeds to section 4.
 
 ### 4. Verification gate
 
@@ -117,9 +123,9 @@ Run the verification checklist from {verificationChecklist}.
 - **If PASS:** Proceed to section 5.
 - **If FAIL:** Increment `implementationAttempts` in `{stateFile}`. Display the specific failures. Return to section 2 (retry path).
 
-### 5. Write implementation summary
+### 5. Finalize implementation summary
 
-Write (or overwrite) `{summaryFile}` with the implementation summary (format defined in {ruleRef}). On re-implementation cycles, the previous summary is replaced — REVIEW.md and Auto-Fix Tracking provide the audit trail for prior attempts.
+Finalize `{summaryFile}`: the per-task anchor entries already exist from section 3. Append (or replace, on re-entry from review) the aggregate sections (format defined in {ruleRef}): consolidated file list, test totals with raw output, key decisions, patterns, and design feedback. REVIEW.md and Auto-Fix Tracking provide the audit trail for prior attempts.
 
 ### 6. All tasks complete — Present MENU
 
@@ -162,7 +168,7 @@ ONLY when [C] is selected and state is updated will you load and execute `{nextS
 - All domain and quality criteria per {ruleRef} are satisfied for each task.
 - All tasks from TASKS.md implemented with checkboxes updated to `[x]`.
 - Verification gate passed.
-- IMPLEMENTATION-SUMMARY.md written to spec folder.
+- IMPLEMENTATION-SUMMARY.md incrementally built during implementation and finalized after verification.
 - State updated before loading next step.
 
 ## FAILURE CONDITIONS
