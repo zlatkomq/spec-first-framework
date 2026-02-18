@@ -76,7 +76,7 @@ Always use the template structure from @.framework/templates/SPEC.template.md
 
 ## Constraints
 
-- Do not generate SPEC content without user-provided requirements or explicit confirmation. If updating an existing SPEC, require user confirmation before overwriting.
+- Do not generate SPEC content without user-provided requirements. If requirements are unclear or incomplete, ASK for clarification. Do not invent requirements.
 - Do NOT include technical implementation details
 - Do NOT reference specific code, APIs, or database schemas
 - Do NOT make assumptions about HOW to build - only WHAT to build

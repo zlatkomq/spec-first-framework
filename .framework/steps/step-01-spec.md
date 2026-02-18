@@ -38,20 +38,19 @@ Create (or update) SPEC.md for this feature by applying the spec-creation rules 
 
 - If the user has already provided a requirement description (from the `/flow` command message), use it as the starting input.
 - If not, ask: "What feature are you building? Describe the requirements."
-- Apply {ruleRef} using {templateRef}; build the SPEC.md and save to `{outputFile}` with Status: DRAFT.
+- Apply {ruleRef} using {templateRef}; build the SPEC.md and save to `{outputFile}` per {ruleRef}.
 
 ### 2. Write SPEC.md
 
-- Save to `{outputFile}`.
-- Status: DRAFT (always — user must approve).
+- Save to `{outputFile}` per {ruleRef}.
 - Present the completed SPEC.md to the user.
 - Ask: "Review the SPEC. When you're satisfied, **approve it** (say 'approve' or 'yes'). Or tell me what to change."
 
 ### 3. Approval gate
 
-- If user approves: update SPEC.md Status from DRAFT → APPROVED.
+- If user approves: update SPEC.md status per {ruleRef}.
 - If user requests changes: apply changes, re-save, re-present, loop back to approval gate.
-- Once APPROVED, proceed to menu.
+- Once approved per {ruleRef}, proceed to menu.
 
 ### 4. Present MENU
 
@@ -74,7 +73,7 @@ SPEC.md is APPROVED.
   - Return to section 1 (gather/edit requirements). Loop until user is satisfied and approves.
   - Redisplay this menu after approval.
 - **IF [X] Exit:**
-  - Update `{stateFile}` frontmatter: append `'step-01-spec'` to `stepsCompleted` (if SPEC is APPROVED).
+  - Update `{stateFile}` frontmatter: append `'step-01-spec'` to `stepsCompleted` (if SPEC is approved per {ruleRef}).
   - Display: "Workflow paused. Run `/flow {spec_id}` to resume."
   - STOP.
 - **IF anything else:** Answer user's question, then redisplay menu.
@@ -88,11 +87,11 @@ ONLY when [C] is selected and `stepsCompleted` is updated will you load and exec
 ## SUCCESS CRITERIA
 
 - All domain and quality criteria per {ruleRef} are satisfied.
-- Status set to APPROVED before continuing.
+- Status approved per {ruleRef} before continuing.
 - State file updated with this step before loading next.
 
 ## FAILURE CONDITIONS
 
-- Proceeding to design before SPEC is APPROVED.
+- Proceeding to design before SPEC is approved per {ruleRef}.
 - Not updating state file before loading next step.
 - Loading next step before user selects [C].
