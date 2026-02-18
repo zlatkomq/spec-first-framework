@@ -1,6 +1,6 @@
 # Definition of Done Checklist
 
-> This document defines what "done" means conceptually. The operational verification gate is [verification-checklist.md](verification-checklist.md) — that checklist is what step-04-implement.md actually runs.
+> Reference document only — not executed as a gate. The operational verification gate is [verification-checklist.md](verification-checklist.md). This document defines the conceptual standard that the verification checklist operationalizes. If adding project-specific "done" criteria, add them to verification-checklist.md instead.
 
 Referenced by the verification gate in step-04-implement.md before allowing [C] Continue to code review.
 All items must pass before implementation is considered complete.
