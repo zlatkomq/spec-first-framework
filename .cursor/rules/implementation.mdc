@@ -88,12 +88,10 @@ Testing tasks produce tests only. If a test reveals a bug, document it; do not s
 
 Before marking ANY task complete (updating the checkbox to [x]), ALL of these gates must pass:
 
-1. **Tests exist**: Tests for this task's functionality ACTUALLY EXIST as files on disk
-2. **Tests pass**: Run the tests and paste the raw terminal output (stdout/stderr) in the implementation summary under "Test output (raw)." If tests fail, fix the code and re-run until they pass.
-3. **Implementation matches spec**: The implementation does EXACTLY what the task description specifies — no more, no less
-4. **Produces match**: If this task declares a Produces signature in TASKS.md, verify your implementation matches that signature exactly (method name, parameter types, return type).
-5. **Acceptance criteria satisfied**: All acceptance criteria from SPEC.md that relate to this task are addressed
-6. **No regressions**: If terminal access is available, run the full test suite. No existing tests should fail.
+1. **Tests exist and pass**: Tests for this task's functionality ACTUALLY EXIST as files on disk. Run the tests and paste the raw terminal output (stdout/stderr) in the implementation summary under "Test output (raw)." If tests fail, fix the code and re-run until they pass.
+2. **Produces match**: If this task declares a Produces signature in TASKS.md, verify your implementation matches that signature exactly (method name, parameter types, return type).
+3. **AC traceability**: State which acceptance criterion/criteria from SPEC.md this task addresses and how (one line). This is a traceability annotation, not a self-assessment — the adversarial review will verify your claim.
+4. **No regressions**: Run the full test suite. No existing tests should fail.
 
 **If ANY gate fails: do NOT mark the task complete.** Fix the issue first. If you cannot fix it, HALT.
 
@@ -195,19 +193,6 @@ If you find yourself wanting to write a TODO or placeholder, that means the task
 - Save files in locations specified by CONSTITUTION.md folder structure
 - Follow file naming conventions from CONSTITUTION.md
 - One component/class per file unless CONSTITUTION.md says otherwise
-
-## Checklist Before Done
-
-- [ ] Only task-specified changes are implemented
-- [ ] Code follows CONSTITUTION.md standards
-- [ ] Architecture matches DESIGN.md
-- [ ] Errors are handled appropriately
-- [ ] Inputs are validated
-- [ ] Code is testable
-- [ ] No hardcoded configuration values
-- [ ] No prohibited patterns (TODOs, placeholders, debug prints, empty blocks)
-- [ ] Files saved in correct location and actually exist
-- [ ] All claims in summary are truthful and verifiable
 
 ## Per-Task Anchor Entry
 

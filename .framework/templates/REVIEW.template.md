@@ -23,10 +23,10 @@
 | Files verified accessible | [count] |
 | Files not reviewable | [count] |
 
-| File | Expected | Accessible | First 3 Lines (verification) |
-|------|----------|------------|-------------------------------|
-| path/to/file | Yes | Yes | `import x; class Foo...` |
-| path/to/file | Yes | No | NOT REVIEWABLE — [reason] |
+| File | Expected | Accessible |
+|------|----------|------------|
+| path/to/file | Yes | Yes |
+| path/to/file | Yes | No — [reason] |
 
 <!-- IF all files accessible: "All expected files verified accessible." -->
 <!-- IF gaps <= 30%: "WARNING: {N} files not reviewed. Findings for those files are incomplete." -->
@@ -160,14 +160,6 @@
 | Data models match design | ✅ / ❌ | [explanation] |
 | APIs/interfaces match design | ✅ / ❌ | [explanation] |
 | No unauthorized deviations | ✅ / ❌ | [explanation] |
-
-### Code Quality
-
-| Check | Status | Notes |
-|-------|--------|-------|
-| No dead code or commented-out blocks | ✅ / ❌ | [explanation] |
-| No TODO/FIXME without linked issue | ✅ / ❌ | [explanation] |
-| No duplicate code that should be refactored | ✅ / ❌ | [explanation] |
 | Dependencies added are justified | ✅ / ❌ | [explanation] |
 
 ---

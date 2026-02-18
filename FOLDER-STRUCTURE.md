@@ -56,7 +56,6 @@ project/
 │   │   ├── CODEBASE-ANALYSIS.template.md   # Template for codebase analysis (legacy)
 │   │   └── LEGACY-ASSESSMENT.template.md   # Template for legacy assessment
 │   ├── checklists/
-│   │   ├── definition-of-done.md      # Step 4 DoD before [C] Continue to review
 │   │   └── verification-checklist.md  # Step 4 verification gate after implementation
 │   └── CONSTITUTION.md                 # Project-level standards (THE source of truth)
 │
@@ -113,7 +112,7 @@ project/
 | `.cursor/rules/` | AI behavior rules (.mdc files) | Project setup |
 | `.framework/steps/` | Step files for `/flow` (BMAD-style menus) | Project setup |
 | `.framework/templates/` | Document templates | Project setup |
-| `.framework/checklists/` | Checklists (definition-of-done, verification-checklist) | Project setup |
+| `.framework/checklists/` | Checklists (verification-checklist) | Project setup |
 | `.framework/CONSTITUTION.md` | Project standards | Step 0 (once) |
 | `docs/legacy-analysis/` | Legacy codebase analysis | Step 0 (brownfield only) |
 | `specs/XXX/` | Feature specifications | Per spec |
@@ -268,7 +267,7 @@ project/
 | Change AI behavior | `.cursor/rules/*.mdc` |
 | Change document structure | `.framework/templates/*.template.md` |
 | Change step flow (/flow) | `.framework/steps/*.md` |
-| Change DoD checklist | `.framework/checklists/definition-of-done.md` |
+| Change verification checklist | `.framework/checklists/verification-checklist.md` |
 | Check project standards | `.framework/CONSTITUTION.md` |
 | Understand legacy code | `docs/legacy-analysis/` |
 | Find requirements | `specs/XXX/SPEC.md` |

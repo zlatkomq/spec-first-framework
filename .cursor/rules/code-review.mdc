@@ -49,7 +49,7 @@ The review is organized into four phases (Phase 0 through Phase 3). Complete all
 Before starting the review:
 
 1. **Build expected file list:** From TASKS.md (task descriptions) and IMPLEMENTATION-SUMMARY.md (files changed list, if exists), list every file that should exist.
-2. **Verify existence and access:** For each file, read it and quote the first 3 lines (imports/header). If you can read the header, you have access. If you cannot, the file is flagged as NOT REVIEWABLE.
+2. **Verify existence and access:** For each file, confirm you can read it. If you cannot, flag it as NOT REVIEWABLE.
 3. **Track coverage:** Report: "Verified access to N/M files." List any files NOT reviewable with the reason (missing, unreadable, etc.).
 4. **30% threshold:** If more than 30% of expected files cannot be reviewed, verdict is BLOCKED — the spec is too large for reliable single-pass review, or files are missing. Recommend: split into smaller specs or review in sections.
 5. **No unreviewed claims:** Do NOT make claims about code in files you haven't read. If a file is not reviewable, any checks that depend on it are marked "NOT VERIFIED — file not reviewed."
@@ -70,13 +70,7 @@ Report in the review:
 
 #### Step 1: Git Reality Check
 
-Before reviewing code, verify what actually changed. If terminal/git access is available, run these commands. If not, manually compare TASKS.md expected files against files you can inspect, and note "Git verification not available — manual file inspection only" in the review.
-
-**With git access:**
-- Run `git diff --name-only` against the main/dev branch to see modified files
-- Run `git diff --stat` to see change sizes per file
-- Run `git status --porcelain` to find uncommitted or unstaged changes
-- Compare the actual file list against TASKS.md expected changes
+Before reviewing code, verify what actually changed. Compare actual changed files (via git diff against the base branch) with TASKS.md expected changes. Check for uncommitted or unstaged changes. If git is not available, note "Git verification not available — manual file inspection only" in the review.
 
 **Flag discrepancies as findings:**
 
@@ -90,33 +84,13 @@ Before reviewing code, verify what actually changed. If terminal/git access is a
 
 #### Step 2: Dead Code & Placeholder Scan
 
-Before reviewing logic, scan for mechanical garbage that AI agents routinely leave behind. Use patterns appropriate to the project's language (reference CONSTITUTION.md tech stack).
-
-**Scan for these patterns (adapt syntax to project language):**
-
-| Pattern | What It Indicates |
-|---------|-------------------|
-| `TODO`, `FIXME`, `HACK`, `XXX` in comments | Unfinished work |
-| Empty catch/except blocks | Silent failures |
-| Functions that return hardcoded values | Placeholder stubs |
-| `console.log`, `print()` debug statements in non-test code | Debug artifacts |
-| Commented-out code blocks (more than 2 lines) | Dead code / indecision |
-| `pass` in Python function bodies (non-abstract) | Empty implementations |
-| `throw new Error("Not implemented")` or equivalent | Stub code |
-| Import statements for modules not used in the file | Unused imports |
-
-If terminal access is available, use grep/ripgrep to scan. If not, check manually during code inspection.
+Scan for all prohibited patterns defined in the Prohibited Patterns section of implementation.mdc (TODO, FIXME, HACK, XXX, empty catch blocks, hardcoded stubs, debug prints, commented-out code, empty function bodies, not-implemented throws, unused imports). Adapt to the project's language per CONSTITUTION.md.
 
 **Flag every instance found as a finding.** Placeholders and dead code are never acceptable in reviewed code.
 
 #### Step 3: Test Execution
 
-If terminal access is available, execute the project's test suite:
-
-- Run the full test suite (e.g., `pytest`, `npm test`, `go test ./...` — per CONSTITUTION.md)
-- Record: total tests, passed, failed, skipped, errors
-- Record: coverage percentage if coverage tooling is configured
-- Record: any tests that were skipped and why
+Execute the project's test suite per CONSTITUTION.md. Record: total tests, passed, failed, skipped, errors, and coverage percentage.
 
 **Flag these as findings:**
 
@@ -182,27 +156,27 @@ If tasks are missing or incomplete, set Verdict = BLOCKED.
 
 Check code against project standards. Checks are split into two categories. Neither category allows bare assertions without evidence.
 
-##### Category A: Mechanically Verifiable (grep/ripgrep — show output)
+##### Category A: Mechanically Verifiable
 
-These checks MUST use grep/ripgrep if terminal is available. Show the command and output. If no terminal, manually scan each file and list findings with specific evidence (file + line).
+Verify with evidence (show specific violations or confirm clean scan):
 
-- **Naming conventions:** Extract each naming rule from CONSTITUTION.md (e.g. snake_case for functions, PascalCase for classes). Grep source files for violations. Show the grep command and output.
-- **File/folder structure:** List actual file tree of new/modified files (ls or tree). Compare against CONSTITUTION.md folder structure specification. Flag files in wrong locations.
-- **Import patterns:** If CONSTITUTION.md prohibits certain patterns (e.g. "no direct SQL queries in service layer"), grep for violations. Show output.
+- **Naming conventions:** Check source files against CONSTITUTION.md naming rules. Show violations.
+- **File/folder structure:** Compare actual file locations against CONSTITUTION.md structure. Flag misplaced files.
+- **Import patterns:** Check for prohibited import patterns per CONSTITUTION.md. Show violations.
 - **Prohibited patterns:** Already covered in Phase 1 dead code scan — reference those results here, do not re-scan.
 
-##### Category B: Requires Judgment (show evidence, then explain)
+##### Category B: Requires Judgment
 
-These checks require semantic understanding. The AI MUST show the actual code (class signatures, function bodies, error handlers) and THEN explain how it satisfies or violates the standard. Do NOT just assert compliance.
+For each check, show relevant code evidence and explain compliance or violation. Do not assert compliance without evidence.
 
-- **Architectural patterns:** If CONSTITUTION.md specifies patterns (Repository, DI, etc.), show the class/function signatures found and explain how they follow (or violate) the pattern. Quote actual code.
-- **Error handling patterns:** Show the actual error handling code for each component. Explain whether it matches CONSTITUTION.md's error strategy. Do not write "errors handled appropriately" — show the try/catch or error check.
-- **Error responses:** Show actual error response format in code. Compare against CONSTITUTION.md format (e.g., RFC 7807).
-- **Security checks:** Show input validation code, auth checks, and data handling. Explain what is validated and what is not. Do not assert "validation present."
-- **Secrets/credentials:** Grep for hardcoded strings, API keys, passwords. Show output.
-- **Sensitive data in logs:** Grep for logging statements that might include user data. Show output.
+- **Architectural patterns:** Verify classes/functions follow CONSTITUTION.md patterns (Repository, DI, etc.).
+- **Error handling patterns:** Verify error handling matches CONSTITUTION.md error strategy.
+- **Error responses:** Verify error response format matches CONSTITUTION.md.
+- **Security checks:** Verify input validation, auth checks, and data handling.
+- **Secrets/credentials:** Check for hardcoded strings, API keys, passwords.
+- **Sensitive data in logs:** Check for user data in logging statements.
 
-**Testing Quality** (this check is aggressive by design)
+**Testing Quality**
 - [ ] Unit tests exist for new code
 - [ ] Tests assert real behavior, not trivial truths
 - [ ] Tests cover error paths, not just happy paths
@@ -227,16 +201,9 @@ Verify implementation matches technical design:
 - [ ] Data models match design (field names, types, relationships)
 - [ ] APIs/interfaces match design (endpoints, request/response shapes, status codes)
 - [ ] No unauthorized deviations from design
+- [ ] Dependencies added are justified and listed in DESIGN.md
 
 If deviations exist, they must be justified. Unjustified deviations = finding.
-
-#### Step 8: Code Quality
-
-General quality checks:
-- [ ] No dead code or commented-out blocks (should be caught in Step 2, verify none slipped through)
-- [ ] No TODO/FIXME without linked issue/task
-- [ ] No duplicate code that should be refactored
-- [ ] Dependencies added are justified and listed in DESIGN.md
 
 ---
 
