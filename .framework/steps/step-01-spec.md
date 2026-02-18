@@ -34,36 +34,26 @@ Create (or update) SPEC.md for this feature by applying the spec-creation rules 
 
 ## SEQUENCE
 
-### 1. Check if SPEC.md already exists
-
-- If `{outputFile}` exists:
-  - Read it and present its current state (Metadata table, Status, key sections).
-  - Ask: "SPEC.md already exists. Do you want to **update** it or **continue** to the next step?"
-  - If user wants to update: proceed to section 2 below.
-  - If user wants to continue and Status is APPROVED: skip to menu (section 4).
-  - If user wants to continue but Status is DRAFT: inform user "SPEC must be APPROVED before continuing. Approve it or update it." Redisplay this choice.
-- If `{outputFile}` does not exist: proceed to section 2.
-
-### 2. Gather requirements
+### 1. Gather requirements
 
 - If the user has already provided a requirement description (from the `/flow` command message), use it as the starting input.
 - If not, ask: "What feature are you building? Describe the requirements."
 - Apply {ruleRef} using {templateRef}; build the SPEC.md and save to `{outputFile}` with Status: DRAFT.
 
-### 3. Write SPEC.md
+### 2. Write SPEC.md
 
 - Save to `{outputFile}`.
 - Status: DRAFT (always — user must approve).
 - Present the completed SPEC.md to the user.
 - Ask: "Review the SPEC. When you're satisfied, **approve it** (say 'approve' or 'yes'). Or tell me what to change."
 
-### 4. Approval gate
+### 3. Approval gate
 
 - If user approves: update SPEC.md Status from DRAFT → APPROVED.
 - If user requests changes: apply changes, re-save, re-present, loop back to approval gate.
 - Once APPROVED, proceed to menu.
 
-### 5. Present MENU
+### 4. Present MENU
 
 Display:
 
@@ -81,7 +71,7 @@ SPEC.md is APPROVED.
   1. Update `{stateFile}` frontmatter: append `'step-01-spec'` to `stepsCompleted`.
   2. Read fully and follow: `{nextStepFile}` (step-02-design.md).
 - **IF [B] Back to Spec:**
-  - Return to section 2 (gather/edit requirements). Loop until user is satisfied and approves.
+  - Return to section 1 (gather/edit requirements). Loop until user is satisfied and approves.
   - Redisplay this menu after approval.
 - **IF [X] Exit:**
   - Update `{stateFile}` frontmatter: append `'step-01-spec'` to `stepsCompleted` (if SPEC is APPROVED).

@@ -42,17 +42,7 @@ Create (or update) TASKS.md by applying the task-creation rules and template. Br
 - Read {specFile} (for acceptance criteria traceability).
 - Read {constitutionRef} (for coverage thresholds, patterns).
 
-### 2. Check if TASKS.md already exists
-
-- If `{outputFile}` exists:
-  - Read it and present its current state (task list, status).
-  - Ask: "TASKS.md already exists. Do you want to **update** it or **continue** to the next step?"
-  - If update: proceed to section 3.
-  - If continue and Status is APPROVED: skip to menu (section 5).
-  - If continue but DRAFT: inform user "TASKS must be APPROVED before continuing." Redisplay choice.
-- If not exists: proceed to section 3.
-
-### 3. Create TASKS.md
+### 2. Create TASKS.md
 
 - Apply {ruleRef} using {templateRef}. This includes:
   - Context gathering (previous spec intelligence, git history analysis)
@@ -60,21 +50,21 @@ Create (or update) TASKS.md by applying the task-creation rules and template. Br
   - Adversarial self-validation (reinvention check, vagueness check, coverage check)
 - Save to `{outputFile}` with Status: DRAFT.
 
-### 3.5. Present validation findings
+### 2.5. Present validation findings
 
 - If the adversarial self-validation in {ruleRef} found any issues, present them alongside the TASKS.md:
   - "The following gaps were found during self-validation and have been addressed: [list]"
   - "The following potential concerns remain for your review: [list if any]"
 - This gives the user visibility into what the AI caught and fixed automatically.
 
-### 4. Approval gate
+### 3. Approval gate
 
 - Present the completed TASKS.md to the user.
 - Ask: "Review the TASKS. Approve it (say 'approve' or 'yes') or tell me what to change."
 - If user approves: update TASKS.md Status → APPROVED.
 - If user requests changes: apply, re-save, re-present, loop.
 
-### 5. Present MENU
+### 4. Present MENU
 
 Display:
 

@@ -41,28 +41,18 @@ Create (or update) DESIGN.md by applying the design-creation rules and template.
 - Read {specFile} completely (acceptance criteria, scope, user stories).
 - Read {constitutionRef} for project standards.
 
-### 2. Check if DESIGN.md already exists
-
-- If `{outputFile}` exists:
-  - Read it and present its current state.
-  - Ask: "DESIGN.md already exists. Do you want to **update** it or **continue** to the next step?"
-  - If update: proceed to section 3.
-  - If continue and Status is APPROVED: skip to menu (section 5).
-  - If continue but Status is DRAFT: inform user "DESIGN must be APPROVED before continuing." Redisplay choice.
-- If not exists: proceed to section 3.
-
-### 3. Create DESIGN.md
+### 2. Create DESIGN.md
 
 - Apply {ruleRef} using {templateRef}. Save to `{outputFile}` with Status: DRAFT.
 
-### 4. Approval gate
+### 3. Approval gate
 
 - Present the completed DESIGN.md to the user.
 - Ask: "Review the DESIGN. Approve it (say 'approve' or 'yes') or tell me what to change."
 - If user approves: update DESIGN.md Status → APPROVED.
 - If user requests changes: apply, re-save, re-present, loop.
 
-### 5. Present MENU
+### 4. Present MENU
 
 Display:
 
