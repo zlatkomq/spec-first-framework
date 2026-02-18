@@ -42,34 +42,17 @@ Always use the template structure from @.framework/templates/DESIGN.template.md
 - Change Type must be one of: New / Modify / Use existing
 - Include a simple diagram (Mermaid) if interactions are complex
 
-### Data Model
-- Only include if this requires new or modified data structures
-- List entities, fields, types, and descriptions
-- Follow naming conventions from CONSTITUTION.md
-- If no data model changes, write "No data model changes required."
+### Conditional Sections
 
-### API / Interfaces
-- Only include if this exposes or consumes APIs
-- List endpoints with Method, Path, and Description
-- Follow API conventions from CONSTITUTION.md
-- If no API changes, write "No API changes required."
+Data Model, API/Interfaces, Dependencies, Security Considerations, and Risks & Tradeoffs are included ONLY when relevant. Do NOT include a section just to write "No X required" — omit it entirely.
 
-### Dependencies
-- List external libraries, services, or systems required
-- Include version constraints if relevant
-- If no new dependencies, write "No new dependencies required."
+- **Data Model**: Include if this design creates or modifies data structures. Follow CONSTITUTION.md naming conventions.
+- **API / Interfaces**: Include if this design exposes or consumes APIs. Follow CONSTITUTION.md API conventions.
+- **Dependencies**: Include if new external libraries, services, or systems are required.
+- **Security Considerations**: Include if there are authentication, authorization, validation, or data protection implications.
+- **Risks & Tradeoffs**: Include if there are key technical risks, rejected alternatives, or significant tradeoffs.
 
-### Security Considerations
-- Address authentication, authorization, input validation
-- Identify sensitive data handling
-- Reference security standards from CONSTITUTION.md
-- If no security implications, write "No additional security considerations."
-
-### Risks & Tradeoffs
-- Note key technical risks or concerns
-- Document rejected alternatives and why
-- Explain significant tradeoffs made
-- If no significant risks, write "No significant risks identified."
+**Judgment criterion:** If a section would contain only a single sentence stating no changes are needed, omit the section entirely.
 
 ### Open Questions
 - Unresolved technical decisions that need answers
@@ -91,7 +74,7 @@ Before completing, verify:
 - [ ] All acceptance criteria from SPEC.md are technically addressable
 - [ ] Architecture follows CONSTITUTION.md patterns
 - [ ] No scope creep beyond SPEC.md boundaries
-- [ ] All required sections filled (no placeholders)
+- [ ] All applicable sections filled; inapplicable conditional sections omitted entirely
 - [ ] Status set to DRAFT
 
 ## Output

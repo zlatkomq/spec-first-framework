@@ -64,7 +64,7 @@ Systematically analyze impact against all existing artifacts:
 - Should completed tasks be revisited?
 - Does the task order change?
 
-#### Per-Task Impact Classification (if `tasksCompleted` is non-empty)
+#### Per-Task Impact Classification (if any tasks are marked `[x]` in TASKS.md)
 
 When completed tasks exist, classify EVERY existing task into exactly one category:
 
@@ -136,7 +136,7 @@ NEW:
 Rationale: [why this change is needed]
 ```
 
-### Task Impact Summary (if `tasksCompleted` is non-empty)
+### Task Impact Summary (if any tasks are marked `[x]` in TASKS.md)
 
 Using the per-task classification from Step 2, include a Task Impact Summary so the user can see the effect on implementation progress before approving:
 
@@ -150,7 +150,7 @@ Task Impact:
 Summary: 1 of 3 completed tasks remain valid. 2 completed tasks will be reset.
 ```
 
-If `tasksCompleted` is empty, omit this section.
+If no tasks are marked `[x]` in TASKS.md, omit this section.
 
 ### Scope Classification
 
@@ -176,10 +176,9 @@ On approval, execute these steps in order:
 - [ ] Update SPEC.md with approved changes (acceptance criteria, scope, etc.)
 - [ ] Update DESIGN.md with approved changes (if affected)
 - [ ] Update TASKS.md with approved changes (if affected — add/modify/remove tasks)
-- [ ] Sync TASKS.md checkboxes with task classification (if `tasksCompleted` was non-empty):
+- [ ] Sync TASKS.md checkboxes with task classification (if any tasks were marked `[x]`):
   - UNAFFECTED completed tasks → keep `[x]`
-  - UNAFFECTED `[~]` tasks → keep `[~]`
-  - INVALIDATED tasks → reset to `[ ]` (even if previously `[x]` or `[~]`)
+  - INVALIDATED tasks → reset to `[ ]` (even if previously `[x]`)
   - REMOVED tasks → already deleted from TASKS.md above
   - New tasks from CR → `[ ]`
 - [ ] Update workflow state (if active): If `{spec_folder}/.workflow-state.md` exists and `stepsCompleted` is non-empty:
@@ -188,13 +187,8 @@ On approval, execute these steps in order:
      - CR modified SPEC.md only → set `stepsCompleted` to `['step-01-spec']`
      - CR modified SPEC.md + DESIGN.md → set `stepsCompleted` to `['step-01-spec', 'step-02-design']`
      - CR modified TASKS.md (with or without earlier artifacts) → set `stepsCompleted` to `['step-01-spec', 'step-02-design', 'step-03-tasks']`
-  3. Selectively update `tasksCompleted` using the per-task classification from Step 2:
-     - Start with the current `tasksCompleted` array.
-     - REMOVE task IDs classified as INVALIDATED or REMOVED.
-     - KEEP task IDs classified as UNAFFECTED.
-     - Result: `tasksCompleted` contains only UNAFFECTED IDs that were previously completed.
-     - Example: `tasksCompleted` was `['T1', 'T2', 'T3']`, T2 and T3 INVALIDATED → set to `['T1']`.
-  4. Reset `fixAttempts` to `0`, `previousIssueCount` to `0`, `fixLoopActive` to `false`.
+  3. TASKS.md checkboxes are already synced in the artifact update step above (INVALIDATED → `[ ]`, UNAFFECTED → keep `[x]`). No separate state update needed for task completion tracking.
+  4. Reset `fixAttempts` to `0`, `previousIssueCount` to `0`, `fixLoopActive` to `false`, `implementationAttempts` to `0`.
   5. Display: "Workflow state updated: progress trimmed to {last kept step}. Steps after {last kept step} will be re-run. Run `/flow {specId}` to resume."
   6. If `stepsCompleted` was NOT trimmed (already at or before the trim point), display: "Workflow state: no adjustment needed."
 - [ ] Update original SPEC.md: Add entry to Amendment History table:

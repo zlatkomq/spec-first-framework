@@ -26,11 +26,11 @@ Do NOT duplicate CONSTITUTION.md or DESIGN.md content into TASKS.md — the deve
 If other spec folders exist in `specs/` (this is not the first spec):
 1. Find the most recently completed spec (one with a REVIEW.md that has verdict APPROVED)
 2. Read that REVIEW.md — extract: recurring review feedback, patterns flagged, quality issues found
-3. Read that spec's TASKS.md Dev Agent Record (if exists) — extract:
+3. Read that spec's IMPLEMENTATION-SUMMARY.md (in the same spec folder, if exists) — extract:
    - **File List**: All files created/modified by the previous spec
    - **Decisions Made**: Implementation patterns and conventions established
    - **Code reuse opportunities**: Components that the current spec might use
-4. **Load key source files**: For each file in the previous spec's Dev Agent Record File List that is likely relevant to the current spec (same domain area, shared components), read the file to understand its public interface. This prevents reinventing existing code.
+4. **Load key source files**: For each file in the previous spec's IMPLEMENTATION-SUMMARY.md File List that is likely relevant to the current spec (same domain area, shared components), read the file to understand its public interface. This prevents reinventing existing code.
 5. Summarize actionable intelligence in the "Previous Spec Learnings" section of TASKS.md
 
 If this is the first spec, write "First spec — no previous learnings available."
@@ -73,7 +73,6 @@ Always use the template structure from @.framework/templates/TASKS.template.md
 **Task markers:**
 - `[ ]` = not started
 - `[x]` = complete (tests verified passing)
-- `[~]` = IMPLEMENTED-UNVERIFIED (code written, tests exist, but tests not executed — manual verification required)
 
 ### Interface Contracts
 
@@ -153,7 +152,7 @@ After generating TASKS.md, run this internal check BEFORE presenting to the user
 5. **Dependency check**: Are tasks ordered correctly? Would any task fail because a prerequisite task hasn't been completed yet?
 6. **Contract check**: Does every inter-task dependency have matching Produces/Consumes? If T5 calls T3's output, T3 must declare it and T5 must reference T3 by ID. If Produces cannot be derived from DESIGN.md, flag the design as insufficiently detailed.
 7. **Integration coverage check**: Count New components in DESIGN.md's Architecture section. If count > 1 and they interact, does at least one test task test them together without mocks? If not, add one. Do not rationalize skipping this — check the component table mechanically.
-8. **Reinvention check (cross-spec)**: For each New component in this spec's tasks, did a previous spec already create something similar? Check the previous spec's Dev Agent Record File List and key source files. If overlap exists, reference the existing code in a Consumes declaration rather than recreating it.
+8. **Reinvention check (cross-spec)**: For each New component in this spec's tasks, did a previous spec already create something similar? Check the previous spec's IMPLEMENTATION-SUMMARY.md File List and key source files. If overlap exists, reference the existing code in a Consumes declaration rather than recreating it.
 
 If any issues are found, fix them in TASKS.md before presenting. Note any significant findings when presenting the document to the user.
 

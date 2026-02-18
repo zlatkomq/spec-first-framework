@@ -50,7 +50,7 @@ State lives in `specs/XXX-slug/.workflow-state.md` with YAML frontmatter:
 ```yaml
 ---
 stepsCompleted: ['step-01-spec', 'step-02-design']
-tasksCompleted: ['T1', 'T2']
+implementationAttempts: 0
 specId: '001'
 specSlug: 'user-registration'
 specFolder: 'specs/001-user-registration'
@@ -58,8 +58,9 @@ specFolder: 'specs/001-user-registration'
 ```
 
 - `stepsCompleted` is only updated when you choose **[C] Continue** (or **[X] Exit** after completing a step).
-- `tasksCompleted` is updated after EACH individual task during implementation (step 4). This enables mid-implementation pause/resume — if you exit after T2, you resume at T3.
-- When you **[B] Back**, `stepsCompleted` is trimmed so that "last completed" reflects the step you're going back to. If going back to step 3 (Tasks) or earlier, `tasksCompleted` is also cleared.
+- `implementationAttempts` tracks how many times the verification gate has failed (0-3). After 3 failures, routes to manual intervention.
+- Task completion is tracked by `[x]` checkboxes in TASKS.md (single source of truth — no separate state field).
+- When you **[B] Back**, `stepsCompleted` is trimmed so that "last completed" reflects the step you're going back to.
 - This file is **committed to git** (not .gitignored). It provides team visibility into where each spec is in the workflow.
 
 ---
@@ -75,25 +76,26 @@ specFolder: 'specs/001-user-registration'
 
 ### Resume mid-implementation
 
-1. You're implementing tasks. You complete T1, T2, T3, then exit (state: `stepsCompleted: ['step-01-spec', 'step-02-design', 'step-03-tasks']`, `tasksCompleted: ['T1', 'T2', 'T3']`).
+1. You're implementing tasks. You complete T1, T2, T3 (marked `[x]` in TASKS.md), then exit (state: `stepsCompleted: ['step-01-spec', 'step-02-design', 'step-03-tasks']`).
 2. Later, run `/flow 001`.
-3. Continuation step shows: "Last completed: step-03-tasks. Next: Implementation. Implementation progress: 3 of 7 tasks completed."
-4. Press **[C]** — step-04 loads, sees T1/T2/T3 are done, shows the task list with checkmarks, and offers to start T4.
+3. Continuation step reads TASKS.md and shows: "Last completed: step-03-tasks. Next: Implementation. Implementation progress: 3 of 7 tasks completed."
+4. Press **[C]** — step-04 loads, reads TASKS.md, sees T1/T2/T3 are `[x]`, and offers to continue with remaining tasks.
 
 ### Review fails — fix and re-review
 
 1. Review fails (step 5, verdict: CHANGES REQUESTED). Findings list specific issues.
-2. Menu shows: `[F] Fix` (back to implement), `[B] Back to Tasks`, `[B2] Back to Design`, `[B3] Back to Spec`.
-3. Choose **[F] Fix** — state is trimmed (step-04 removed from `stepsCompleted`), but `tasksCompleted` is kept. Step-04 loads.
-4. Step-04 detects REVIEW.md with CHANGES REQUESTED and displays the findings. All tasks show as completed. You use **[R]** to re-implement the specific tasks that had issues.
-5. Choose **[C]** — step-05 runs a **fresh review from scratch** (not a partial re-review). New REVIEW.md is written.
+2. Menu shows: `[F] Fix` (auto-fix), `[B] Back to Implement`, `[B2] Back to Tasks`, `[B3] Back to Design`.
+3. Choose **[F] Fix** — AI applies scoped fixes for Critical/Major issues and re-runs review (up to 3 fix attempts).
+4. Or choose **[B] Back to Implement** — step-04 loads, detects REVIEW.md with CHANGES REQUESTED, and displays findings as context for re-implementation.
+5. After fixes, step-05 runs a **fresh review from scratch** (not a partial re-review). New REVIEW.md is written.
 6. If review passes, choose **[C] Complete**. Done.
+7. If auto-fix exhausts 3 attempts, the framework classifies the situation (diverging/converging/churning) and recommends a path.
 
 ### Go back further (Design or Spec)
 
 1. Review fails and the issue is in the design, not just implementation.
-2. Choose **[B] Back to Design** — state is trimmed, `tasksCompleted` is cleared, step-02 runs.
-3. Fix DESIGN. **[C]** → step-03 (re-create Tasks). **[C]** → step-04 (re-implement from scratch). **[C]** → step-05 (review again).
+2. Choose **[B3] Back to Design** — state is trimmed, step-02 runs.
+3. Fix DESIGN. **[C]** → step-03 (re-create Tasks). **[C]** → step-04 (re-implement). **[C]** → step-05 (review again).
 
 ### Fix within a step (loop before continuing)
 
@@ -131,6 +133,7 @@ specs/001-user-registration/
 ├── SPEC.md
 ├── DESIGN.md
 ├── TASKS.md
+├── IMPLEMENTATION-SUMMARY.md  # Written after implementation (step 4)
 └── REVIEW.md
 ```
 

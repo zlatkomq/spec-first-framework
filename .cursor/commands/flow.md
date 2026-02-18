@@ -54,7 +54,7 @@ The workflow was started before and is in progress (or complete).
 This is a fresh start.
 
 1. If the spec folder does not exist, it will be created by step-01 when it saves SPEC.md.
-2. Create `{spec_folder}/.workflow-state.md` from the template `.framework/templates/workflow-state.template.md`. Fill in `specId`, `specSlug`, `specFolder` in the frontmatter. Set `stepsCompleted: []` and `tasksCompleted: []`.
+2. Create `{spec_folder}/.workflow-state.md` from the template `.framework/templates/workflow-state.template.md`. Fill in `specId`, `specSlug`, `specFolder` in the frontmatter. Set `stepsCompleted: []`.
 3. Read fully and follow: `.framework/steps/step-01-spec.md`.
 4. Pass any requirement description from the user's message to step-01 (so it can use it as starting input for the spec).
 

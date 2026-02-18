@@ -35,7 +35,7 @@
 
 Produces/Consumes only required for tasks with inter-task dependencies. Consumes references use task ID (e.g. T1.UserRepository), not duplicated signatures.
 
-Task markers: `[ ]` not started | `[x]` complete (verified) | `[~]` implemented but unverified
+Task markers: `[ ]` not started | `[x]` complete (verified)
 
 ---
 
@@ -53,7 +53,7 @@ Unit tests are always mandatory - never skip this section.
 
 ## Previous Spec Learnings
 
-[Populated from the most recent completed spec's REVIEW.md and Dev Agent Record. Leave empty if first spec.]
+[Populated from the most recent completed spec's REVIEW.md and IMPLEMENTATION-SUMMARY.md. Leave empty if first spec.]
 
 - Patterns established in prior specs
 - Review feedback to apply
@@ -77,16 +77,3 @@ Unit tests are always mandatory - never skip this section.
 - [ ] Code reviewed and approved
 - [ ] No open questions remaining
 
----
-
-## Dev Agent Record
-
-[Updated by the AI agent during implementation — do not fill during task creation]
-
-### Agent Model Used
-
-### Implementation Log
-
-### Decisions Made
-
-### File List

@@ -23,15 +23,9 @@ Resume the feature workflow from where it was left off. Determine the next step 
 
 Read `{stateFile}` frontmatter. Extract:
 - `stepsCompleted` — array of completed step names.
-- `tasksCompleted` — array of completed task IDs (e.g. `['T1', 'T2']`).
-- `currentTask` — task ID in progress when session ended (empty if none).
 - `specId`, `specSlug`, `specFolder`.
 
-Reset fix-loop counters: set `fixAttempts` to `0`, `previousIssueCount` to `0`, and `fixLoopActive` to `false` in `{stateFile}`. Resuming via `/flow` always starts a fresh review cycle — the `[F]` auto-fix loop is a within-session operation that does not survive across sessions.
-
-If `currentTask` is non-empty, the previous session was interrupted mid-task:
-- Display: "⚠ {currentTask} was in progress when the previous session ended. Check `git diff` for partial changes before continuing. You may need to revert incomplete work on {currentTask}."
-- Clear `currentTask` (set to `''`) in `{stateFile}`.
+Reset counters: set `fixAttempts` to `0`, `previousIssueCount` to `0`, `fixLoopActive` to `false`, and `implementationAttempts` to `0` in `{stateFile}`. Resuming via `/flow` always starts fresh counters.
 
 ### 2. Validate stepsCompleted
 
@@ -56,7 +50,7 @@ Workflow state is corrupted: {specific problem, e.g. "step-02-design is missing 
 [X] Exit — pause workflow; fix .workflow-state.md manually
 ```
 
-On [R]: set `stepsCompleted` to `[]`, clear `tasksCompleted` (set to `[]`), reset `fixAttempts` to `0`, `previousIssueCount` to `0`, and `fixLoopActive` to `false` in `{stateFile}`. Then read fully and follow: `./step-01-spec.md`.
+On [R]: set `stepsCompleted` to `[]`, reset `fixAttempts` to `0`, `previousIssueCount` to `0`, `fixLoopActive` to `false`, and `implementationAttempts` to `0` in `{stateFile}`. Then read fully and follow: `./step-01-spec.md`.
 
 On [X]: STOP.
 
@@ -78,7 +72,7 @@ All artifacts are in {specFolder}/:
 [X] Exit
 ```
 
-On [B]: ask "Which step? [1] Spec [2] Design [3] Tasks [4] Implement [5] Review" and load the corresponding step file. Trim `stepsCompleted` appropriately before loading. If going back to step 3 or earlier, also clear `tasksCompleted` (set to `[]`).
+On [B]: ask "Which step? [1] Spec [2] Design [3] Tasks [4] Implement [5] Review" and load the corresponding step file. Trim `stepsCompleted` appropriately before loading.
 
 On [X]: STOP.
 
@@ -91,16 +85,10 @@ On [X]: STOP.
 
 ### 5. Check for partial implementation progress
 
-If the next step is `step-04-implement.md` (i.e. last completed is `step-03-tasks`) AND `tasksCompleted` is non-empty:
+If the next step is `step-04-implement.md`:
 
-- This means the user exited mid-implementation. Some tasks are already done.
-- Read {tasksFile} to get the total task count.
-- Include task progress in the status display (section 6).
-
-If `stepsCompleted` contains `step-03-tasks` but NOT `step-04-implement`, and `tasksCompleted` is non-empty:
-
-- Same situation: user was in step-04, completed some tasks, then exited before finishing all of them.
-- Step-04 was never fully completed, so it's the next step.
+- Read {tasksFile}. Count tasks marked `[x]` vs total tasks.
+- If any `[x]` tasks exist, include progress in the status display (section 6).
 
 ### 6. Present status and menu
 
@@ -113,11 +101,10 @@ Last completed: {last element of stepsCompleted}
 Next step: {nextStepFile name} ({step N of 5})
 ```
 
-**If there is partial implementation progress (tasksCompleted is non-empty and next step is step-04):**
+**If there is partial implementation progress ([x] tasks found and next step is step-04):**
 
 ```
-Implementation progress: {count of tasksCompleted} of {total tasks} tasks completed.
-Completed: {list of tasksCompleted, e.g. T1, T2, T3}
+Implementation progress: {count of [x] tasks} of {total tasks} tasks completed.
 ```
 
 ```
@@ -139,9 +126,8 @@ Completed: {list of tasksCompleted, e.g. T1, T2, T3}
     - Back to Design (2): keep only `['step-01-spec']`.
     - Back to Tasks (3): keep up to `['step-01-spec', 'step-02-design']`.
     - Back to Implement (4): keep up to `['step-01-spec', 'step-02-design', 'step-03-tasks']`.
-  - If going back to step 3 or earlier: also clear `tasksCompleted` (set to `[]`).
-  - Reset `fixAttempts` to `0`, `previousIssueCount` to `0`, and `fixLoopActive` to `false` in `{stateFile}`.
-  - Update `{stateFile}` with trimmed `stepsCompleted` (and `tasksCompleted` if cleared).
+  - Reset `fixAttempts` to `0`, `previousIssueCount` to `0`, `fixLoopActive` to `false`, and `implementationAttempts` to `0` in `{stateFile}`.
+  - Update `{stateFile}` with trimmed `stepsCompleted`.
   - Read fully and follow the corresponding step file (e.g. `step-02-design.md`).
 
 - **IF [X] Exit:**
@@ -161,7 +147,7 @@ Completed: {list of tasksCompleted, e.g. T1, T2, T3}
 - Partial implementation progress displayed when applicable.
 - User clearly informed of progress.
 - Correct step file loaded on [C] or [B].
-- `tasksCompleted` cleared when going back to step 3 or earlier.
+- Counters reset when going back to earlier steps.
 
 ## FAILURE CONDITIONS
 
@@ -169,5 +155,4 @@ Completed: {list of tasksCompleted, e.g. T1, T2, T3}
 - Accepting a corrupted `stepsCompleted` (gaps, out-of-order, or unknown entries) without error.
 - Loading wrong next step.
 - Not trimming state when going back.
-- Not clearing `tasksCompleted` when going back to Tasks or earlier.
 - Not showing implementation progress when resuming mid-step-04.

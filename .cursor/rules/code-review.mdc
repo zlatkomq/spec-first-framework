@@ -48,7 +48,7 @@ The review is organized into four phases (Phase 0 through Phase 3). Complete all
 
 Before starting the review:
 
-1. **Build expected file list:** From TASKS.md (task descriptions + Dev Agent Record File List), list every file that should exist.
+1. **Build expected file list:** From TASKS.md (task descriptions) and IMPLEMENTATION-SUMMARY.md (files changed list, if exists), list every file that should exist.
 2. **Verify existence and access:** For each file, read it and quote the first 3 lines (imports/header). If you can read the header, you have access. If you cannot, the file is flagged as NOT REVIEWABLE.
 3. **Track coverage:** Report: "Verified access to N/M files." List any files NOT reviewable with the reason (missing, unreadable, etc.).
 4. **30% threshold:** If more than 30% of expected files cannot be reviewed, verdict is BLOCKED — the spec is too large for reliable single-pass review, or files are missing. Recommend: split into smaller specs or review in sections.
@@ -168,7 +168,6 @@ Verify every task in TASKS.md is implemented:
 - [ ] All implementation tasks (T1, T2, ...) have corresponding code files
 - [ ] All testing tasks have corresponding test files with real tests
 - [ ] No tasks were skipped
-- [ ] No tasks marked `[~]` (IMPLEMENTED-UNVERIFIED) — these count as INCOMPLETE. If any exist, verdict = BLOCKED (unverified code cannot pass review).
 - [ ] Implementation matches what the task description says (not just that a file exists)
 
 If tasks are missing or incomplete, set Verdict = BLOCKED.
@@ -241,14 +240,14 @@ General quality checks:
 
 ---
 
-### POST-PHASE: Dev Agent Record Cross-Reference
+### POST-PHASE: Implementation Summary Cross-Reference
 
-Cross-reference the Dev Agent Record File List (from TASKS.md) with git diff (if available):
+Cross-reference IMPLEMENTATION-SUMMARY.md File List (from the spec folder) with git diff (if available):
 
 | Discrepancy | Severity |
 |-------------|----------|
-| Files in git diff but NOT in Dev Agent Record File List | MEDIUM — undocumented changes |
-| Files in Dev Agent Record File List but NOT in git diff | HIGH — false claims in record |
+| Files in git diff but NOT in IMPLEMENTATION-SUMMARY.md | MEDIUM — undocumented changes |
+| Files in IMPLEMENTATION-SUMMARY.md but NOT in git diff | HIGH — false claims in summary |
 | Uncommitted changes not documented anywhere | MEDIUM — incomplete tracking |
 
 This catches cases where the AI agent claimed to change files it didn't, or changed files it didn't document.

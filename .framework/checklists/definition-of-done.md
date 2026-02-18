@@ -1,6 +1,6 @@
 # Definition of Done Checklist
 
-Referenced by step-04-implement.md before allowing [C] Continue to code review.
+Referenced by the verification gate in step-04-implement.md before allowing [C] Continue to code review.
 All items must pass before implementation is considered complete.
 
 ---
@@ -18,13 +18,9 @@ All items must pass before implementation is considered complete.
 - [ ] **Tests pass:** All new tests pass (or "not executed — manual run required" if no terminal access)
 - [ ] **No regressions:** Full test suite passes — no existing tests broken
 - [ ] **Test quality:** Tests assert real behavior, not trivial truths (no `expect(result).toBeDefined()` without meaningful checks)
-- [ ] **No unverified tasks:** All tasks are fully verified `[x]` (no `[~]` IMPLEMENTED-UNVERIFIED remaining). If any tasks could not be verified, list them and note: "Manual test execution required before review."
+## Documentation
 
-## Documentation and Tracking
-
-- [ ] **Dev Agent Record updated:** Agent model, implementation log, decisions made, and file list are current in TASKS.md
-- [ ] **File List complete:** Dev Agent Record File List includes EVERY new, modified, or deleted file (paths relative to repo root)
-- [ ] **Implementation summaries provided:** Every completed task has an implementation summary per the rules
+- [ ] **IMPLEMENTATION-SUMMARY.md written:** Summary file exists in spec folder with files changed, key decisions, patterns established, and test summary
 
 ## Quality
 

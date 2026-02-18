@@ -6,12 +6,13 @@ nextStepFile: './step-05-review.md'
 # References
 ruleRef: '@.cursor/rules/implementation.mdc'
 constitutionRef: '@.framework/CONSTITUTION.md'
-dodChecklist: '@.framework/checklists/definition-of-done.md'
+verificationChecklist: '@.framework/checklists/verification-checklist.md'
 stateFile: '{spec_folder}/.workflow-state.md'
 specFile: '{spec_folder}/SPEC.md'
 designFile: '{spec_folder}/DESIGN.md'
 tasksFile: '{spec_folder}/TASKS.md'
 reviewFile: '{spec_folder}/REVIEW.md'
+summaryFile: '{spec_folder}/IMPLEMENTATION-SUMMARY.md'
 ---
 
 # Step 4: Implementation
@@ -20,7 +21,7 @@ reviewFile: '{spec_folder}/REVIEW.md'
 
 ## STEP GOAL
 
-Implement tasks from TASKS.md one at a time. After each task, present a menu so the user can continue, pause, or exit. Track completed tasks in the state file so the workflow can resume mid-implementation.
+Implement all incomplete tasks from TASKS.md. Run a verification gate. Write the implementation summary to a persistent file for cross-spec learning.
 
 ## RULES
 
@@ -41,102 +42,93 @@ Implement tasks from TASKS.md one at a time. After each task, present a menu so 
 - Read {tasksFile} completely. Extract the ordered list of tasks (T1, T2, T3, …).
 - Read {designFile} (for architecture and component details).
 - Read {constitutionRef} (for coding standards).
-- Read `{stateFile}` frontmatter. Extract `tasksCompleted` (array of completed task IDs, e.g. `['T1', 'T2']`).
-- **Reconcile state with TASKS.md checkboxes**: If `tasksCompleted` and {tasksFile} checkboxes disagree, `tasksCompleted` in {stateFile} is authoritative. Update {tasksFile} checkboxes to match:
-  - Task ID in `tasksCompleted` but checkbox is `[ ]` or `[~]` → set to `[x]`
-  - Task ID NOT in `tasksCompleted` but checkbox is `[x]` → set to `[ ]`
-  - `[~]` tasks NOT in `tasksCompleted` → leave as `[~]` (intentionally excluded per IMPLEMENTED-UNVERIFIED rule)
-  - If corrections were made, display: "Reconciled TASKS.md checkboxes with workflow state ({N} corrections)."
+- Read `{stateFile}` frontmatter. Extract `stepsCompleted` and `implementationAttempts`.
+- Count incomplete tasks (`[ ]` checkboxes in {tasksFile}).
 
-### 2. Check for review findings (re-entry from step-05)
+### 2. Determine entry state
 
-- If `{reviewFile}` exists:
-  - Read it. Check the verdict.
-  - If verdict is **CHANGES REQUESTED** or **BLOCKED**:
-    - Display the review findings (Critical and Major issues) to the user.
-    - Check {tasksFile} for `[AI-Review]` prefixed tasks — these are action items injected by the code review.
-    - If `[AI-Review]` tasks exist: display count and severity breakdown. These tasks will be prioritized before regular incomplete tasks.
-    - Display: "These issues were found during code review. [AI-Review] tasks will be prioritized first."
-- If `{reviewFile}` does not exist or verdict is not CHANGES REQUESTED/BLOCKED: skip this section.
+Check context to determine which entry state applies:
 
-### 3. Present task list with progress
+**(A) Fresh entry** — no REVIEW.md with CHANGES REQUESTED/BLOCKED findings, and `implementationAttempts` = 0:
 
-Display the task list showing completed vs remaining tasks:
+Display implementation brief: {N} tasks, key components from {designFile}, AC count from {specFile}.
+
+- If incomplete tasks > 0: `[S] Start implementation` | `[X] Exit`
+- If all tasks already `[x]`: skip to section 4 (verification gate).
+
+**(B) Retry** — `implementationAttempts` > 0 and < 3:
+
+Display the previous verification failures.
 
 ```
-Implementation progress:
+Implementation attempt {implementationAttempts} of 3 failed verification.
 
-- [x] T1: {description}    ← done
-- [x] T2: {description}    ← done
-- [ ] T3: {description}    ← NEXT
-- [ ] T4: {description}
-- ...
-
-{N} of {total} tasks completed.
-
-[N] Start next task (T3)
-[T] Implement a specific task (e.g. "T3")
-[R] Re-implement a completed task (e.g. "T1" — fix or redo)
-[X] Exit — pause and resume later
+[R] Retry implementation (attempt {implementationAttempts+1} of 3)
+[X] Exit
 ```
 
-If ALL tasks are already complete, skip directly to section 5 (completion menu).
+**(C) Re-entry from review** — `{reviewFile}` exists with verdict CHANGES REQUESTED or BLOCKED:
 
-### 4. Implementation loop (per-task)
+- Reset `implementationAttempts` to `0` in `{stateFile}`.
+- Display the review findings (Critical and Major issues).
 
-**IF [N] Start next task or [T] Specific task or [R] Re-implement:**
+```
+Review findings from previous cycle. Address these during implementation.
 
-1. Identify the target task. Priority order:
-   - `[AI-Review]` tasks first (if any exist from code review)
-   - Next incomplete regular task for [N]
-   - User-specified task for [T]/[R]
-2. Announce: "Implementing T{n}: {description}"
-3. Set `currentTask` to `'T{n}'` in `{stateFile}`.
-4. Apply {ruleRef} for this task; implement the code AND tests; provide the implementation summary (as specified in {ruleRef}).
-5. Run per-task validation gates (as specified in {ruleRef}): tests exist, tests pass, implementation matches spec, ACs satisfied, no regressions.
-6. If validation gates pass:
-   - Mark the task done: update `tasksCompleted` in `{stateFile}`, update checkbox in {tasksFile}.
-   - Update Dev Agent Record in {tasksFile}: add Implementation Log entry, update File List.
-   - If task is marked `[~]` IMPLEMENTED-UNVERIFIED (per {ruleRef}): do NOT add to `tasksCompleted`. The task remains incomplete for workflow purposes.
-   - Clear `currentTask` (set to `''`) in `{stateFile}`.
-7. If validation gates fail:
-   - Do NOT mark the task complete. Fix the issue and re-validate.
-   - If 3 validation failures on the same task: HALT per {ruleRef}.
+[S] Start implementation addressing review findings
+[X] Exit
+```
 
-After completing the task, **return to section 3** (present task list with updated progress). This gives the user a menu after EVERY task — they can continue to the next task, pick a different task, or exit.
+**(D) Exhausted** — `implementationAttempts` >= 3:
 
-**IF [X] Exit:**
+```
+Implementation has failed verification 3 times.
 
-- `tasksCompleted` is already up to date (saved after each task).
-- Display: "Workflow paused. {N} of {total} tasks completed. Run `/flow {spec_id}` to resume."
-- STOP.
+[M] Manual intervention — user runs verification and confirms results
+[B] Back to Tasks — re-edit TASKS.md (step 3)
+[B2] Back to Design — re-edit DESIGN.md (step 2)
+[X] Exit
+```
 
-### 5. Definition of Done validation
+**Menu handling for entry states:**
 
-When all tasks in TASKS.md are checked off (all task IDs are in `tasksCompleted`):
+- **IF [S] or [R]:** Proceed to section 3 (implementation session).
+- **IF [M]:** User provides manual verification results. If all pass → proceed to section 5. If failures → STOP.
+- **IF [B]:** Trim `stepsCompleted` in `{stateFile}` to keep entries up to `'step-02-design'`. Load and follow `./step-03-tasks.md`.
+- **IF [B2]:** Trim `stepsCompleted` in `{stateFile}` to keep entries up to `'step-01-spec'`. Load and follow `./step-02-design.md`.
+- **IF [X]:** STOP.
 
-Before presenting the completion menu, run the Definition of Done checklist from {dodChecklist}:
-- All tasks/subtasks marked complete
-- All acceptance criteria from {specFile} satisfied
-- Tests exist for core functionality
-- All tests pass, no regressions
-- Dev Agent Record File List includes every changed file
-- Dev Agent Record contains implementation notes
-- No `[~]` IMPLEMENTED-UNVERIFIED tasks remaining — all tasks must be fully verified `[x]`
-- No HALT conditions remaining
+### 3. Implementation session
 
-If any DoD item fails: display the failures and offer [R] to re-implement affected tasks. Do NOT allow [C] Continue until DoD passes.
+Apply {ruleRef} with full context ({tasksFile}, {constitutionRef}, {designFile}, {specFile} for AC reference).
+
+The AI:
+
+1. Reads {tasksFile} to identify all incomplete tasks (`[ ]` checkboxes).
+2. Implements each task in dependency order (following the Produces/Consumes chain).
+3. Updates each task's checkbox to `[x]` in {tasksFile} as it completes.
+4. After completing a logical group of tasks, commits changes (encouraged per {ruleRef}, not mandatory).
+5. When all tasks are done, proceeds to section 4.
+
+### 4. Verification gate
+
+Run the verification checklist from {verificationChecklist}.
+
+- **If PASS:** Proceed to section 5.
+- **If FAIL:** Increment `implementationAttempts` in `{stateFile}`. Display the specific failures. Return to section 2 (retry path).
+
+### 5. Write implementation summary
+
+Write (or overwrite) `{summaryFile}` with the implementation summary (format defined in {ruleRef}). On re-implementation cycles, the previous summary is replaced — REVIEW.md and Auto-Fix Tracking provide the audit trail for prior attempts.
 
 ### 6. All tasks complete — Present MENU
 
 Display:
 
 ```
-All {total} tasks implemented. Definition of Done: PASS.
+All {total} tasks implemented. Verification: PASS.
 
 [C] Continue — proceed to Code Review (Step 5 of 5)
-[V] View TASKS.md — display for reference (read-only)
-[R] Re-implement a specific task (e.g. "T3" — fix or redo)
 [B] Back to Tasks — re-edit TASKS.md (step 3)
 [B2] Back to Design — re-edit DESIGN.md (step 2)
 [X] Exit — pause workflow; resume later with /flow
@@ -147,22 +139,14 @@ All {total} tasks implemented. Definition of Done: PASS.
 - **IF [C] Continue:**
   1. Update `{stateFile}`: append `'step-04-implement'` to `stepsCompleted`.
   2. Read fully and follow: `{nextStepFile}` (step-05-review.md).
-- **IF [V] View TASKS.md:**
-  1. Read and display the full content of {tasksFile}.
-  2. Redisplay this menu (no state changes).
-- **IF [R] Re-implement task:**
-  - User specifies task. Re-apply {ruleRef} for that task.
-  - After done, redisplay this menu (section 6).
 - **IF [B] Back to Tasks:**
   1. Trim `stepsCompleted` in `{stateFile}` to keep entries up to `'step-02-design'`.
-  2. Clear `tasksCompleted` in `{stateFile}` (set to `[]`).
-  3. Read fully and follow: `./step-03-tasks.md`.
+  2. Read fully and follow: `./step-03-tasks.md`.
 - **IF [B2] Back to Design:**
   1. Trim `stepsCompleted` in `{stateFile}` to keep entries up to `'step-01-spec'`.
-  2. Clear `tasksCompleted` in `{stateFile}` (set to `[]`).
-  3. Read fully and follow: `./step-02-design.md`.
+  2. Read fully and follow: `./step-02-design.md`.
 - **IF [X] Exit:**
-  - Update `{stateFile}`: append `'step-04-implement'` to `stepsCompleted` (since all tasks are done).
+  - Update `{stateFile}`: append `'step-04-implement'` to `stepsCompleted` (since all tasks are done and verification passed).
   - Display: "Workflow paused. Run `/flow {spec_id}` to resume."
   - STOP.
 - **IF anything else:** Answer, then redisplay menu.
@@ -176,14 +160,14 @@ ONLY when [C] is selected and state is updated will you load and execute `{nextS
 ## SUCCESS CRITERIA
 
 - All domain and quality criteria per {ruleRef} are satisfied for each task.
-- All tasks from TASKS.md implemented.
-- `tasksCompleted` updated in state file after EACH task (not just at the end).
+- All tasks from TASKS.md implemented with checkboxes updated to `[x]`.
+- Verification gate passed.
+- IMPLEMENTATION-SUMMARY.md written to spec folder.
 - State updated before loading next step.
-- Menu presented after each task completion.
 
 ## FAILURE CONDITIONS
 
 - Proceeding without satisfying gate (TASKS approved).
-- Not updating `tasksCompleted` after each task.
-- Not presenting menu after each task completion.
+- Not running verification gate before allowing [C] Continue.
+- Not writing IMPLEMENTATION-SUMMARY.md.
 - Not updating state before loading next step.

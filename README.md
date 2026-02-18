@@ -61,7 +61,7 @@ STEP 2: DESIGN.md → Gate 2 (Tech Lead approves)
          ↓
 STEP 3: TASKS.md → Gate 3 (Tech Lead approves)
          ↓
-STEP 4: Implementation (per task)
+STEP 4: Implementation (all tasks)
          ↓
 STEP 5: Code Review → Gate 4 (Reviewer approves) → Done
 ```
@@ -129,10 +129,10 @@ After a bug is fixed or a change request is implemented, the framework can regen
 ### Implementation & Review Enhancements
 
 - **Test-accompaniment:** Every implementation task must produce tests alongside code; per-task validation gates (tests exist, pass, ACs satisfied) before marking complete.
-- **Dev Agent Record:** TASKS.md includes a structured Implementation Log, Decisions Made, and File List — updated after each task for audit and future Jira sync.
-- **Review continuation:** If code review finds issues, you can choose **[F] Fix automatically** (AI fixes and re-reviews) or **[A] Create action items** (injects `[AI-Review]` tasks into TASKS.md; step 4 prioritizes them on re-entry).
+- **Implementation summary:** After implementing all tasks, an IMPLEMENTATION-SUMMARY.md is written to the spec folder with files changed, key decisions, patterns established, and test results.
+- **Review continuation:** If code review finds issues, you can choose **[F] Fix automatically** (AI fixes and re-reviews) or **[B] Back to Implement** (return to step 4 with review findings as context).
 - **Issue count policy:** Review verdicts: &lt;3 issues (re-examine/justify), 3–10 (CHANGES REQUESTED), &gt;10 (BLOCKED — recommend re-implementing from TASKS rather than patching).
-- **Definition of Done:** Step 4 runs a checklist (see `.framework/checklists/definition-of-done.md`) before allowing Continue to review.
+- **Verification gate:** Step 4 runs a verification checklist (see `.framework/checklists/verification-checklist.md`) after implementation before allowing Continue to review.
 
 See [CHANGELOG.md](CHANGELOG.md) for the full list of changes in this release.
 
@@ -174,14 +174,16 @@ your-project/
 │   │   ├── CHANGE-PROPOSAL.template.md   # For /change
 │   │   └── SPEC-CURRENT.template.md      # Compiled spec view
 │   ├── checklists/
-│   │   └── definition-of-done.md         # Step 4 DoD before review
+│   │   ├── definition-of-done.md         # Step 4 DoD before review
+│   │   └── verification-checklist.md     # Step 4 verification gate
 │   └── CONSTITUTION.md          ← You create this
 ├── specs/
 │   └── XXX-description/
-│       ├── .workflow-state.md   ← Created by /flow (tracks progress)
+│       ├── .workflow-state.md          ← Created by /flow (tracks progress)
 │       ├── SPEC.md
 │       ├── DESIGN.md
 │       ├── TASKS.md
+│       ├── IMPLEMENTATION-SUMMARY.md   ← Written after implementation (step 4)
 │       └── REVIEW.md
 ├── bugs/
 │   └── BUG-XXX-description/
@@ -221,9 +223,8 @@ All steps can be run via the slash commands below. You can also invoke the rules
 ### Step 4: Implement
 
 ```
-/implement T1 from 001
+/implement 001
 ```
-Repeat for T2, T3, …
 
 ### Step 5: Review
 

@@ -48,7 +48,7 @@ project/
 │   │   ├── TASKS.template.md           # Template structure for task breakdown
 │   │   ├── CONSTITUTION.template.md    # Template structure for project constitution
 │   │   ├── BUG.template.md             # Template for bug reports
-│   │   ├── REVIEW.template.md          # Template for code review (incl. Dev Agent Record, Auto-Fix, Action Items)
+│   │   ├── REVIEW.template.md          # Template for code review (incl. Implementation Summary Cross-Reference, Auto-Fix)
 │   │   ├── BUG-REVIEW.template.md      # Template for bug review
 │   │   ├── workflow-state.template.md  # State file template for /flow (jiraTicket, sowRef)
 │   │   ├── CHANGE-PROPOSAL.template.md # Template for change proposals (classification, impact)
@@ -56,7 +56,8 @@ project/
 │   │   ├── CODEBASE-ANALYSIS.template.md   # Template for codebase analysis (legacy)
 │   │   └── LEGACY-ASSESSMENT.template.md   # Template for legacy assessment
 │   ├── checklists/
-│   │   └── definition-of-done.md      # Step 4 DoD before [C] Continue to review
+│   │   ├── definition-of-done.md      # Step 4 DoD before [C] Continue to review
+│   │   └── verification-checklist.md  # Step 4 verification gate after implementation
 │   └── CONSTITUTION.md                 # Project-level standards (THE source of truth)
 │
 ├── docs/
@@ -70,6 +71,7 @@ project/
 │   │   ├── SPEC.md                     # What to build
 │   │   ├── DESIGN.md                   # How to build it
 │   │   ├── TASKS.md                    # Implementation breakdown
+│   │   ├── IMPLEMENTATION-SUMMARY.md   # Implementation record (files, decisions, tests)
 │   │   └── REVIEW.md                   # Code review results
 │   │
 │   ├── 002-password-reset/
@@ -77,13 +79,15 @@ project/
 │   │   ├── SPEC.md
 │   │   ├── DESIGN.md
 │   │   ├── TASKS.md
+│   │   ├── IMPLEMENTATION-SUMMARY.md
 │   │   └── REVIEW.md
 │   │
 │   └── XXX-description/                # Pattern: {ID}-{slug}/
-│       ├── .workflow-state.md          # Tracks stepsCompleted + tasksCompleted
+│       ├── .workflow-state.md          # Tracks stepsCompleted + implementationAttempts
 │       ├── SPEC.md
 │       ├── DESIGN.md
 │       ├── TASKS.md
+│       ├── IMPLEMENTATION-SUMMARY.md
 │       └── REVIEW.md
 │
 ├── bugs/                               # Bug specifications (separate from features)
@@ -109,7 +113,7 @@ project/
 | `.cursor/rules/` | AI behavior rules (.mdc files) | Project setup |
 | `.framework/steps/` | Step files for `/flow` (BMAD-style menus) | Project setup |
 | `.framework/templates/` | Document templates | Project setup |
-| `.framework/checklists/` | Checklists (e.g. definition-of-done) | Project setup |
+| `.framework/checklists/` | Checklists (definition-of-done, verification-checklist) | Project setup |
 | `.framework/CONSTITUTION.md` | Project standards | Step 0 (once) |
 | `docs/legacy-analysis/` | Legacy codebase analysis | Step 0 (brownfield only) |
 | `specs/XXX/` | Feature specifications | Per spec |
@@ -145,7 +149,7 @@ project/
 | `SPEC.template.md` | Step 1 | Structure for specifications |
 | `DESIGN.template.md` | Step 2 | Structure for technical design |
 | `TASKS.template.md` | Step 3 | Structure for task breakdown |
-| `REVIEW.template.md` | Step 5 | Structure for code reviews (Dev Agent Record, Auto-Fix, Action Items) |
+| `REVIEW.template.md` | Step 5 | Structure for code reviews (Implementation Summary Cross-Reference, Auto-Fix) |
 | `BUG.template.md` | Bugfix Step 1 | Structure for bug reports |
 | `BUG-REVIEW.template.md` | Bugfix Step 3 | Structure for bug fix reviews |
 | `workflow-state.template.md` | `/flow` | State file (stepsCompleted, jiraTicket, sowRef) |
@@ -166,6 +170,7 @@ project/
 | `DESIGN.md` | Developer + AI | Tech Lead | How to build it |
 | `TASKS.md` | Developer + AI | Tech Lead | Implementation steps |
 | `BUG.md` | Developer + AI | Tech Lead | Bug report and fix plan |
+| `IMPLEMENTATION-SUMMARY.md` | Developer + AI | — (auto-generated) | Implementation record (files, decisions, tests) |
 | `REVIEW.md` (features) | Developer + AI | Reviewer | Adversarial code review |
 | `REVIEW.md` (bugs) | Developer + AI | Reviewer | Bug fix verification |
 | `SPEC-CURRENT.md` | Regeneration (after bug/CR) | — | Compiled spec (SPEC + bugs + amendments) |
@@ -209,13 +214,13 @@ BUG-003-timeout-on-large-upload/
 
 ### Document Files
 
-- Always UPPERCASE for framework documents: `SPEC.md`, `DESIGN.md`, `TASKS.md`, `REVIEW.md`
+- Always UPPERCASE for framework documents: `SPEC.md`, `DESIGN.md`, `TASKS.md`, `IMPLEMENTATION-SUMMARY.md`, `REVIEW.md`
 - Distinguishes framework docs from regular project docs
 
 ### Git Policy
 
 - `.workflow-state.md` is **committed to git** (not .gitignored). It provides team visibility into where each spec is in the workflow. It's a lightweight YAML frontmatter file — no noise in diffs.
-- All spec artifacts (`SPEC.md`, `DESIGN.md`, `TASKS.md`, `REVIEW.md`) are committed.
+- All spec artifacts (`SPEC.md`, `DESIGN.md`, `TASKS.md`, `IMPLEMENTATION-SUMMARY.md`, `REVIEW.md`) are committed.
 
 ---
 

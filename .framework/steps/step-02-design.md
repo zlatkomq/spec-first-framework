@@ -85,8 +85,7 @@ DESIGN.md is APPROVED.
   2. Redisplay this menu (no state changes).
 - **IF [B] Back to Spec:**
   1. Trim `stepsCompleted` in `{stateFile}` to remove entries after step-01 (keep only entries up to and including `'step-01-spec'`; remove `'step-02-design'` if present).
-  2. Clear `tasksCompleted` in `{stateFile}` (set to `[]`).
-  3. Read fully and follow: `./step-01-spec.md`.
+  2. Read fully and follow: `./step-01-spec.md`.
 - **IF [X] Exit:**
   - Update `{stateFile}`: append `'step-02-design'` to `stepsCompleted` (if DESIGN is APPROVED).
   - Display: "Workflow paused. Run `/flow {spec_id}` to resume."

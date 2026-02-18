@@ -210,15 +210,15 @@ Minimum 3 issues expected. If fewer, see Issue Count Justification below.
 
 ---
 
-## Dev Agent Record Cross-Reference
+## Implementation Summary Cross-Reference
 
 | Check | Result |
 |-------|--------|
-| Files in Dev Agent Record File List | [count] |
+| Files in IMPLEMENTATION-SUMMARY.md | [count] |
 | Files in git diff | [count] |
 | Discrepancies | [count] |
 
-| File | In Record | In Git | Status |
+| File | In Summary | In Git | Status |
 |------|-----------|--------|--------|
 | path/to/file | Yes/No | Yes/No | Match / Undocumented / False claim |
 
@@ -231,16 +231,6 @@ Minimum 3 issues expected. If fewer, see Issue Count Justification below.
 | Attempt | Issue # | Description | Fix Applied | Files Changed |
 |---------|---------|-------------|-------------|---------------|
 | | | | | |
-
----
-
-## Action Items Created
-
-[Populated only if [A] Action Items was chosen. Otherwise: "No action items created."]
-
-| Task | Severity | Description | File |
-|------|----------|-------------|------|
-| [AI-Review][Critical] ... | Critical | ... | path/to/file |
 
 ---
 

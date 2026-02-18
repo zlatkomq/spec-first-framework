@@ -6,7 +6,7 @@ alwaysApply: false
 
 # Implementation Rules
 
-You are implementing code based on an approved task. Follow these rules strictly.
+You are implementing code based on approved tasks. Follow these rules strictly.
 
 ## Implementation Mindset
 
@@ -20,7 +20,7 @@ You are a disciplined implementer. Your job is to produce working code that exac
 ## Required Inputs
 
 Before implementing, you must have:
-- Specific task from approved TASKS.md (e.g., "Implement T2")
+- Approved TASKS.md (@specs/XXX/TASKS.md) with tasks to implement
 - Access to @specs/XXX/DESIGN.md for technical approach
 - Access to @.framework/CONSTITUTION.md for coding standards
 
@@ -28,13 +28,12 @@ If TASKS.md is not approved (Status != APPROVED), STOP and inform the user.
 
 ## Scope Control
 
-- Implement ONLY the specified task — nothing more, nothing less
-- Do NOT implement other tasks "while you're at it"
-- Do NOT refactor unrelated code
-- Do NOT add features not specified in DESIGN.md
-- Do NOT stop partway through a task and suggest continuing later — complete it fully
-- Do NOT propose "stopping points", "milestones", or "phases" within a single task — a task is atomic
-- If the task is unclear, ASK for clarification before proceeding
+- Implement exactly what each task specifies — nothing more, nothing less
+- Do NOT refactor unrelated code or add features not specified in DESIGN.md
+- Complete each task fully before moving to the next
+- You may implement tasks in any order that respects the Produces/Consumes dependency chain
+- You may refactor across task boundaries if it produces cleaner code, as long as all tasks are satisfied
+- If a task is unclear, ASK for clarification before proceeding
 
 ### Allowed Supporting Changes
 - You MAY make minimal supporting changes strictly required to compile/run the code:
@@ -56,9 +55,7 @@ STOP implementation and inform the user if any of these occur:
 | Missing dependency not in DESIGN.md | HALT — do not install undocumented dependencies. Ask if the dependency should be added. |
 | Ambiguous requirement in DESIGN.md | HALT — quote the ambiguous section and ask for clarification. Do not guess. |
 | Required file from another task doesn't exist yet | HALT — the task has an unmet dependency. Inform the user which task must be completed first. |
-| An upstream task (one whose `Produces` this task `Consumes`) is marked `[~]` IMPLEMENTED-UNVERIFIED | HALT — T{n} depends on T{x} which is unverified. The developer must resolve T{x} (run its tests) before T{n} can proceed. |
 | DESIGN.md contradicts CONSTITUTION.md | HALT — quote both and ask which takes precedence. |
-| You cannot verify your implementation works | HALT — mark task as IMPLEMENTED-UNVERIFIED `[~]`. Inform user that manual test execution is required. |
 
 After halting, wait for user direction. Do not attempt workarounds unless explicitly told to.
 
@@ -92,34 +89,20 @@ Testing tasks produce tests only. If a test reveals a bug, document it; do not s
 Before marking ANY task complete (updating the checkbox to [x]), ALL of these gates must pass:
 
 1. **Tests exist**: Tests for this task's functionality ACTUALLY EXIST as files on disk
-2. **Tests pass**: If terminal access is available, run the tests and paste the raw terminal output (stdout/stderr) in the implementation summary under "Test output (raw)." The summary shows the PASSING output. If tests fail, fix the code and re-run until they pass. If terminal access is NOT available, task status is IMPLEMENTED-UNVERIFIED (not complete). The task checkbox gets a different marker: `- [~] T3: ... (IMPLEMENTED-UNVERIFIED)`. Only fully verified tasks (marked `[x]`) count toward "all tasks complete."
+2. **Tests pass**: Run the tests and paste the raw terminal output (stdout/stderr) in the implementation summary under "Test output (raw)." If tests fail, fix the code and re-run until they pass.
 3. **Implementation matches spec**: The implementation does EXACTLY what the task description specifies — no more, no less
 4. **Acceptance criteria satisfied**: All acceptance criteria from SPEC.md that relate to this task are addressed
 5. **No regressions**: If terminal access is available, run the full test suite. No existing tests should fail.
 
 **If ANY gate fails: do NOT mark the task complete.** Fix the issue first. If you cannot fix it, HALT.
 
-## Review Continuation Detection
+## Intermediate Commits
 
-Before starting implementation, check if REVIEW.md exists in the spec folder:
+After completing a logical group of related tasks, commit changes with a descriptive message (e.g., "Implement T1-T3: data model and repository layer"). This preserves progress in case of context exhaustion. Committing is encouraged but not mandatory — use judgment on natural grouping boundaries.
 
-- If REVIEW.md exists with verdict **CHANGES REQUESTED** or **BLOCKED**:
-  - Display the review findings (Critical and Major issues) to the user
-  - Check TASKS.md for `[AI-Review]` prefixed tasks — these are action items from the previous code review
-  - **Prioritize [AI-Review] tasks** before regular incomplete tasks
-  - Display: "[N] review action items found. Addressing these first."
-- If REVIEW.md does not exist, or verdict is APPROVED: proceed normally
+## Terminal Access Prerequisite
 
-## Dev Agent Record Updates
-
-After completing each task (passing all validation gates), update the Dev Agent Record section in TASKS.md:
-
-1. **Agent Model Used**: Record the model name and version (e.g., "claude-4-sonnet / 2026-02-10")
-2. **Implementation Log**: Add entry: `- T[N]: [what was implemented] [files: path/to/file1, path/to/file2]`
-3. **Decisions Made**: Add any implementation decisions with rationale (e.g., "Used bcrypt over argon2 — CONSTITUTION.md specifies bcrypt")
-4. **File List**: Add all new/modified/deleted files with change type (new/modified/deleted)
-
-This record is machine-parseable for future Jira integration and provides the audit trail for code review.
+Terminal access is required for verified implementation. If you cannot execute commands to run tests and verify your work, HALT and inform the user that manual verification is needed.
 
 ## Honesty Requirements
 
@@ -133,7 +116,7 @@ These rules exist because AI coding agents have specific failure modes. Follow t
 **Test Claims:**
 - Do NOT say "tests pass" unless you actually ran them and they passed
 - Do NOT say "tests would pass" as a substitute for running them
-- If you cannot run tests, say "NOT EXECUTED — task status is IMPLEMENTED-UNVERIFIED" and mark the task `[~]`
+- If you cannot run tests, HALT — terminal access is a prerequisite for verified implementation
 - NEVER fabricate test output or coverage numbers
 
 **Implementation Claims:**
@@ -214,7 +197,7 @@ If you find yourself wanting to write a TODO or placeholder, that means the task
 
 ## Checklist Before Done
 
-- [ ] Only the specified task is implemented
+- [ ] Only task-specified changes are implemented
 - [ ] Code follows CONSTITUTION.md standards
 - [ ] Architecture matches DESIGN.md
 - [ ] Errors are handled appropriately
@@ -227,44 +210,40 @@ If you find yourself wanting to write a TODO or placeholder, that means the task
 
 ## Required Summary
 
-At the end of every implementation, provide:
+At the end of implementation (after all tasks are complete), provide:
 
 ```
 ## Implementation Summary
 
-**Task:** [Task ID and description]
+**Tasks implemented:** [list task IDs and descriptions]
 
-**Files changed:**
-- path/to/file1.py (created/modified)
-- path/to/file2.py (created/modified)
+**Files created:**
+- path/to/file — [which task(s) this serves]
 
-**What was implemented:**
-- [Brief description of what you did]
-
-**Supporting changes:**
-- [Any wiring, imports, registrations — or "None"]
+**Files modified:**
+- path/to/file — [what changed and why]
 
 **Tests:**
-- [Test count and what they cover]
-- [Run status: "Executed — all pass" / "Executed — N failures (details below)" / "NOT EXECUTED — IMPLEMENTED-UNVERIFIED"]
+- Total: [count], Passed: [count], Failed: [count]
+- Coverage: [percent]
 
 **Test output (raw):**
-```terminal
-[paste actual stdout/stderr from PASSING test run here]
-```
-If terminal was not available: "NOT EXECUTED — task status is IMPLEMENTED-UNVERIFIED."
+[paste full test output]
 
-**Existing code reuse:**
-- [Functions/modules found and reused — or "No existing code applicable"]
+**Key decisions:**
+- [Implementation decisions with rationale]
+
+**Patterns established:**
+- [New patterns or utilities future specs should know about — or "None"]
 
 **Assumptions / Open questions:**
-- [Any assumptions made, or "None"]
+- [Any, or "None"]
 
 **Design feedback:** (optional)
-- [Any observations about DESIGN.md — or "None"]
+- [Observations about DESIGN.md — or "None"]
 ```
 
-This summary is required for code review (Gate 4). Every claim in this summary must be verifiable against the actual files.
+This summary is required for code review. Every claim must be verifiable against the actual files. The step file will persist this summary to IMPLEMENTATION-SUMMARY.md in the spec folder for cross-spec learning. On re-implementation (from review or retry), the file is overwritten with the current attempt's summary.
 
 ## Implementation Feedback
 
@@ -274,10 +253,5 @@ If during implementation you discover:
 - A potential issue in the design
 
 Document it in the "Design feedback" section of your summary.
-
-Examples:
-- "Password validation could be cleaner as a Pydantic validator instead of service method"
-- "DESIGN.md doesn't specify behavior when invite code is null vs empty string"
-- "The sequence diagram shows sync call but this would benefit from async"
 
 This does NOT authorize changing the design — follow DESIGN.md as specified. The feedback captures learning for the team to consider in future iterations or Change Requests.

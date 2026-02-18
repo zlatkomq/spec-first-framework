@@ -67,7 +67,7 @@
 
 #### Per-Task Impact (if implementation is in progress)
 
-<!-- Include only if tasksCompleted is non-empty in workflow state -->
+<!-- Include only if any tasks are marked [x] in TASKS.md -->
 
 | Task | Status Before CR | Classification | Reason |
 |------|-----------------|----------------|--------|
