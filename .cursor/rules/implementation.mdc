@@ -91,8 +91,9 @@ Before marking ANY task complete (updating the checkbox to [x]), ALL of these ga
 1. **Tests exist**: Tests for this task's functionality ACTUALLY EXIST as files on disk
 2. **Tests pass**: Run the tests and paste the raw terminal output (stdout/stderr) in the implementation summary under "Test output (raw)." If tests fail, fix the code and re-run until they pass.
 3. **Implementation matches spec**: The implementation does EXACTLY what the task description specifies — no more, no less
-4. **Acceptance criteria satisfied**: All acceptance criteria from SPEC.md that relate to this task are addressed
-5. **No regressions**: If terminal access is available, run the full test suite. No existing tests should fail.
+4. **Produces match**: If this task declares a Produces signature in TASKS.md, verify your implementation matches that signature exactly (method name, parameter types, return type).
+5. **Acceptance criteria satisfied**: All acceptance criteria from SPEC.md that relate to this task are addressed
+6. **No regressions**: If terminal access is available, run the full test suite. No existing tests should fail.
 
 **If ANY gate fails: do NOT mark the task complete.** Fix the issue first. If you cannot fix it, HALT.
 

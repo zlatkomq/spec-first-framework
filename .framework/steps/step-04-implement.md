@@ -39,9 +39,8 @@ Implement all incomplete tasks from TASKS.md. Run a verification gate. Write the
 
 ### 1. Load inputs
 
-- Read {tasksFile} completely. Extract the ordered list of tasks (T1, T2, T3, …).
-- Read {designFile} (for architecture and component details).
-- Read {constitutionRef} (for coding standards).
+- Read {tasksFile} completely.
+- Read {designFile} and {constitutionRef}.
 - Read `{stateFile}` frontmatter. Extract `stepsCompleted` and `implementationAttempts`.
 - Count incomplete tasks (`[ ]` checkboxes in {tasksFile}).
 
@@ -51,44 +50,30 @@ Check context to determine which entry state applies:
 
 **(A) Fresh entry** — no REVIEW.md with CHANGES REQUESTED/BLOCKED findings, and `implementationAttempts` = 0:
 
-Display implementation brief: {N} tasks, key components from {designFile}, AC count from {specFile}.
-
 - If incomplete tasks > 0: `[S] Start implementation` | `[X] Exit`
 - If all tasks already `[x]`: skip to section 4 (verification gate).
 
 **(B) Retry** — `implementationAttempts` > 0 and < 3:
 
 Display the previous verification failures.
-
-```
 Implementation attempt {implementationAttempts} of 3 failed verification.
-
 [R] Retry implementation (attempt {implementationAttempts+1} of 3)
 [X] Exit
-```
 
 **(C) Re-entry from review** — `{reviewFile}` exists with verdict CHANGES REQUESTED or BLOCKED:
 
 - Reset `implementationAttempts` to `0` in `{stateFile}`.
 - Display the review findings (Critical and Major issues).
-
-```
 Review findings from previous cycle. Address these during implementation.
-
 [S] Start implementation addressing review findings
 [X] Exit
-```
 
 **(D) Exhausted** — `implementationAttempts` >= 3:
-
-```
 Implementation has failed verification 3 times.
-
 [M] Manual intervention — user runs verification and confirms results
 [B] Back to Tasks — re-edit TASKS.md (step 3)
 [B2] Back to Design — re-edit DESIGN.md (step 2)
 [X] Exit
-```
 
 **Menu handling for entry states:**
 
@@ -106,15 +91,7 @@ Apply {ruleRef} with full context ({tasksFile}, {constitutionRef}, {designFile},
 - **Fresh entry or retry:** Delete any existing `{summaryFile}` — per-task entries are rebuilt from scratch as tasks complete.
 - **Re-entry from review:** Keep the existing `{summaryFile}`. It accurately reflects the implementation that passed verification. The AI reads it for full context, then appends entries only for fix tasks.
 
-The AI:
-
-1. Reads {tasksFile} to identify all incomplete tasks (`[ ]` checkboxes).
-2. **Before starting each task:** if `{summaryFile}` exists, re-read it as the authoritative record of patterns, decisions, and files from prior tasks. Do not rely on conversation history for cross-task context.
-3. Implements each task in dependency order (following the Produces/Consumes chain).
-4. Updates each task's checkbox to `[x]` in {tasksFile} as it completes.
-5. **After completing each task:** appends a per-task anchor entry to `{summaryFile}` (format defined in {ruleRef}). Creates the file if it doesn't exist yet.
-6. After completing a logical group of tasks, commits changes (encouraged per {ruleRef}, not mandatory).
-7. When all tasks are done, proceeds to section 4.
+Implement all incomplete tasks per {ruleRef}. When all tasks are done, proceed to section 4.
 
 ### 4. Verification gate
 
@@ -130,15 +107,11 @@ Finalize `{summaryFile}`: the per-task anchor entries already exist from section
 ### 6. All tasks complete — Present MENU
 
 Display:
-
-```
 All {total} tasks implemented. Verification: PASS.
-
 [C] Continue — proceed to Code Review (Step 5 of 5)
 [B] Back to Tasks — re-edit TASKS.md (step 3)
 [B2] Back to Design — re-edit DESIGN.md (step 2)
 [X] Exit — pause workflow; resume later with /flow
-```
 
 ### Menu handling
 
