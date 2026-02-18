@@ -47,6 +47,7 @@ Always use the template structure from @.framework/templates/SPEC.template.md
 - Each criterion must be testable (pass/fail)
 - Cover happy path and key edge cases
 - No implementation details (how), only behavior (what)
+- Minimum coverage: every spec must include acceptance criteria for at least the happy path, one validation/input failure case, and one boundary condition (e.g., empty state, no data, unauthorized access). The AI may add more based on complexity — this is a floor, not a ceiling.
 - Use checkboxes for tracking: `- [ ]`
 
 ### Scope
@@ -62,6 +63,7 @@ Always use the template structure from @.framework/templates/SPEC.template.md
 ### Open Questions
 - Unresolved decisions that need answers
 - Format as checklist: `- [ ] Question here?`
+- If any acceptance criterion or scope boundary is based on an assumption rather than an explicit user-provided requirement, it must also appear as an Open Question. Do not present assumptions as decisions — surface them for human resolution. A spec with zero Open Questions is valid only if all requirements were explicitly provided by the user.
 - These must be resolved before moving to DESIGN.md
 
 ### Bug History
