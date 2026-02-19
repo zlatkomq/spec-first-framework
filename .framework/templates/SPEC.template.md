@@ -18,7 +18,7 @@
 
 ## Overview
 
-[2-3 sentences: What is this and why are we building/fixing it?]
+[What is this and why are we building/fixing it?]
 
 ---
 

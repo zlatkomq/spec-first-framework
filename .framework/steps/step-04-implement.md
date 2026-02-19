@@ -21,7 +21,7 @@ summaryFile: '{spec_folder}/IMPLEMENTATION-SUMMARY.md'
 
 ## STEP GOAL
 
-Implement all incomplete tasks from TASKS.md. Run a verification gate. Write the implementation summary to a persistent file for cross-spec learning.
+Implement all incomplete tasks from TASKS.md. Run a verification gate. Write the implementation summary for cross-spec learning.
 
 ## RULES
 
@@ -33,120 +33,75 @@ Implement all incomplete tasks from TASKS.md. Run a verification gate. Write the
 
 ## GATE
 
-- Prerequisite: per {ruleRef}, required inputs must be satisfied (TASKS approved). If not met: display a short message that implementation cannot start until TASKS is approved; offer `[B] Back to Tasks (step 3)` | `[X] Exit`. On [B]: load and follow `./step-03-tasks.md`. On [X]: STOP.
+Check gate per {ruleRef}. If gate fails: `[B] Back to Tasks (step 3)` | `[X] Exit`. On [B]: load `./step-03-tasks.md`. On [X]: STOP.
 
 ## SEQUENCE
 
 ### 1. Load inputs
 
-- Read {tasksFile} completely.
-- Read {designFile} and {constitutionRef}.
-- Read `{stateFile}` frontmatter. Extract `stepsCompleted` and `implementationAttempts`.
-- Count incomplete tasks (`[ ]` checkboxes in {tasksFile}).
+- Read {tasksFile}, {designFile}, {constitutionRef}.
+- Read `{stateFile}` frontmatter: extract `stepsCompleted` and `implementationAttempts`.
+- Count incomplete tasks (`[ ]` in {tasksFile}).
 
 ### 2. Determine entry state
 
-Check context to determine which entry state applies:
-
-**(A) Fresh entry** — no REVIEW.md with CHANGES REQUESTED/BLOCKED findings, and `implementationAttempts` = 0:
-
-- If incomplete tasks > 0: `[S] Start implementation` | `[X] Exit`
-- If all tasks already `[x]`: skip to section 4 (verification gate).
+**(A) Fresh entry** — no {reviewFile} with CHANGES REQUESTED/BLOCKED, `implementationAttempts` = 0:
+- Incomplete tasks > 0: `[S] Start implementation` | `[X] Exit`
+- All tasks `[x]`: skip to section 4.
 
 **(B) Retry** — `implementationAttempts` > 0 and < 3:
+- Display previous verification failures.
+- `[R] Retry implementation (attempt {implementationAttempts+1} of 3)` | `[X] Exit`
 
-Display the previous verification failures.
-Implementation attempt {implementationAttempts} of 3 failed verification.
-[R] Retry implementation (attempt {implementationAttempts+1} of 3)
-[X] Exit
-
-**(C) Re-entry from review** — `{reviewFile}` exists with verdict CHANGES REQUESTED or BLOCKED:
-
-- Reset `implementationAttempts` to `0` in `{stateFile}`.
-- Display the review findings (Critical and Major issues).
-Review findings from previous cycle. Address these during implementation.
-[S] Start implementation addressing review findings
-[X] Exit
+**(C) Re-entry from review** — {reviewFile} exists with CHANGES REQUESTED or BLOCKED:
+- Reset `implementationAttempts` to 0 in {stateFile}.
+- Display review findings (Critical and Major issues).
+- `[S] Start implementation addressing review findings` | `[X] Exit`
 
 **(D) Exhausted** — `implementationAttempts` >= 3:
-Implementation has failed verification 3 times.
-[M] Manual intervention — user runs verification and confirms results
-[B] Back to Tasks — re-edit TASKS.md (step 3)
-[B2] Back to Design — re-edit DESIGN.md (step 2)
-[X] Exit
+- `[M] Manual intervention` | `[B] Back to Tasks (step 3)` | `[B2] Back to Design (step 2)` | `[X] Exit`
 
-**Menu handling for entry states:**
-
-- **IF [S] or [R]:** Proceed to section 3 (implementation session).
-- **IF [M]:** User provides manual verification results. If all pass → proceed to section 5. If failures → STOP.
-- **IF [B]:** Trim `stepsCompleted` in `{stateFile}` to keep entries up to `'step-02-design'`. Load and follow `./step-03-tasks.md`.
-- **IF [B2]:** Trim `stepsCompleted` in `{stateFile}` to keep entries up to `'step-01-spec'`. Load and follow `./step-02-design.md`.
-- **IF [X]:** STOP.
+**Menu routing:**
+- **[S] or [R]:** Proceed to section 3.
+- **[M]:** User provides manual verification results. If all pass → section 5. If failures → STOP.
+- **[B]:** Trim `stepsCompleted` to keep up to `'step-02-design'`. Load `./step-03-tasks.md`.
+- **[B2]:** Trim `stepsCompleted` to keep up to `'step-01-spec'`. Load `./step-02-design.md`.
+- **[X]:** STOP.
 
 ### 3. Implementation session
 
 Apply {ruleRef} with full context ({tasksFile}, {constitutionRef}, {designFile}, {specFile} for AC reference).
 
 **Summary file lifecycle:**
-- **Fresh entry or retry:** Delete any existing `{summaryFile}` — per-task entries are rebuilt from scratch as tasks complete.
-- **Re-entry from review:** Keep the existing `{summaryFile}`. It accurately reflects the implementation that passed verification. The AI reads it for full context, then appends entries only for fix tasks.
+- **Fresh entry or retry:** Delete existing `{summaryFile}` — rebuild from scratch.
+- **Re-entry from review:** Keep existing `{summaryFile}`. Append only fix task entries.
 
-Implement all incomplete tasks per {ruleRef}. When all tasks are done, proceed to section 4.
+Implement all incomplete tasks per {ruleRef}. When all done, proceed to section 4.
 
 ### 4. Verification gate
 
-Run the verification checklist from {verificationChecklist}.
+Run {verificationChecklist}.
 
-- **If PASS:** Proceed to section 5.
-- **If FAIL:** Increment `implementationAttempts` in `{stateFile}`. Display the specific failures. Return to section 2 (retry path).
+- **PASS:** Proceed to section 5.
+- **FAIL:** Increment `implementationAttempts` in {stateFile}. Display failures. Return to section 2 (retry path).
 
 ### 5. Finalize implementation summary
 
-Finalize `{summaryFile}`: the per-task anchor entries already exist from section 3. Append (or replace, on re-entry from review) the aggregate sections (format defined in {ruleRef}): consolidated file list, test totals with raw output, key decisions, patterns, and design feedback. REVIEW.md and Auto-Fix Tracking provide the audit trail for prior attempts.
+Finalize `{summaryFile}`: per-task anchor entries exist from section 3. Append aggregate sections per {ruleRef}: consolidated file list, test totals with raw output, key decisions, patterns, design feedback.
 
-### 6. All tasks complete — Present MENU
+### 6. Present MENU
 
-Display:
+```
 All {total} tasks implemented. Verification: PASS.
+
 [C] Continue — proceed to Code Review (Step 5 of 5)
 [B] Back to Tasks — re-edit TASKS.md (step 3)
 [B2] Back to Design — re-edit DESIGN.md (step 2)
 [X] Exit — pause workflow; resume later with /flow
+```
 
-### Menu handling
-
-- **IF [C] Continue:**
-  1. Update `{stateFile}`: append `'step-04-implement'` to `stepsCompleted`.
-  2. Read fully and follow: `{nextStepFile}` (step-05-review.md).
-- **IF [B] Back to Tasks:**
-  1. Trim `stepsCompleted` in `{stateFile}` to keep entries up to `'step-02-design'`.
-  2. Read fully and follow: `./step-03-tasks.md`.
-- **IF [B2] Back to Design:**
-  1. Trim `stepsCompleted` in `{stateFile}` to keep entries up to `'step-01-spec'`.
-  2. Read fully and follow: `./step-02-design.md`.
-- **IF [X] Exit:**
-  - Update `{stateFile}`: append `'step-04-implement'` to `stepsCompleted` (since all tasks are done and verification passed).
-  - Display: "Workflow paused. Run `/flow {spec_id}` to resume."
-  - STOP.
-- **IF anything else:** Answer, then redisplay menu.
-
-## CRITICAL COMPLETION NOTE
-
-ONLY when [C] is selected and state is updated will you load and execute `{nextStepFile}`.
-
----
-
-## SUCCESS CRITERIA
-
-- All domain and quality criteria per {ruleRef} are satisfied for each task.
-- All tasks from TASKS.md implemented with checkboxes updated to `[x]`.
-- Verification gate passed.
-- IMPLEMENTATION-SUMMARY.md incrementally built during implementation and finalized after verification.
-- State updated before loading next step.
-
-## FAILURE CONDITIONS
-
-- Proceeding without satisfying gate (TASKS approved).
-- Not running verification gate before allowing [C] Continue.
-- Not writing IMPLEMENTATION-SUMMARY.md.
-- Not updating state before loading next step.
+- **[C]:** Update `{stateFile}`: append `'step-04-implement'` to `stepsCompleted`. Load and follow `{nextStepFile}`.
+- **[B]:** Trim `stepsCompleted` to keep up to `'step-02-design'`. Load `./step-03-tasks.md`.
+- **[B2]:** Trim `stepsCompleted` to keep up to `'step-01-spec'`. Load `./step-02-design.md`.
+- **[X]:** Update `{stateFile}`: append `'step-04-implement'` to `stepsCompleted`. Display: "Workflow paused. Run `/flow {spec_id}` to resume." STOP.
+- **Anything else:** Answer, then redisplay menu.

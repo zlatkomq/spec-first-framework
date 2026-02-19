@@ -17,7 +17,7 @@
 
 ## Overview
 
-[1-2 sentences: Brief summary of implementation approach from DESIGN.md]
+[Brief summary of implementation approach from DESIGN.md]
 
 ---
 

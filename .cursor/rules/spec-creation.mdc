@@ -31,16 +31,12 @@ Always use the template structure from @.framework/templates/SPEC.template.md
 - Date: today's date
 
 ### Overview
-- Maximum 3 sentences
 - Must answer: What is this? Why are we building/fixing it?
 - No technical implementation details
 
 ### User Stories
 - Format: "As a [role], I want to [action], so that [benefit]"
 - Minimum 1 user story
-- Role must be a real user type, not "user" or "system"
-- Action must be concrete and observable
-- Benefit must explain business value
 
 ### Acceptance Criteria
 - Format: "Given [context], when [action], then [result]"

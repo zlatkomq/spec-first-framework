@@ -18,7 +18,7 @@
 
 ## Overview
 
-[1-2 paragraphs: What is the technical approach? How will this be built at a high level?]
+[What is the technical approach? How will this be built at a high level?]
 
 ---
 

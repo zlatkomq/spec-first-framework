@@ -32,7 +32,7 @@ Create (or update) DESIGN.md by applying the design-creation rules and template.
 
 ## GATE
 
-- Prerequisite: per {ruleRef}, required inputs must be satisfied (SPEC approved). If not met: display a short message that DESIGN cannot be created until SPEC is approved; offer `[B] Back to Spec (step 1)` | `[X] Exit`. On [B]: load and follow `./step-01-spec.md`. On [X]: STOP.
+Check gate per {ruleRef}. If gate fails: `[B] Back to Spec (step 1)` | `[X] Exit`. On [B]: load `./step-01-spec.md`. On [X]: STOP.
 
 ## SEQUENCE
 
@@ -47,14 +47,12 @@ Create (or update) DESIGN.md by applying the design-creation rules and template.
 
 ### 3. Approval gate
 
-- Present the completed DESIGN.md to the user.
+- Present DESIGN.md to the user.
 - Ask: "Review the DESIGN. Approve it (say 'approve' or 'yes') or tell me what to change."
-- If user approves: update DESIGN.md Status → APPROVED.
-- If user requests changes: apply, re-save, re-present, loop.
+- If user approves: update Status → APPROVED.
+- If user requests changes: apply, re-save, re-present. Loop until approved.
 
 ### 4. Present MENU
-
-Display:
 
 ```
 DESIGN.md is APPROVED.
@@ -65,37 +63,8 @@ DESIGN.md is APPROVED.
 [X] Exit — pause workflow; resume later with /flow
 ```
 
-### Menu handling
-
-- **IF [C] Continue:**
-  1. Update `{stateFile}`: append `'step-02-design'` to `stepsCompleted`.
-  2. Read fully and follow: `{nextStepFile}` (step-03-tasks.md).
-- **IF [V] View SPEC.md:**
-  1. Read and display the full content of {specFile}.
-  2. Redisplay this menu (no state changes).
-- **IF [B] Back to Spec:**
-  1. Trim `stepsCompleted` in `{stateFile}` to remove entries after step-01 (keep only entries up to and including `'step-01-spec'`; remove `'step-02-design'` if present).
-  2. Read fully and follow: `./step-01-spec.md`.
-- **IF [X] Exit:**
-  - Update `{stateFile}`: append `'step-02-design'` to `stepsCompleted` (if DESIGN is APPROVED).
-  - Display: "Workflow paused. Run `/flow {spec_id}` to resume."
-  - STOP.
-- **IF anything else:** Answer, then redisplay menu.
-
-## CRITICAL COMPLETION NOTE
-
-ONLY when [C] is selected and state is updated will you load and execute `{nextStepFile}`.
-
----
-
-## SUCCESS CRITERIA
-
-- All domain and quality criteria per {ruleRef} are satisfied.
-- Status APPROVED before continuing.
-- State updated before loading next step.
-
-## FAILURE CONDITIONS
-
-- Proceeding without satisfying gate (SPEC approved).
-- Not updating state before loading next step.
-- Loading next step before user selects [C].
+- **[C]:** Update `{stateFile}`: append `'step-02-design'` to `stepsCompleted`. Load and follow `{nextStepFile}`.
+- **[V]:** Display {specFile}. Redisplay menu.
+- **[B]:** Trim `stepsCompleted` in `{stateFile}` to keep only up to `'step-01-spec'`. Load `./step-01-spec.md`.
+- **[X]:** Update `{stateFile}`: append `'step-02-design'` to `stepsCompleted` (if approved). Display: "Workflow paused. Run `/flow {spec_id}` to resume." STOP.
+- **Anything else:** Answer, then redisplay menu.

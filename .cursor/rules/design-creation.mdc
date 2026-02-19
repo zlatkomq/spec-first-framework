@@ -31,7 +31,6 @@ Always use the template structure from @.framework/templates/DESIGN.template.md
 - Date: today's date
 
 ### Overview
-- 1-2 paragraphs maximum
 - Explain the technical approach at a high level
 - Must address HOW to build what SPEC.md describes
 - Reference CONSTITUTION.md patterns and standards

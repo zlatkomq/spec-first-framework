@@ -58,7 +58,6 @@ Always use the template structure from @.framework/templates/TASKS.template.md
 - Date: today's date
 
 ### Overview
-- 1-2 sentences maximum
 - Summarize the implementation approach from DESIGN.md
 - Do not repeat DESIGN.md content - just reference it
 
@@ -143,18 +142,16 @@ Before completing, verify:
 
 ## Adversarial Self-Validation
 
-After generating TASKS.md, run this internal check BEFORE presenting to the user:
+After generating TASKS.md, run ALL checks below BEFORE presenting to the user. Fix any issues found. Note significant findings when presenting.
 
-1. **Reinvention check**: Are any tasks creating functionality that already exists in the codebase? Search for similar functions/modules before assuming new code is needed.
-2. **Vagueness check**: Are any task descriptions ambiguous enough that two developers might implement them differently? If yes, make them more specific.
-3. **Coverage check**: Does every acceptance criterion from SPEC.md have at least one task that addresses it? Flag any uncovered ACs.
-4. **Test coverage check**: Is there a test task for every significant component? Flag components without dedicated test tasks.
-5. **Dependency check**: Are tasks ordered correctly? Would any task fail because a prerequisite task hasn't been completed yet?
-6. **Contract check**: Does every inter-task dependency have matching Produces/Consumes? If T5 calls T3's output, T3 must declare it and T5 must reference T3 by ID. If Produces cannot be derived from DESIGN.md, flag the design as insufficiently detailed.
-7. **Integration coverage check**: Count New components in DESIGN.md's Architecture section. If count > 1 and they interact, does at least one test task test them together without mocks? If not, add one. Do not rationalize skipping this — check the component table mechanically.
-8. **Reinvention check (cross-spec)**: For each New component in this spec's tasks, did a previous spec already create something similar? Check the previous spec's IMPLEMENTATION-SUMMARY.md File List and key source files. If overlap exists, reference the existing code in a Consumes declaration rather than recreating it.
-
-If any issues are found, fix them in TASKS.md before presenting. Note any significant findings when presenting the document to the user.
+- [ ] **Reinvention**: No tasks duplicate functionality already in the codebase
+- [ ] **Vagueness**: Every task is specific enough that two developers would implement it the same way
+- [ ] **AC coverage**: Every SPEC.md acceptance criterion has at least one task addressing it
+- [ ] **Test coverage**: Every significant component has a dedicated test task
+- [ ] **Dependency order**: No task depends on a prerequisite that comes later in the sequence
+- [ ] **Contract completeness**: Every inter-task dependency has matching Produces/Consumes declarations
+- [ ] **Integration coverage**: If DESIGN.md has >1 New interacting components, at least one test task tests them together without mocks
+- [ ] **Cross-spec reinvention**: No New component duplicates something from a previous spec's IMPLEMENTATION-SUMMARY.md
 
 ## Output
 

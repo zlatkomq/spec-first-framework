@@ -32,7 +32,7 @@ Create (or update) TASKS.md by applying the task-creation rules and template. Br
 
 ## GATE
 
-- Prerequisite: per {ruleRef}, required inputs must be satisfied (DESIGN approved). If not met: display a short message that TASKS cannot be created until DESIGN is approved; offer `[B] Back to Design (step 2)` | `[X] Exit`. On [B]: load and follow `./step-02-design.md`. On [X]: STOP.
+Check gate per {ruleRef}. If gate fails: `[B] Back to Design (step 2)` | `[X] Exit`. On [B]: load `./step-02-design.md`. On [X]: STOP.
 
 ## SEQUENCE
 
@@ -44,29 +44,23 @@ Create (or update) TASKS.md by applying the task-creation rules and template. Br
 
 ### 2. Create TASKS.md
 
-- Apply {ruleRef} using {templateRef}. This includes:
-  - Context gathering (previous spec intelligence, git history analysis)
-  - Task creation with DESIGN.md traceability
-  - Adversarial self-validation (reinvention check, vagueness check, coverage check)
+- Apply {ruleRef} using {templateRef}. This includes context gathering (previous spec intelligence, git history) and adversarial self-validation per the rule.
 - Save to `{outputFile}` with Status: DRAFT.
 
-### 2.5. Present validation findings
+### 3. Present validation findings
 
-- If the adversarial self-validation in {ruleRef} found any issues, present them alongside the TASKS.md:
-  - "The following gaps were found during self-validation and have been addressed: [list]"
-  - "The following potential concerns remain for your review: [list if any]"
-- This gives the user visibility into what the AI caught and fixed automatically.
+- If the adversarial self-validation in {ruleRef} found issues, present them alongside TASKS.md:
+  - "Gaps found and addressed: [list]"
+  - "Potential concerns for your review: [list if any]"
 
-### 3. Approval gate
+### 4. Approval gate
 
-- Present the completed TASKS.md to the user.
+- Present TASKS.md to the user.
 - Ask: "Review the TASKS. Approve it (say 'approve' or 'yes') or tell me what to change."
-- If user approves: update TASKS.md Status → APPROVED.
-- If user requests changes: apply, re-save, re-present, loop.
+- If user approves: update Status → APPROVED.
+- If user requests changes: apply, re-save, re-present. Loop until approved.
 
-### 4. Present MENU
-
-Display:
+### 5. Present MENU
 
 ```
 TASKS.md is APPROVED.
@@ -78,40 +72,9 @@ TASKS.md is APPROVED.
 [X] Exit — pause workflow; resume later with /flow
 ```
 
-### Menu handling
-
-- **IF [C] Continue:**
-  1. Update `{stateFile}`: append `'step-03-tasks'` to `stepsCompleted`.
-  2. Read fully and follow: `{nextStepFile}` (step-04-implement.md).
-- **IF [V] View DESIGN.md:**
-  1. Read and display the full content of {designFile}.
-  2. Redisplay this menu (no state changes).
-- **IF [B] Back to Design:**
-  1. Trim `stepsCompleted` in `{stateFile}` to keep only entries up to `'step-01-spec'`.
-  2. Read fully and follow: `./step-02-design.md`.
-- **IF [B2] Back to Spec:**
-  1. Set `stepsCompleted` in `{stateFile}` to `[]` (empty).
-  2. Read fully and follow: `./step-01-spec.md`.
-- **IF [X] Exit:**
-  - Update `{stateFile}`: append `'step-03-tasks'` to `stepsCompleted` (if TASKS is APPROVED).
-  - Display: "Workflow paused. Run `/flow {spec_id}` to resume."
-  - STOP.
-- **IF anything else:** Answer, then redisplay menu.
-
-## CRITICAL COMPLETION NOTE
-
-ONLY when [C] is selected and state is updated will you load and execute `{nextStepFile}`.
-
----
-
-## SUCCESS CRITERIA
-
-- All domain and quality criteria per {ruleRef} are satisfied.
-- Status APPROVED before continuing.
-- State updated before loading next step.
-
-## FAILURE CONDITIONS
-
-- Proceeding without satisfying gate (DESIGN approved).
-- Not updating state before loading next step.
-- Loading next step before user selects [C].
+- **[C]:** Update `{stateFile}`: append `'step-03-tasks'` to `stepsCompleted`. Load and follow `{nextStepFile}`.
+- **[V]:** Display {designFile}. Redisplay menu.
+- **[B]:** Trim `stepsCompleted` in `{stateFile}` to keep only up to `'step-01-spec'`. Load `./step-02-design.md`.
+- **[B2]:** Set `stepsCompleted` to `[]`. Load `./step-01-spec.md`.
+- **[X]:** Update `{stateFile}`: append `'step-03-tasks'` to `stepsCompleted` (if approved). Display: "Workflow paused. Run `/flow {spec_id}` to resume." STOP.
+- **Anything else:** Answer, then redisplay menu.

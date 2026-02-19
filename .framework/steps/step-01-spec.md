@@ -30,31 +30,27 @@ Create (or update) SPEC.md for this feature by applying the spec-creation rules 
 
 ## GATE
 
-- None — this is the first step. No prerequisites.
+None — this is the first step.
 
 ## SEQUENCE
 
 ### 1. Gather requirements
 
-- If the user has already provided a requirement description (from the `/flow` command message), use it as the starting input.
-- If not, ask: "What feature are you building? Describe the requirements."
-- Apply {ruleRef} using {templateRef}; build the SPEC.md and save to `{outputFile}` per {ruleRef}.
+- If the user provided a requirement description (from the `/flow` command message), use it as starting input.
+- Otherwise, ask: "What feature are you building? Describe the requirements."
 
 ### 2. Write SPEC.md
 
-- Save to `{outputFile}` per {ruleRef}.
+- Apply {ruleRef} using {templateRef}; save to `{outputFile}`.
 - Present the completed SPEC.md to the user.
-- Ask: "Review the SPEC. When you're satisfied, **approve it** (say 'approve' or 'yes'). Or tell me what to change."
+- Ask: "Review the SPEC. Approve it (say 'approve' or 'yes'), or tell me what to change."
 
 ### 3. Approval gate
 
 - If user approves: update SPEC.md status per {ruleRef}.
-- If user requests changes: apply changes, re-save, re-present, loop back to approval gate.
-- Once approved per {ruleRef}, proceed to menu.
+- If user requests changes: apply, re-save, re-present. Loop until approved.
 
 ### 4. Present MENU
-
-Display:
 
 ```
 SPEC.md is APPROVED.
@@ -64,34 +60,7 @@ SPEC.md is APPROVED.
 [X] Exit — pause workflow; resume later with /flow
 ```
 
-### Menu handling
-
-- **IF [C] Continue:**
-  1. Update `{stateFile}` frontmatter: append `'step-01-spec'` to `stepsCompleted`.
-  2. Read fully and follow: `{nextStepFile}` (step-02-design.md).
-- **IF [B] Back to Spec:**
-  - Return to section 1 (gather/edit requirements). Loop until user is satisfied and approves.
-  - Redisplay this menu after approval.
-- **IF [X] Exit:**
-  - Update `{stateFile}` frontmatter: append `'step-01-spec'` to `stepsCompleted` (if SPEC is approved per {ruleRef}).
-  - Display: "Workflow paused. Run `/flow {spec_id}` to resume."
-  - STOP.
-- **IF anything else:** Answer user's question, then redisplay menu.
-
-## CRITICAL COMPLETION NOTE
-
-ONLY when [C] is selected and `stepsCompleted` is updated will you load and execute `{nextStepFile}`.
-
----
-
-## SUCCESS CRITERIA
-
-- All domain and quality criteria per {ruleRef} are satisfied.
-- Status approved per {ruleRef} before continuing.
-- State file updated with this step before loading next.
-
-## FAILURE CONDITIONS
-
-- Proceeding to design before SPEC is approved per {ruleRef}.
-- Not updating state file before loading next step.
-- Loading next step before user selects [C].
+- **[C]:** Update `{stateFile}`: append `'step-01-spec'` to `stepsCompleted`. Load and follow `{nextStepFile}`.
+- **[B]:** Return to section 1. Redisplay menu after approval.
+- **[X]:** Update `{stateFile}`: append `'step-01-spec'` to `stepsCompleted` (if approved). Display: "Workflow paused. Run `/flow {spec_id}` to resume." STOP.
+- **Anything else:** Answer, then redisplay menu.
