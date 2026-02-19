@@ -51,7 +51,7 @@ Data Model, API/Interfaces, Dependencies, Security Considerations, and Risks & T
 - **Security Considerations**: Include if there are authentication, authorization, validation, or data protection implications.
 - **Risks & Tradeoffs**: Include if there are key technical risks, rejected alternatives, or significant tradeoffs.
 
-**Judgment criterion:** If a section would contain only a single sentence stating no changes are needed, omit the section entirely.
+Omit the section. Do not write "No X required" or "Standard X per CONSTITUTION.md" — if CONSTITUTION.md already covers it, silence is the correct output.
 
 ### Open Questions
 - Unresolved technical decisions that need answers

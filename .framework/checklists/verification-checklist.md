@@ -25,11 +25,34 @@ Test command: [per CONSTITUTION.md]
 Total: [N] | Passed: [N] | Failed: [N] | Skipped: [N]
 ```
 
-## 3. HALT Conditions
+## 3. Lint & Type Check
+
+Run the project's lint and type-check commands from CONSTITUTION.md.
+
+- [ ] Lint passes (zero errors)
+- [ ] Type check passes (zero errors, if applicable)
+
+Record:
+```
+Lint command: [per CONSTITUTION.md]
+Lint: PASS / FAIL ([N] errors)
+Type check command: [per CONSTITUTION.md, or "N/A"]
+Type check: PASS / FAIL ([N] errors) / N/A
+```
+
+If CONSTITUTION.md does not define lint or type-check commands, mark N/A.
+
+## 4. Implementation Summary
+
+- [ ] `IMPLEMENTATION-SUMMARY.md` exists in the spec folder
+- [ ] Contains at least one per-task anchor entry (`### T{N}`)
+- [ ] Contains Aggregate section with Files created/modified and Tests
+
+## 5. HALT Conditions
 
 - [ ] No unresolved HALT conditions remaining (check task log for any flagged halts)
 
-## 4. Scope Integrity
+## 6. Scope Integrity
 
 - [ ] No spec files modified beyond TASKS.md checkbox updates and IMPLEMENTATION-SUMMARY.md (`git diff --name-only -- specs/`)
 - [ ] No scope creep (only task-specified changes implemented)

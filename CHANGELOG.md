@@ -2,6 +2,38 @@
 
 All notable changes to the Spec-First AI Development Framework will be documented in this file.
 
+## [0.8.0] - Streamline (2026-02-19)
+
+### Summary
+
+**Single source of truth per concern.** Rules own content logic; steps own status and flow. Removes duplicated tracking (Dev Agent Record, AI-Review task injection, definition-of-done checklist) and tightens verification gates. Adds `/validate` command for framework integrity checks.
+
+### Removed
+
+- **Dev Agent Record** from TASKS.template.md and step-04-implement.md — IMPLEMENTATION-SUMMARY.md is the single location for implementation tracking.
+- **`[A] Create action items`** path and `[AI-Review]` task injection from step-05-review.md — `[F]` auto-fix and `[B]` back-navigation cover the same ground without modifying the approved task list.
+- **Action Items Created** section from REVIEW.template.md.
+- **Dev Agent Record cross-reference** from REVIEW.template.md and code-review.mdc — replaced by Implementation Summary Cross-Reference.
+- **definition-of-done.md** checklist — replaced by verification-checklist.md (single pre-review gate).
+- **"Check if file exists"** sections from steps 1–3 — redundant; steps now always create fresh or overwrite.
+
+### Changed
+
+- **Rule/step separation:** Rules own all content generation, constraints, and validation. Steps own status tracking, gates, menus, and navigation. Steps reference rules via `ruleRef` — they do not restate rule logic.
+- **Fix-loop cap menu (step-05):** When `fixAttempts >= 3`, shows convergence-based `[B]`/`[B2]` recommendations instead of removed `[A]` option.
+- **IMPLEMENTATION-SUMMARY.md:** Now built incrementally with per-task anchor entries during implementation. Each entry captures Files, Patterns, Decisions, and Deviations. Aggregate section appended after all tasks complete.
+- **spec-creation.mdc:** AC minimum coverage check; Open Questions as mandatory uncertainty capture.
+- **design-creation.mdc:** Tightened conditional section guidance — "Do not write 'No X required'; if CONSTITUTION.md covers it, silence is the correct output."
+- **step-04-implement.md:** Aligned with implementation.mdc as source of truth; step orchestrates, rule defines behavior.
+
+### Added
+
+- **Verification checklist — lint & type check:** Runs lint and type-check commands from CONSTITUTION.md before proceeding to review.
+- **Verification checklist — implementation summary existence:** Verifies IMPLEMENTATION-SUMMARY.md exists and contains per-task entries and aggregate section.
+- **`/validate` command:** Framework integrity check — verifies all step files, templates, checklists, rules, CONSTITUTION.md exist and cross-references are valid.
+
+---
+
 ## [0.7.2] - Cap Review Fix-Loop + CLI (2026-02-12)
 
 ### Summary
