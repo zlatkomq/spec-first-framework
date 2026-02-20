@@ -1,0 +1,6 @@
+{
+  "name": "spec-first-framework",
+  "version": "0.9.0",
+  "description": "Spec-driven development framework for AI coding agents",
+  "skills": "../skills"
+}

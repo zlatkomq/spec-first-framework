@@ -12,7 +12,7 @@ The user can also paste content directly after the command.
 
 ## Behavior
 
-Apply `.cursor/rules/adversarial-review.mdc` to the provided content.
+Apply @skills/adversarial-review/SKILL.md to the provided content.
 
 This is a standalone review tool — it does not modify any files, does not produce a formal REVIEW.md, and does not interact with the `/flow` workflow. It simply finds problems and presents them.
 
@@ -25,4 +25,4 @@ Use cases:
 
 ## Reference
 
-- Rules: `.cursor/rules/adversarial-review.mdc`
+- Skill: `skills/adversarial-review/SKILL.md`

@@ -1,0 +1,89 @@
+# Spec Creation
+
+## Description
+
+Use when creating a SPEC.md specification document for a new feature, refactor, migration, or other planned work.
+Not for bugfixes that violate existing acceptance criteria — use the bugfixing skill instead. Not for technical design — use the design-creation skill.
+
+## Instructions
+
+You are creating a specification document. Follow these rules strictly.
+
+### Required Inputs
+
+Before creating a SPEC.md, you must have:
+- Description or requirements from PO/BA/Client
+- Access to `../../.framework/CONSTITUTION.md` for project context
+
+If requirements are unclear or incomplete, ASK for clarification. Do not invent requirements.
+
+### Template
+
+Always use the template structure from `../../.framework/templates/SPEC.template.md`
+
+### Field Rules
+
+#### Metadata
+- **ID**: User must provide in prompt (e.g., "005" or "012"). If not provided, ASK before proceeding.
+- **Name**: Derive from user's description or ask if unclear
+- **Type**: Must be one of: Feature, Refactor, Migration, Performance, Security, Infrastructure. If unclear, ASK. Note: For bugfixes (code violates existing acceptance criteria), use the bugfixing skill instead.
+- Status is always DRAFT until human approves
+- Author: name of person who provided requirements + "/ AI-assisted"
+- Date: today's date
+
+#### Overview
+- Maximum 3 sentences
+- Must answer: What is this? Why are we building/fixing it?
+- No technical implementation details
+
+#### User Stories
+- Format: "As a [role], I want to [action], so that [benefit]"
+- Minimum 1 user story
+- Role must be a real user type, not "user" or "system"
+- Action must be concrete and observable
+- Benefit must explain business value
+
+#### Acceptance Criteria
+- Format: "Given [context], when [action], then [result]"
+- Each criterion must be testable (pass/fail)
+- Cover happy path and key edge cases
+- No implementation details (how), only behavior (what)
+- Use checkboxes for tracking: `- [ ]`
+
+#### Scope
+- In Scope: what this WILL do
+- Out of Scope: what this will NOT do (prevents scope creep)
+- Be explicit about boundaries
+
+#### Dependencies
+- Only list if something must exist before this can start
+- Reference other specs (XXX) if dependent on another spec
+- Leave empty if no dependencies
+
+#### Open Questions
+- Unresolved decisions that need answers
+- Format as checklist: `- [ ] Question here?`
+- These must be resolved before moving to DESIGN.md
+
+### Constraints
+
+- Do NOT include technical implementation details
+- Do NOT reference specific code, APIs, or database schemas
+- Do NOT make assumptions about HOW to build — only WHAT to build
+- Do NOT copy requirements verbatim if poorly written — improve clarity
+- Do NOT leave placeholder text like "[describe here]" — ask if info is missing
+- All bracket placeholders from template must be removed from output; if info is missing, add an Open Question instead
+
+### Output
+
+Save the file to: `specs/XXX-{slug}/SPEC.md`
+
+Slug: lowercase, hyphen-separated, max 4 words (e.g., `password-reset`, `user-authentication`, `fix-race-condition`)
+
+## Verification
+
+- [ ] All required sections filled (no placeholders)
+- [ ] Acceptance criteria are testable
+- [ ] No technical implementation details leaked in
+- [ ] Status set to DRAFT
+- [ ] File saved in correct location

@@ -2,6 +2,34 @@
 
 All notable changes to the Spec-First AI Development Framework will be documented in this file.
 
+## [0.9.0] - Skills Migration (2026-02-20)
+
+### Summary
+
+**Procedural content migrated from Cursor-specific `.mdc` rules to SKILL.md format.** The framework is now portable across Cursor, Claude Code, OpenCode, Codex, and Gemini CLI. Thin platform adapter JSON files enable each AI coding platform to discover skills from the canonical `skills/` directory.
+
+### Added
+
+- **`skills/` directory** — 11 skill files in the open SKILL.md format (Cursor 2.4+, Claude Code, OpenCode, Codex, Gemini CLI):
+  `spec-creation`, `constitution-creation`, `design-creation`, `task-creation`, `implementation`, `code-review`, `adversarial-review`, `bugfixing`, `bug-implementation`, `bug-review`, `change-request`
+- **`.cursor-plugin/plugin.json`** — Cursor platform adapter pointing to `../skills`
+- **`.claude-plugin/plugin.json`** — Claude Code platform adapter
+- **`.opencode/config.json`** — OpenCode platform adapter
+- **`/validate` Check 7** — Scans commands and step files for stale `.mdc` references; fails if any found
+- **`/validate` Check 8** — Verifies all three platform adapter files exist
+
+### Removed
+
+- **11 `.mdc` files** from `.cursor/rules/` — procedural content moved to `skills/<name>/SKILL.md`
+
+### Changed
+
+- **Commands** (`.cursor/commands/`): Apply lines updated from `@.cursor/rules/*.mdc` to `@skills/<name>/SKILL.md`
+- **Step files** (`.framework/steps/`): `ruleRef` values updated from `'@.cursor/rules/*.mdc'` to `'@skills/<name>/SKILL.md'`
+- **`/validate`**: Check 4 renamed from "Rules" to "Skills"; updated to verify 11 skill directories. Check 6 updated for skill relative refs and cross-file checks. Output table updated with new checks.
+
+---
+
 ## [0.8.0] - Streamline (2026-02-19)
 
 ### Summary

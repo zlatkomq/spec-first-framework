@@ -1,14 +1,15 @@
----
-description: Rules for reviewing bugfix implementations
-globs: bugs/**/REVIEW.md
-alwaysApply: false
----
+# Bug Review
 
-# Bug Review Rules
+## Description
+
+Use when reviewing a completed bugfix implementation to produce a REVIEW.md in the bug folder.
+Not for feature code review — use the code-review skill for that. Not for creating bug specs — use the bugfixing skill.
+
+## Instructions
 
 You are reviewing a bugfix implementation. Follow these rules strictly.
 
-## What You Must Inspect
+### What You Must Inspect
 
 You must actively inspect:
 - The BUG.md for reproduction steps and fix criteria
@@ -19,25 +20,25 @@ You must actively inspect:
 
 Do NOT produce a review based solely on reading BUG.md. You must verify the actual code.
 
-## Required Inputs
+### Required Inputs
 
 Before reviewing, you must have access to:
-- @bugs/BUG-XXX/BUG.md for bug details and fix criteria
-- The original @specs/XXX/SPEC.md (linked in BUG.md)
-- @.framework/CONSTITUTION.md for coding standards
+- `bugs/BUG-XXX/BUG.md` for bug details and fix criteria
+- The original `specs/XXX/SPEC.md` (linked in BUG.md)
+- `../../.framework/CONSTITUTION.md` for coding standards
 - The actual source code files modified for the fix
 - The regression test file
 
-## Review Process
+### Review Process
 
-### Step 1: Fix Verification
+#### Step 1: Fix Verification
 
 Verify the bug is actually fixed:
 - [ ] Reproduction steps from BUG.md would no longer produce the bug
 - [ ] The fix addresses the root cause documented in BUG.md
 - [ ] Original acceptance criteria (from SPEC.md) is satisfied
 
-### Step 2: Regression Test Verification
+#### Step 2: Regression Test Verification
 
 Check the regression test:
 - [ ] Test exists and is named appropriately (references BUG-XXX)
@@ -48,7 +49,7 @@ Check the regression test:
 
 If regression test is missing, set Verdict = CHANGES REQUESTED.
 
-### Step 3: Minimal Change Verification
+#### Step 3: Minimal Change Verification
 
 Ensure the fix is appropriately scoped:
 - [ ] Only necessary files were modified
@@ -56,7 +57,7 @@ Ensure the fix is appropriately scoped:
 - [ ] No feature additions disguised as bugfix
 - [ ] No unnecessary refactoring
 
-### Step 4: CONSTITUTION.md Compliance
+#### Step 4: CONSTITUTION.md Compliance
 
 Check code quality:
 - [ ] Coding standards followed
@@ -64,32 +65,32 @@ Check code quality:
 - [ ] No new security issues introduced
 - [ ] File locations correct
 
-### Step 5: No Regression Check
+#### Step 5: No Regression Check
 
 Verify no new issues:
 - [ ] Existing tests still pass
 - [ ] No new linting errors
 - [ ] No obvious side effects from the change
 
-## Review Verdicts
+### Review Verdicts
 
-### APPROVED
+#### APPROVED
 All checks pass. Bug is fixed correctly with regression test.
 
-### CHANGES REQUESTED
+#### CHANGES REQUESTED
 One or more checks failed. List specific issues with:
 - What failed
 - Where (file path + function/method)
 - What needs to change
 
-### BLOCKED
+#### BLOCKED
 Cannot complete review due to:
 - Missing regression test
 - Incomplete fix (not all tasks done)
 - Cannot verify reproduction scenario
 - Required files not accessible
 
-## Output Format
+### Output Format
 
 Save to: `bugs/BUG-XXX-{slug}/REVIEW.md`
 
@@ -152,7 +153,7 @@ Save to: `bugs/BUG-XXX-{slug}/REVIEW.md`
 [Optional: Non-blocking suggestions for improvement]
 ```
 
-## Post-Approval Actions
+### Post-Approval Actions
 
 When the review verdict is APPROVED, instruct the user to complete this checklist:
 
@@ -160,22 +161,30 @@ When the review verdict is APPROVED, instruct the user to complete this checklis
 - [ ] Update BUG.md: Date Fixed → [today's date]
 - [ ] Update original SPEC.md: Add entry to Bug History table:
       `| BUG-XXX | [severity] | [today's date] | [one-line description of bug and fix] |`
-- [ ] Regenerate SPEC-CURRENT.md: compile frozen SPEC.md + all FIXED bugs (from Bug History) + all IMPLEMENTED CRs (from Amendment History) into `specs/XXX/SPEC-CURRENT.md` as the current-state convenience view. Use the template from @.framework/templates/SPEC-CURRENT.template.md for the header.
+- [ ] Regenerate SPEC-CURRENT.md: compile frozen SPEC.md + all FIXED bugs (from Bug History) + all IMPLEMENTED CRs (from Amendment History) into `specs/XXX/SPEC-CURRENT.md` as the current-state convenience view. Use the template from `../../.framework/templates/SPEC-CURRENT.template.md` for the header.
 
 Provide the exact text to add to the SPEC.md Bug History section.
 
-## Constraints
+### Constraints
 
 - Do NOT approve without a regression test
 - Do NOT approve if reproduction scenario is not addressed
-- Do NOT fix code yourself - only report issues
+- Do NOT fix code yourself — only report issues
 - Do NOT add new requirements
 - Do NOT skip verification steps
 
-## Severity Definitions
+### Severity Definitions
 
 | Severity | Definition | Blocks Approval? |
 |----------|------------|------------------|
 | Critical | Fix doesn't work, introduces new bugs, security issue | Yes |
 | Major | Missing regression test, incomplete fix | Yes |
 | Minor | Style issues, minor improvements | No |
+
+## Verification
+
+- [ ] All 5 review steps completed
+- [ ] Verdict determined based on findings
+- [ ] Every issue has location + problem + fix
+- [ ] Post-approval checklist provided if verdict is APPROVED
+- [ ] REVIEW.md saved to correct location in bugs/ folder

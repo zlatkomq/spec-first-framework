@@ -4,7 +4,7 @@ description: 'Create or update DESIGN.md for this feature'
 nextStepFile: './step-03-tasks.md'
 
 # References
-ruleRef: '@.cursor/rules/design-creation.mdc'
+ruleRef: '@skills/design-creation/SKILL.md'
 templateRef: '@.framework/templates/DESIGN.template.md'
 constitutionRef: '@.framework/CONSTITUTION.md'
 stateFile: '{spec_folder}/.workflow-state.md'

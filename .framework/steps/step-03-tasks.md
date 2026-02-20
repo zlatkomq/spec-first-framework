@@ -4,7 +4,7 @@ description: 'Create or update TASKS.md for this feature'
 nextStepFile: './step-04-implement.md'
 
 # References
-ruleRef: '@.cursor/rules/task-creation.mdc'
+ruleRef: '@skills/task-creation/SKILL.md'
 templateRef: '@.framework/templates/TASKS.template.md'
 constitutionRef: '@.framework/CONSTITUTION.md'
 stateFile: '{spec_folder}/.workflow-state.md'

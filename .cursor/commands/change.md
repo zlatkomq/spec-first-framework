@@ -30,7 +30,7 @@ Optionally include a Jira ticket reference after a colon:
 
 ## 4. Apply rules
 
-Apply `.cursor/rules/change-request.mdc` — this handles:
+Apply @skills/change-request/SKILL.md — this handles:
 - Classification check (if Jira ticket provided)
 - Change analysis and impact assessment
 - Change Proposal generation
@@ -40,6 +40,6 @@ Apply `.cursor/rules/change-request.mdc` — this handles:
 
 ## Reference
 
-- Rules: `.cursor/rules/change-request.mdc`
+- Skill: `skills/change-request/SKILL.md`
 - Template: `.framework/templates/CHANGE-PROPOSAL.template.md`
 - Output: `{spec_folder}/CHANGE-PROPOSAL-{date}.md`

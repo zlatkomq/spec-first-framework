@@ -1,14 +1,15 @@
----
-description: Rules for implementing code from TASKS.md
-globs: src/**/*
-alwaysApply: false
----
+# Implementation
 
-# Implementation Rules
+## Description
+
+Use when implementing code from an approved TASKS.md.
+Not for specs where TASKS.md is not APPROVED — STOP and inform the user. Not for code review — use the code-review skill after implementation is complete.
+
+## Instructions
 
 You are implementing code based on approved tasks. Follow these rules strictly.
 
-## Implementation Mindset
+### Implementation Mindset
 
 You are a disciplined implementer. Your job is to produce working code that exactly matches the design.
 
@@ -17,16 +18,16 @@ You are a disciplined implementer. Your job is to produce working code that exac
 - COMPLETE the full task — do not stop at "milestones" or propose "next steps" that defer work within the current task.
 - NEVER lie about what you've done. If you didn't create a file, don't say you did. If you didn't run a test, don't say it passes.
 
-## Required Inputs
+### Required Inputs
 
 Before implementing, you must have:
-- Approved TASKS.md (@specs/XXX/TASKS.md) with tasks to implement
-- Access to @specs/XXX/DESIGN.md for technical approach
-- Access to @.framework/CONSTITUTION.md for coding standards
+- Approved TASKS.md (load `specs/XXX/TASKS.md`) with tasks to implement
+- Access to `specs/XXX/DESIGN.md` for technical approach
+- Access to `../../.framework/CONSTITUTION.md` for coding standards
 
 If TASKS.md is not approved (Status != APPROVED), STOP and inform the user.
 
-## Scope Control
+### Scope Control
 
 - Implement exactly what each task specifies — nothing more, nothing less
 - Do NOT refactor unrelated code or add features not specified in DESIGN.md
@@ -35,7 +36,7 @@ If TASKS.md is not approved (Status != APPROVED), STOP and inform the user.
 - You may refactor across task boundaries if it produces cleaner code, as long as all tasks are satisfied
 - If a task is unclear, ASK for clarification before proceeding
 
-### Allowed Supporting Changes
+#### Allowed Supporting Changes
 - You MAY make minimal supporting changes strictly required to compile/run the code:
   - Wiring new files into index/export
   - Route registration for new endpoints
@@ -44,7 +45,7 @@ If TASKS.md is not approved (Status != APPROVED), STOP and inform the user.
   - Fixing compile errors caused by the change
 - These must be listed explicitly in your summary at the end
 
-## Halt Conditions
+### Halt Conditions
 
 STOP implementation and inform the user if any of these occur:
 
@@ -59,7 +60,7 @@ STOP implementation and inform the user if any of these occur:
 
 After halting, wait for user direction. Do not attempt workarounds unless explicitly told to.
 
-## Test-Accompaniment Mandate
+### Test-Accompaniment Mandate
 
 Every implementation task MUST produce tests alongside code. The AI may write tests first, code first, or interleaved — the ORDER is not prescribed. But the OUTCOME is non-negotiable: when a task is marked complete, tests for that task's functionality must exist and pass.
 
@@ -67,13 +68,13 @@ Every implementation task MUST produce tests alongside code. The AI may write te
 - Testing tasks (if separate) produce additional test coverage
 - No task is complete without corresponding test coverage
 
-### If the task is an Implementation task (code):
+#### If the task is an Implementation task (code):
 - Implement the specified component/function/endpoint
 - Write tests that verify the implementation works correctly
 - Ensure existing tests still compile (fix imports if needed)
 - Tests must assert real behavior, not trivial truths
 
-### If the task is a Testing task:
+#### If the task is a Testing task:
 
 Follow this sequence:
 
@@ -84,7 +85,7 @@ Follow this sequence:
 
 Testing tasks produce tests only. If a test reveals a bug, document it; do not silently fix production code during a testing task.
 
-## Per-Task Validation Gates
+### Per-Task Validation Gates
 
 Before marking ANY task complete (updating the checkbox to [x]), ALL of these gates must pass:
 
@@ -95,15 +96,15 @@ Before marking ANY task complete (updating the checkbox to [x]), ALL of these ga
 
 **If ANY gate fails: do NOT mark the task complete.** Fix the issue first. If you cannot fix it, HALT.
 
-## Intermediate Commits
+### Intermediate Commits
 
 After completing a logical group of related tasks, commit changes with a descriptive message (e.g., "Implement T1-T3: data model and repository layer"). This preserves progress in case of context exhaustion. Committing is encouraged but not mandatory — use judgment on natural grouping boundaries.
 
-## Terminal Access Prerequisite
+### Terminal Access Prerequisite
 
 Terminal access is required for verified implementation. If you cannot execute commands to run tests and verify your work, HALT and inform the user that manual verification is needed.
 
-## Honesty Requirements
+### Honesty Requirements
 
 These rules exist because AI coding agents have specific failure modes. Follow them without exception.
 
@@ -128,7 +129,7 @@ These rules exist because AI coding agents have specific failure modes. Follow t
 - Do NOT duplicate functionality that already exists — use the existing implementation
 - If you find an existing function that almost works, note it in the summary and ask if you should extend it or create a new one
 
-## Prohibited Patterns
+### Prohibited Patterns
 
 Never produce code containing these patterns. The adversarial review will catch and flag every instance.
 
@@ -145,17 +146,17 @@ Never produce code containing these patterns. The adversarial review will catch 
 
 If you find yourself wanting to write a TODO or placeholder, that means the task scope is unclear or too large. HALT and ask for clarification instead.
 
-## Standards Compliance
+### Standards Compliance
 
-- Follow @.framework/CONSTITUTION.md for all coding standards, naming conventions, file structure, error handling, input validation, testability, configuration, documentation, and security practices.
+- Follow `../../.framework/CONSTITUTION.md` for all coding standards, naming conventions, file structure, error handling, input validation, testability, configuration, documentation, and security practices.
 - Follow DESIGN.md architecture exactly: use data models as specified, implement APIs/interfaces as designed, respect component boundaries.
 - Save files in locations specified by CONSTITUTION.md. Follow file naming conventions.
 
-## Per-Task Anchor Entry
+### Per-Task Anchor Entry
 
 After completing each task (checkbox updated to `[x]` and per-task validation gates passed), append a compact anchor entry to IMPLEMENTATION-SUMMARY.md. This creates a living context document that the AI re-reads before starting each subsequent task, counteracting context window degradation on large specs.
 
-### Format
+#### Format
 
 ```
 ### T{N}: {task title}
@@ -165,7 +166,7 @@ After completing each task (checkbox updated to `[x]` and per-task validation ga
 **Deviations:** {deviations from DESIGN.md with reason | "None"}
 ```
 
-### Rules
+#### Rules
 - **Token budget:** Each entry MUST be 100-200 tokens. List paths only, no file contents or test details.
 - **Patterns field:** Only note patterns a future task would need to follow or build on.
 - **Decisions field:** Only note decisions that constrain or inform future tasks. Do not repeat what DESIGN.md already says.
@@ -174,7 +175,7 @@ After completing each task (checkbox updated to `[x]` and per-task validation ga
 - **Subsequent tasks:** Append below the previous entry.
 - **Re-read before each task:** Before starting each task, read the entire IMPLEMENTATION-SUMMARY.md if it exists to reload context. Treat it as authoritative — not conversation history.
 
-## Required Summary (Finalization)
+### Required Summary (Finalization)
 
 At the end of implementation (after all tasks are complete and verification passes), finalize IMPLEMENTATION-SUMMARY.md by appending aggregate sections below the per-task anchor entries. Separate with a `---` horizontal rule and `## Aggregate` heading:
 
@@ -211,7 +212,7 @@ At the end of implementation (after all tasks are complete and verification pass
 
 This summary is required for code review. Every claim must be verifiable against the actual files. On fresh entry or retry, the entire file is rebuilt from scratch (per-task entries during implementation, aggregate sections at finalization). On re-entry from review, fix task entries are appended and the aggregate section is replaced with current-state data.
 
-## Implementation Feedback
+### Implementation Feedback
 
 If during implementation you discover:
 - A potentially better approach than DESIGN.md specifies
@@ -221,3 +222,15 @@ If during implementation you discover:
 Document it in the "Design feedback" section of your summary.
 
 This does NOT authorize changing the design — follow DESIGN.md as specified. The feedback captures learning for the team to consider in future iterations or Change Requests.
+
+## Verification
+
+Before marking any task complete, ALL per-task validation gates must pass:
+
+- [ ] Tests exist as files on disk and pass (raw terminal output recorded)
+- [ ] Produces signatures match TASKS.md declarations exactly
+- [ ] Each task annotates which SPEC.md acceptance criterion it addresses
+- [ ] Full test suite passes (no regressions)
+- [ ] No prohibited patterns in any produced code
+- [ ] IMPLEMENTATION-SUMMARY.md has an anchor entry for each completed task
+- [ ] Aggregate section appended to IMPLEMENTATION-SUMMARY.md at finalization

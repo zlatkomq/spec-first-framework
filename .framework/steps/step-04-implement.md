@@ -4,7 +4,7 @@ description: 'Implement all tasks from TASKS.md'
 nextStepFile: './step-05-review.md'
 
 # References
-ruleRef: '@.cursor/rules/implementation.mdc'
+ruleRef: '@skills/implementation/SKILL.md'
 constitutionRef: '@.framework/CONSTITUTION.md'
 verificationChecklist: '@.framework/checklists/verification-checklist.md'
 stateFile: '{spec_folder}/.workflow-state.md'

@@ -87,6 +87,6 @@ When a step file says "Read fully and follow: {nextStepFile}":
 
 - Step files: `.framework/steps/step-00-continue.md` through `step-05-review.md`
 - State template: `.framework/templates/workflow-state.template.md`
-- Rules: `.cursor/rules/spec-creation.mdc`, `design-creation.mdc`, `task-creation.mdc`, `implementation.mdc`, `code-review.mdc`
+- Skills: `skills/spec-creation/SKILL.md`, `skills/design-creation/SKILL.md`, `skills/task-creation/SKILL.md`, `skills/implementation/SKILL.md`, `skills/code-review/SKILL.md`
 - Templates: `.framework/templates/SPEC.template.md`, `DESIGN.template.md`, `TASKS.template.md`, `REVIEW.template.md`
 - Project standards: `.framework/CONSTITUTION.md`

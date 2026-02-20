@@ -41,7 +41,7 @@ spec-first update --branch <branch-name>
 ## Quick Start
 
 1. Install the framework with `spec-first init` (or manually copy `.cursor/` and `.framework/` folders into your project)
-2. Create `CONSTITUTION.md` using: `/constitute` or `@constitution-creation.mdc` + your project description
+2. Create `CONSTITUTION.md` using: `/constitute` + your project description
 3. For each spec, follow the workflow: SPEC → DESIGN → TASKS → Implementation → Review
 
 **Commands** (in `.cursor/commands/`): `/constitute`, `/specify`, `/design`, `/tasks`, `/implement`, `/review`, `/flow`, `/bug`, `/bugfix`, `/bugreview`, `/change`, `/adversarial` — see [Commands & Workflow Example](docs/COMMANDS-WORKFLOW-EXAMPLE.md).
@@ -140,28 +140,31 @@ See [CHANGELOG.md](CHANGELOG.md) for the full list of changes in this release.
 
 ```
 your-project/
+├── skills/                            # Cross-platform AI skills (SKILL.md open standard)
+│   ├── spec-creation/SKILL.md         #   Cursor 2.4+, Claude Code, OpenCode, Codex, Gemini CLI
+│   ├── design-creation/SKILL.md
+│   ├── task-creation/SKILL.md
+│   ├── implementation/SKILL.md
+│   ├── code-review/SKILL.md
+│   ├── constitution-creation/SKILL.md
+│   ├── adversarial-review/SKILL.md
+│   ├── bugfixing/SKILL.md
+│   ├── bug-implementation/SKILL.md
+│   ├── bug-review/SKILL.md
+│   └── change-request/SKILL.md
+├── .cursor-plugin/plugin.json         # Cursor adapter (points to ../skills)
+├── .claude-plugin/plugin.json         # Claude Code adapter
+├── .opencode/config.json              # OpenCode adapter
 ├── .cursor/
-│   ├── commands/              # Slash commands: /specify, /design, /tasks, etc.
-│   └── rules/
-│       ├── spec-creation.mdc
-│       ├── design-creation.mdc
-│       ├── task-creation.mdc
-│       ├── implementation.mdc
-│       ├── code-review.mdc
-│       ├── bugfixing.mdc
-│       ├── bug-implementation.mdc
-│       ├── bug-review.mdc
-│       ├── constitution-creation.mdc
-│       ├── change-request.mdc
-│       └── adversarial-review.mdc
+│   └── commands/                      # Cursor slash commands: /specify, /design, /tasks, etc.
 ├── .framework/
-│   ├── steps/                     # BMAD-style step files for /flow
-│   │   ├── step-00-continue.md    #   Resume logic
-│   │   ├── step-01-spec.md        #   Create SPEC.md
-│   │   ├── step-02-design.md      #   Create DESIGN.md
-│   │   ├── step-03-tasks.md       #   Create TASKS.md
-│   │   ├── step-04-implement.md   #   Implement tasks
-│   │   └── step-05-review.md      #   Code review
+│   ├── steps/                         # BMAD-style step files for /flow
+│   │   ├── step-00-continue.md        #   Resume logic
+│   │   ├── step-01-spec.md            #   Create SPEC.md
+│   │   ├── step-02-design.md          #   Create DESIGN.md
+│   │   ├── step-03-tasks.md           #   Create TASKS.md
+│   │   ├── step-04-implement.md       #   Implement tasks
+│   │   └── step-05-review.md          #   Code review
 │   ├── templates/
 │   │   ├── SPEC.template.md
 │   │   ├── DESIGN.template.md
@@ -193,7 +196,7 @@ your-project/
 
 ## Usage
 
-All steps can be run via the slash commands below. You can also invoke the rules directly (e.g. `@spec-creation.mdc`); see [Commands & Workflow Example](docs/COMMANDS-WORKFLOW-EXAMPLE.md) for details.
+All steps can be run via the slash commands below. See [Commands & Workflow Example](docs/COMMANDS-WORKFLOW-EXAMPLE.md) for details.
 
 ### Step 0: Project Setup (once)
 

@@ -3,7 +3,7 @@ name: 'step-05-review'
 description: 'Generate adversarial code review (REVIEW.md) for this feature'
 
 # References
-ruleRef: '@.cursor/rules/code-review.mdc'
+ruleRef: '@skills/code-review/SKILL.md'
 templateRef: '@.framework/templates/REVIEW.template.md'
 constitutionRef: '@.framework/CONSTITUTION.md'
 stateFile: '{spec_folder}/.workflow-state.md'

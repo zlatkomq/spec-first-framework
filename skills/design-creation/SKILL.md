@@ -1,28 +1,29 @@
----
-description: Rules for creating DESIGN.md files
-globs: specs/**/DESIGN.md
-alwaysApply: false
----
+# Design Creation
 
-# Design Creation Rules
+## Description
+
+Use when creating a DESIGN.md technical design document for a spec that has been approved.
+Not for specs with Status != APPROVED — STOP and inform the user if SPEC.md is not yet approved. Not for task breakdown — use the task-creation skill.
+
+## Instructions
 
 You are creating a technical design document. Follow these rules strictly.
 
-## Required Inputs
+### Required Inputs
 
 Before creating a DESIGN.md, you must have:
-- Approved SPEC.md (@specs/XXX/SPEC.md)
-- Access to @.framework/CONSTITUTION.md for project standards
+- Approved SPEC.md (load `specs/XXX/SPEC.md`)
+- Access to `../../.framework/CONSTITUTION.md` for project standards
 
 If SPEC.md is not approved (Status != APPROVED), STOP and inform the user.
 
-## Template
+### Template
 
-Always use the template structure from @.framework/templates/DESIGN.template.md
+Always use the template structure from `../../.framework/templates/DESIGN.template.md`
 
-## Field Rules
+### Field Rules
 
-### Metadata
+#### Metadata
 - **ID**: Must match the SPEC.md ID exactly
 - **Name**: Must match the SPEC.md Name exactly
 - Status is always DRAFT until Tech Lead approves
@@ -30,18 +31,18 @@ Always use the template structure from @.framework/templates/DESIGN.template.md
 - Reviewer: leave blank (Tech Lead fills this)
 - Date: today's date
 
-### Overview
+#### Overview
 - Explain the technical approach at a high level
 - Must address HOW to build what SPEC.md describes
 - Reference CONSTITUTION.md patterns and standards
 
-### Architecture
+#### Architecture
 - List all components that will be created or modified
 - Use the table format: Component | Change Type | Description
 - Change Type must be one of: New / Modify / Use existing
 - Include a simple diagram (Mermaid) if interactions are complex
 
-### Conditional Sections
+#### Conditional Sections
 
 Data Model, API/Interfaces, Dependencies, Security Considerations, and Risks & Tradeoffs are included ONLY when relevant. Do NOT include a section just to write "No X required" — omit it entirely.
 
@@ -53,12 +54,12 @@ Data Model, API/Interfaces, Dependencies, Security Considerations, and Risks & T
 
 Omit the section. Do not write "No X required" or "Standard X per CONSTITUTION.md" — if CONSTITUTION.md already covers it, silence is the correct output.
 
-### Open Questions
+#### Open Questions
 - Unresolved technical decisions that need answers
 - Format as checklist: `- [ ] Question here?`
 - These must be resolved before moving to TASKS.md
 
-## Constraints
+### Constraints
 
 - Every design decision must align with CONSTITUTION.md
 - Do NOT include task breakdown (belongs in TASKS.md)
@@ -67,17 +68,16 @@ Omit the section. Do not write "No X required" or "Standard X per CONSTITUTION.m
 - Do NOT contradict or expand scope beyond SPEC.md
 - All bracket placeholders from template must be removed from output; if info is missing, add an Open Question instead
 
-## Validation
+### Output
 
-Before completing, verify:
+Save the file to: `specs/XXX-{slug}/DESIGN.md`
+
+Must be in the same folder as the corresponding SPEC.md.
+
+## Verification
+
 - [ ] All acceptance criteria from SPEC.md are technically addressable
 - [ ] Architecture follows CONSTITUTION.md patterns
 - [ ] No scope creep beyond SPEC.md boundaries
 - [ ] All applicable sections filled; inapplicable conditional sections omitted entirely
 - [ ] Status set to DRAFT
-
-## Output
-
-Save the file to: `specs/XXX-{slug}/DESIGN.md`
-
-Must be in the same folder as the corresponding SPEC.md.

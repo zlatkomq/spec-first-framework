@@ -1,27 +1,28 @@
----
-description: Rules for creating TASKS.md files
-globs: specs/**/TASKS.md
-alwaysApply: false
----
+# Task Creation
 
-# Task Creation Rules
+## Description
+
+Use when creating a TASKS.md task breakdown document from an approved DESIGN.md.
+Not for specs where DESIGN.md is not yet APPROVED — STOP and inform the user. Not for implementation — use the implementation skill.
+
+## Instructions
 
 You are creating a task breakdown document. Follow these rules strictly.
 
-## Required Inputs
+### Required Inputs
 
 Before creating a TASKS.md, you must have:
-- Approved DESIGN.md (@specs/XXX/DESIGN.md)
-- Approved SPEC.md (@specs/XXX/SPEC.md) — for acceptance criteria traceability
-- Access to @.framework/CONSTITUTION.md for project standards
+- Approved DESIGN.md (load `specs/XXX/DESIGN.md`)
+- Approved SPEC.md (load `specs/XXX/SPEC.md`) — for acceptance criteria traceability
+- Access to `../../.framework/CONSTITUTION.md` for project standards
 
 If DESIGN.md is not approved (Status != APPROVED), STOP and inform the user.
 
-## Context Gathering (Before Task Creation)
+### Context Gathering (Before Task Creation)
 
 Do NOT duplicate CONSTITUTION.md or DESIGN.md content into TASKS.md — the developer already loads those documents during implementation. Instead, gather only **genuinely new context** that doesn't exist elsewhere:
 
-### Previous Spec Intelligence
+#### Previous Spec Intelligence
 
 If other spec folders exist in `specs/` (this is not the first spec):
 1. Find the most recently completed spec (one with a REVIEW.md that has verdict APPROVED)
@@ -35,7 +36,7 @@ If other spec folders exist in `specs/` (this is not the first spec):
 
 If this is the first spec, write "First spec — no previous learnings available."
 
-### Git History Analysis
+#### Git History Analysis
 
 If git is available:
 1. Check the last 5 commit messages to understand recent work patterns
@@ -44,24 +45,24 @@ If git is available:
 
 If git is not available, skip this step.
 
-## Template
+### Template
 
-Always use the template structure from @.framework/templates/TASKS.template.md
+Always use the template structure from `../../.framework/templates/TASKS.template.md`
 
-## Field Rules
+### Field Rules
 
-### Metadata
+#### Metadata
 - **ID**: Must match the DESIGN.md ID exactly
 - **Name**: Must match the DESIGN.md Name exactly
 - Status is always DRAFT until Tech Lead approves
 - Author: developer name + "/ AI-assisted" (if name unknown, use "Developer / AI-assisted")
 - Date: today's date
 
-### Overview
+#### Overview
 - Summarize the implementation approach from DESIGN.md
-- Do not repeat DESIGN.md content - just reference it
+- Do not repeat DESIGN.md content — just reference it
 
-### Tasks
+#### Tasks
 - Each task must be atomic: implementable in a single AI prompt
 - Format: `- [ ] T1: [Brief description] (DESIGN: [section/component])`
 - Every task MUST reference the relevant DESIGN.md section or component in parentheses
@@ -73,7 +74,7 @@ Always use the template structure from @.framework/templates/TASKS.template.md
 - `[ ]` = not started
 - `[x]` = complete (tests verified passing)
 
-### Interface Contracts
+#### Interface Contracts
 
 Tasks that create components used by other tasks MUST declare what they produce.
 Tasks that depend on another task's component MUST declare what they consume BY TASK ID.
@@ -95,8 +96,8 @@ Format:
 
 `Produces`/`Consumes` are only required when a task creates or depends on another task's public interface. Purely internal tasks (config files, constants) skip this.
 
-### Testing (MANDATORY)
-- Unit tests are ALWAYS required - never skip
+#### Testing (MANDATORY)
+- Unit tests are ALWAYS required — never skip
 - Create at least one unit test task per major component/function
 - Format: `- [ ] Tx: Unit tests for [specific component/logic]` (continue numbering from last implementation task)
 - Reference CONSTITUTION.md for coverage requirements
@@ -106,11 +107,11 @@ Format:
 - This is mechanically checkable: count New components in the DESIGN.md component table. If count > 1 and they interact (appear in the same sequence diagram or dependency list), an integration test task must exist.
 - "No integration tests required" is ONLY acceptable for specs where DESIGN.md describes a single New component with zero runtime dependencies on other New components in this spec.
 
-### Definition of Done
+#### Definition of Done
 - Keep the standard checklist from template
 - Add spec-specific items if needed (e.g., "Documentation updated")
 
-## Task Sizing Guidelines
+### Task Sizing Guidelines
 
 | Too Big (split it) | Right Size | Too Small (merge it) |
 |-------------------|------------|---------------------|
@@ -118,29 +119,16 @@ Format:
 | "Build entire API" | "Implement password validation" | "Write one unit test" |
 | "Create database layer" | "Create User repository" | "Add field to model" |
 
-## Constraints
+### Constraints
 
 - Do NOT include implementation details (belongs in code)
 - Do NOT duplicate DESIGN.md content
 - Do NOT skip testing tasks
 - Do NOT create tasks that aren't traceable to DESIGN.md
-- Do NOT number tests separately - continue task numbering (T1, T2... T5, T6 for tests)
+- Do NOT number tests separately — continue task numbering (T1, T2... T5, T6 for tests)
 - All bracket placeholders from template must be removed from output
 
-## Validation
-
-Before completing, verify:
-- [ ] Every component in DESIGN.md has corresponding task(s)
-- [ ] Every task is atomic (one prompt = one task)
-- [ ] Testing tasks are present (unit tests mandatory)
-- [ ] Tasks are ordered by dependency
-- [ ] Every task creating a public component has a Produces declaration
-- [ ] Every Consumes reference uses task-ID format (T[N].ComponentName)
-- [ ] Every Consumes reference maps to a Produces declaration on the referenced task
-- [ ] Definition of Done is complete
-- [ ] Status set to DRAFT
-
-## Adversarial Self-Validation
+### Adversarial Self-Validation
 
 After generating TASKS.md, run ALL checks below BEFORE presenting to the user. Fix any issues found. Note significant findings when presenting.
 
@@ -153,8 +141,20 @@ After generating TASKS.md, run ALL checks below BEFORE presenting to the user. F
 - [ ] **Integration coverage**: If DESIGN.md has >1 New interacting components, at least one test task tests them together without mocks
 - [ ] **Cross-spec reinvention**: No New component duplicates something from a previous spec's IMPLEMENTATION-SUMMARY.md
 
-## Output
+### Output
 
 Save the file to: `specs/XXX-{slug}/TASKS.md`
 
 Must be in the same folder as the corresponding SPEC.md and DESIGN.md.
+
+## Verification
+
+- [ ] Every component in DESIGN.md has corresponding task(s)
+- [ ] Every task is atomic (one prompt = one task)
+- [ ] Testing tasks are present (unit tests mandatory)
+- [ ] Tasks are ordered by dependency
+- [ ] Every task creating a public component has a Produces declaration
+- [ ] Every Consumes reference uses task-ID format (T[N].ComponentName)
+- [ ] Every Consumes reference maps to a Produces declaration on the referenced task
+- [ ] Definition of Done is complete
+- [ ] Status set to DRAFT

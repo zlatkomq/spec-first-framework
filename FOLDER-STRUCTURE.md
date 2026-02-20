@@ -5,34 +5,41 @@
 ```
 project/
 │
+├── skills/                             # Canonical cross-platform skill files (SKILL.md open standard)
+│   ├── spec-creation/SKILL.md          # How AI creates SPEC.md
+│   ├── constitution-creation/SKILL.md  # How AI creates CONSTITUTION.md
+│   ├── design-creation/SKILL.md        # How AI creates DESIGN.md
+│   ├── task-creation/SKILL.md          # How AI creates TASKS.md
+│   ├── implementation/SKILL.md         # How AI writes code
+│   ├── code-review/SKILL.md            # How AI reviews code
+│   ├── adversarial-review/SKILL.md     # How AI reviews any doc with ≥10 issues
+│   ├── bugfixing/SKILL.md              # How AI creates BUG.md
+│   ├── bug-implementation/SKILL.md     # How AI implements bugfixes
+│   ├── bug-review/SKILL.md             # How AI reviews bugfixes
+│   └── change-request/SKILL.md         # How AI runs change request workflow
+│
+├── .cursor-plugin/
+│   └── plugin.json                     # Cursor platform adapter (skills path)
+├── .claude-plugin/
+│   └── plugin.json                     # Claude Code platform adapter (skills path)
+├── .opencode/
+│   └── config.json                     # OpenCode platform adapter (skills path)
+│
 ├── .cursor/
-│   ├── commands/                       # Cursor slash commands (invoke rules + context)
-│   │   ├── constitute.md
-│   │   ├── specify.md
-│   │   ├── design.md
-│   │   ├── tasks.md
-│   │   ├── implement.md
-│   │   ├── review.md
-│   │   ├── flow.md                     # Guided BMAD-style workflow (steps + menus)
-│   │   ├── bug.md
-│   │   ├── bugfix.md
-│   │   ├── bugreview.md
-│   │   ├── change.md                   # Change request (scope change) workflow
-│   │   └── adversarial.md              # Adversarial review of any document
-│   └── rules/
-│       ├── spec-creation.mdc           # Rules for creating SPEC.md
-│       ├── design-creation.mdc         # Rules for creating DESIGN.md
-│       ├── task-creation.mdc           # Rules for creating TASKS.md
-│       ├── implementation.mdc          # Rules for implementing code
-│       ├── code-review.mdc             # Rules for code review
-│       ├── bugfixing.mdc               # Rules for creating BUG.md
-│       ├── bug-implementation.mdc      # Rules for implementing bugfixes
-│       ├── bug-review.mdc              # Rules for reviewing bugfixes
-│       ├── codebase-analysis.mdc       # Rules for analyzing legacy codebase
-│       ├── legacy-assessment.mdc       # Rules for assessing tech debt/risks
-│       ├── constitution-creation.mdc   # Rules for creating CONSTITUTION.md
-│       ├── change-request.mdc          # Rules for change requests (impact, proposal, Amendment History)
-│       └── adversarial-review.mdc      # Rules for adversarial doc review (≥10 issues)
+│   └── commands/                       # Cursor slash commands (invoke skills + context)
+│       ├── constitute.md
+│       ├── specify.md
+│       ├── design.md
+│       ├── tasks.md
+│       ├── implement.md
+│       ├── review.md
+│       ├── flow.md                     # Guided BMAD-style workflow (steps + menus)
+│       ├── bug.md
+│       ├── bugfix.md
+│       ├── bugreview.md
+│       ├── change.md                   # Change request (scope change) workflow
+│       ├── adversarial.md              # Adversarial review of any document
+│       └── validate.md                 # Framework integrity check
 │
 ├── .framework/
 │   ├── steps/                          # BMAD-style step files for /flow
@@ -108,8 +115,11 @@ project/
 
 | Folder | Purpose | When Created |
 |--------|---------|--------------|
-| `.cursor/commands/` | Cursor slash commands (run rule + template flow) | Project setup |
-| `.cursor/rules/` | AI behavior rules (.mdc files) | Project setup |
+| `skills/` | Cross-platform AI skills (SKILL.md open standard) | Project setup |
+| `.cursor-plugin/` | Cursor platform adapter | Project setup |
+| `.claude-plugin/` | Claude Code platform adapter | Project setup |
+| `.opencode/` | OpenCode platform adapter | Project setup |
+| `.cursor/commands/` | Cursor slash commands (run skill + template flow) | Project setup |
 | `.framework/steps/` | Step files for `/flow` (BMAD-style menus) | Project setup |
 | `.framework/templates/` | Document templates | Project setup |
 | `.framework/checklists/` | Checklists (verification-checklist) | Project setup |
@@ -123,23 +133,23 @@ project/
 
 ## File Descriptions
 
-### Rules (.mdc)
+### Skills (SKILL.md)
 
-| File | Used In | Purpose |
-|------|---------|---------|
-| `spec-creation.mdc` | Step 1 | How AI creates SPEC.md |
-| `design-creation.mdc` | Step 2 | How AI creates DESIGN.md |
-| `task-creation.mdc` | Step 3 | How AI creates TASKS.md |
-| `implementation.mdc` | Step 4 | How AI writes code |
-| `code-review.mdc` | Step 5 | How AI reviews code |
-| `bugfixing.mdc` | Bugfix Step 1 | How AI creates BUG.md |
-| `bug-implementation.mdc` | Bugfix Step 2 | How AI implements bugfixes |
-| `bug-review.mdc` | Bugfix Step 3 | How AI reviews bugfixes |
-| `change-request.mdc` | Change request | How AI runs CR workflow (classification, impact, proposal, Amendment History) |
-| `adversarial-review.mdc` | Anytime | How AI reviews any doc with ≥10 issues |
-| `codebase-analysis.mdc` | Step 0 (legacy) | How AI analyzes existing code |
-| `legacy-assessment.mdc` | Step 0 (legacy) | How AI identifies tech debt |
-| `constitution-creation.mdc` | Step 0 | How AI creates CONSTITUTION.md |
+Skills are in the open SKILL.md format — compatible with Cursor 2.4+, Claude Code, OpenCode, Codex, and Gemini CLI. Each skill lives in `skills/<name>/SKILL.md`.
+
+| Skill Directory | Used In | Purpose |
+|----------------|---------|---------|
+| `skills/spec-creation/` | Step 1 | How AI creates SPEC.md |
+| `skills/design-creation/` | Step 2 | How AI creates DESIGN.md |
+| `skills/task-creation/` | Step 3 | How AI creates TASKS.md |
+| `skills/implementation/` | Step 4 | How AI writes code |
+| `skills/code-review/` | Step 5 | How AI reviews code |
+| `skills/bugfixing/` | Bugfix Step 1 | How AI creates BUG.md |
+| `skills/bug-implementation/` | Bugfix Step 2 | How AI implements bugfixes |
+| `skills/bug-review/` | Bugfix Step 3 | How AI reviews bugfixes |
+| `skills/change-request/` | Change request | How AI runs CR workflow (classification, impact, proposal, Amendment History) |
+| `skills/adversarial-review/` | Anytime | How AI reviews any doc with ≥10 issues |
+| `skills/constitution-creation/` | Step 0 | How AI creates CONSTITUTION.md |
 
 ### Templates
 
@@ -229,7 +239,10 @@ BUG-003-timeout-on-large-upload/
 
 ```
 project/
-├── .cursor/rules/          ✓ All rules
+├── skills/                 ✓ All 11 skills
+├── .cursor-plugin/         ✓ Cursor adapter
+├── .claude-plugin/         ✓ Claude Code adapter
+├── .opencode/              ✓ OpenCode adapter
 ├── .framework/
 │   ├── templates/          ✓ All templates
 │   └── CONSTITUTION.md     ✓ Created fresh
@@ -243,7 +256,10 @@ project/
 
 ```
 project/
-├── .cursor/rules/          ✓ All rules
+├── skills/                 ✓ All 11 skills
+├── .cursor-plugin/         ✓ Cursor adapter
+├── .claude-plugin/         ✓ Claude Code adapter
+├── .opencode/              ✓ OpenCode adapter
 ├── .framework/
 │   ├── templates/          ✓ All templates
 │   └── CONSTITUTION.md     ✓ Created from analysis
@@ -264,7 +280,7 @@ project/
 | I need to... | Look in... |
 |--------------|------------|
 | Run workflow via slash commands | `.cursor/commands/` or [Commands & Workflow Example](docs/COMMANDS-WORKFLOW-EXAMPLE.md) |
-| Change AI behavior | `.cursor/rules/*.mdc` |
+| Change AI behavior | `skills/<name>/SKILL.md` |
 | Change document structure | `.framework/templates/*.template.md` |
 | Change step flow (/flow) | `.framework/steps/*.md` |
 | Change verification checklist | `.framework/checklists/verification-checklist.md` |

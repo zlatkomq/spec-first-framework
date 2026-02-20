@@ -1,34 +1,36 @@
----
-description: Rules for handling change requests against existing specs
-alwaysApply: false
----
+# Change Request
 
-# Change Request Rules
+## Description
+
+Use when handling a scope change against an existing approved SPEC.md — creating a Change Proposal, analyzing impact, and updating artifacts on approval.
+Not for bugs that violate existing acceptance criteria — use the bugfixing skill. Not for new features with no existing spec — use the spec-creation skill.
+
+## Instructions
 
 You are creating a Change Proposal document and, on approval, updating the affected spec artifacts. Follow these rules strictly.
 
-## Required Inputs
+### Required Inputs
 
 Before proceeding, you must have:
-- An existing, approved SPEC.md (@specs/XXX/SPEC.md)
-- Access to @.framework/CONSTITUTION.md for project standards
+- An existing, approved SPEC.md (load `specs/XXX/SPEC.md`)
+- Access to `../../.framework/CONSTITUTION.md` for project standards
 - The change description from the user (what changed and why)
 
 If SPEC.md does not exist or is not APPROVED, STOP and inform the user.
 
-## Step 0: Classification Verification
+### Step 0: Classification Verification
 
 If a Jira ticket reference is provided:
 1. Read the Jira ticket description (or user-provided description of the ticket)
 2. Read SPEC.md acceptance criteria
 3. Compare: does the requested change fix a violation of an existing acceptance criterion?
-   - **YES** -- Flag: "This may be a **Bug**, not a Change Request. The requested change addresses behavior that violates AC #X: '[quote the criterion]'. Consider using `/bug` instead."
-   - **NO** -- Correctly classified as a Change Request. Proceed.
+   - **YES** — Flag: "This may be a **Bug**, not a Change Request. The requested change addresses behavior that violates AC #X: '[quote the criterion]'. Consider using `/bug` instead."
+   - **NO** — Correctly classified as a Change Request. Proceed.
 4. Ask the user to confirm classification before proceeding. Do not skip this step.
 
 If no Jira ticket reference is provided, skip this step.
 
-## Step 1: Gather Change Context
+### Step 1: Gather Change Context
 
 Ask the user if not already provided:
 - **What changed?** Specific description of the requested change
@@ -42,29 +44,29 @@ Categorize the change trigger:
 - Strategic pivot or priority change
 - Failed approach requiring different solution
 
-## Step 2: Impact Analysis
+### Step 2: Impact Analysis
 
 Systematically analyze impact against all existing artifacts:
 
-### SPEC.md Impact
+#### SPEC.md Impact
 - Do any acceptance criteria need modification, addition, or removal?
 - Does the scope section need updating?
 - Are user stories affected?
 - Does this change conflict with existing requirements?
 
-### DESIGN.md Impact (if exists)
+#### DESIGN.md Impact (if exists)
 - Are architecture decisions affected?
 - Do data models need changes?
 - Are API contracts affected?
 - Do component boundaries shift?
 
-### TASKS.md Impact (if exists)
+#### TASKS.md Impact (if exists)
 - Do existing tasks need modification?
 - Are new tasks needed?
 - Should completed tasks be revisited?
 - Does the task order change?
 
-#### Per-Task Impact Classification (if any tasks are marked `[x]` in TASKS.md)
+##### Per-Task Impact Classification (if any tasks are marked `[x]` in TASKS.md)
 
 When completed tasks exist, classify EVERY existing task into exactly one category:
 
@@ -85,29 +87,29 @@ New tasks added by this CR start as `[ ]`.
 
 Record the per-task classification for use in Step 4 and post-approval state updates.
 
-### Downstream Impact
+#### Downstream Impact
 - Does this affect any bugs already filed against this spec?
 - Does this invalidate any completed implementation work?
 - Does this change the Definition of Done?
 
-## Step 3: Evaluate Path Forward
+### Step 3: Evaluate Path Forward
 
 Present the user with evaluated options:
 
-### Option A: Direct Adjustment
+#### Option A: Direct Adjustment
 - Modify existing artifacts within current scope
 - Effort estimate: [Low/Medium/High]
 - Risk: [Low/Medium/High]
 - Viable? [Yes/No + reason]
 
-### Option B: Partial Rollback
+#### Option B: Partial Rollback
 - Revert specific completed work to simplify the change
 - What would be rolled back and why
 - Effort estimate: [Low/Medium/High]
 - Risk: [Low/Medium/High]
 - Viable? [Yes/No + reason]
 
-### Option C: Scope Reduction
+#### Option C: Scope Reduction
 - Reduce scope to accommodate the change within constraints
 - What would be deferred
 - Effort estimate: [Low/Medium/High]
@@ -116,9 +118,9 @@ Present the user with evaluated options:
 
 Recommend one option with clear rationale.
 
-## Step 4: Generate Change Proposal
+### Step 4: Generate Change Proposal
 
-Use the template from @.framework/templates/CHANGE-PROPOSAL.template.md
+Use the template from `../../.framework/templates/CHANGE-PROPOSAL.template.md`
 
 For each affected artifact, show specific changes in old/new format:
 
@@ -136,7 +138,7 @@ NEW:
 Rationale: [why this change is needed]
 ```
 
-### Task Impact Summary (if any tasks are marked `[x]` in TASKS.md)
+#### Task Impact Summary (if any tasks are marked `[x]` in TASKS.md)
 
 Using the per-task classification from Step 2, include a Task Impact Summary so the user can see the effect on implementation progress before approving:
 
@@ -152,14 +154,14 @@ Summary: 1 of 3 completed tasks remain valid. 2 completed tasks will be reset.
 
 If no tasks are marked `[x]` in TASKS.md, omit this section.
 
-### Scope Classification
+#### Scope Classification
 
 Classify the change:
 - **Minor**: Developer can implement directly. Changes are localized to one artifact section.
 - **Moderate**: Requires PM or Tech Lead review. Changes span multiple artifacts or affect architecture.
 - **Major**: Requires architecture rethink. Fundamental changes to approach or scope.
 
-## Step 5: Approval and Implementation
+### Step 5: Approval and Implementation
 
 Present the complete Change Proposal to the user.
 
@@ -169,7 +171,7 @@ Ask: "Do you approve this Change Proposal? (approve / revise / reject)"
 - **If reject**: Save the Change Proposal as REJECTED. STOP.
 - **If approve**: Proceed to artifact updates.
 
-### Post-Approval Checklist
+#### Post-Approval Checklist
 
 On approval, execute these steps in order:
 
@@ -183,26 +185,23 @@ On approval, execute these steps in order:
   - New tasks from CR → `[ ]`
 - [ ] Update workflow state (if active): If `{spec_folder}/.workflow-state.md` exists and `stepsCompleted` is non-empty:
   1. Determine the **latest** artifact modified by this CR in step order: SPEC.md → `step-01-spec`, DESIGN.md → `step-02-design`, TASKS.md → `step-03-tasks`.
-  2. If `stepsCompleted` already extends beyond that step, trim it to keep only entries up to and including that step's entry. Examples:
-     - CR modified SPEC.md only → set `stepsCompleted` to `['step-01-spec']`
-     - CR modified SPEC.md + DESIGN.md → set `stepsCompleted` to `['step-01-spec', 'step-02-design']`
-     - CR modified TASKS.md (with or without earlier artifacts) → set `stepsCompleted` to `['step-01-spec', 'step-02-design', 'step-03-tasks']`
-  3. TASKS.md checkboxes are already synced in the artifact update step above (INVALIDATED → `[ ]`, UNAFFECTED → keep `[x]`). No separate state update needed for task completion tracking.
+  2. If `stepsCompleted` already extends beyond that step, trim it to keep only entries up to and including that step's entry.
+  3. TASKS.md checkboxes are already synced in the artifact update step above (INVALIDATED → `[ ]`, UNAFFECTED → keep `[x]`).
   4. Reset `fixAttempts` to `0`, `previousIssueCount` to `0`, `fixLoopActive` to `false`, `implementationAttempts` to `0`.
-  5. Display: "Workflow state updated: progress trimmed to {last kept step}. Steps after {last kept step} will be re-run. Run `/flow {specId}` to resume."
-  6. If `stepsCompleted` was NOT trimmed (already at or before the trim point), display: "Workflow state: no adjustment needed."
+  5. Display: "Workflow state updated: progress trimmed to {last kept step}. Run `/flow {specId}` to resume."
+  6. If `stepsCompleted` was NOT trimmed, display: "Workflow state: no adjustment needed."
 - [ ] Update original SPEC.md: Add entry to Amendment History table:
       `| CR-XXX | [today's date] | [one-line description of change] | [approver name] |`
 - [ ] Regenerate SPEC-CURRENT.md: compile frozen SPEC.md + all FIXED bugs (from Bug History) + all IMPLEMENTED CRs (from Amendment History) into `specs/XXX/SPEC-CURRENT.md`
 - [ ] Save Change Proposal document to `{spec_folder}/CHANGE-PROPOSAL-{date}.md`
 
-## Output
+### Output
 
 Save the Change Proposal to: `specs/XXX-{slug}/CHANGE-PROPOSAL-{date}.md`
 
 Use today's date in YYYY-MM-DD format for the filename.
 
-## Constraints
+### Constraints
 
 - Do NOT modify artifacts without explicit user approval
 - Do NOT skip the classification check when a Jira ticket is provided
@@ -211,3 +210,14 @@ Use today's date in YYYY-MM-DD format for the filename.
 - Do NOT skip the Amendment History update — this is the audit trail
 - Do NOT skip SPEC-CURRENT.md regeneration — this keeps the developer convenience view current
 - Do NOT skip the workflow state update — stale workflow progress causes silent inconsistencies
+
+## Verification
+
+- [ ] Classification verified (if Jira ticket provided)
+- [ ] All three artifact impacts analyzed (SPEC, DESIGN, TASKS)
+- [ ] Per-task classification completed for any `[x]` tasks (with forward cascade applied)
+- [ ] Three path-forward options evaluated with effort and risk ratings
+- [ ] Change Proposal shows old/new for each affected section
+- [ ] If approved: all post-approval checklist items executed in order
+- [ ] Amendment History updated in SPEC.md
+- [ ] SPEC-CURRENT.md regenerated

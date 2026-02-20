@@ -1,65 +1,66 @@
----
-description: Rules for implementing bugfixes from BUG.md
-globs: src/**/*
-alwaysApply: false
----
+# Bug Implementation
 
-# Bug Implementation Rules
+## Description
+
+Use when implementing a bugfix from an approved BUG.md (Status = CONFIRMED).
+Not for bugs where BUG.md status is not CONFIRMED — STOP and inform the user. Not for reviewing the fix — use `../bug-review/SKILL.md` after implementation is complete.
+
+## Instructions
 
 You are implementing a bugfix based on an approved BUG.md. Follow these rules strictly.
 
-## Terminal Access Prerequisite
+### Terminal Access Prerequisite
 
 Terminal access is required for verified bugfix implementation. You must be able to run tests to confirm the fix works and the regression test passes. If you cannot execute commands, HALT and inform the user that manual verification is needed.
 
-## Required Inputs
+### Required Inputs
 
 Before implementing, you must have:
 - Specific task from approved BUG.md (e.g., "Implement T1")
-- Access to @bugs/BUG-XXX/BUG.md for bug details
-- Access to the original @specs/XXX/SPEC.md (linked in BUG.md)
-- Access to the original @specs/XXX/DESIGN.md for architecture context
-- Access to @.framework/CONSTITUTION.md for coding standards
+- Access to `bugs/BUG-XXX/BUG.md` for bug details
+- Access to the original `specs/XXX/SPEC.md` (linked in BUG.md)
+- Access to the original `specs/XXX/DESIGN.md` for architecture context
+- Access to `../../.framework/CONSTITUTION.md` for coding standards
 
 If BUG.md is not approved (Status != CONFIRMED), STOP and inform the user.
 
-## Scope Control
+### Scope Control
 
-### Minimal Change Principle
-- Fix ONLY what is broken - nothing more
+#### Minimal Change Principle
+- Fix ONLY what is broken — nothing more
 - Do NOT "improve" or refactor adjacent code
 - Do NOT add features while fixing the bug
 - Do NOT change behavior beyond what's needed for the fix
 
-### What You CAN Change
+#### What You CAN Change
 - The specific code causing the bug
 - Related code strictly necessary for the fix
 - Test files (adding regression test)
 
-### What You CANNOT Change
+#### What You CANNOT Change
 - Unrelated files or functions
 - API contracts (unless the bug is in the contract itself)
 - Database schemas (unless explicitly in the bug scope)
 - Dependencies (unless strictly required for the fix)
 
-## Regression Test Requirement
+### Regression Test Requirement
 
 Every bugfix MUST include a regression test. This is mandatory, not optional.
 
-### Regression Test Requirements
+#### Regression Test Requirements
 1. Test must be named to reference the bug: `test_bug_XXX_description` or similar
 2. Test must reproduce the original bug scenario
 3. Test must FAIL before the fix is applied (verify this mentally or explain)
 4. Test must PASS after the fix is applied
 5. Test must be placed in appropriate test directory per CONSTITUTION.md
 
-### Test Structure
+#### Test Structure
 ```
 # Example structure (adapt to project conventions)
 def test_bug_001_safari_validation_fails():
     """
     Regression test for BUG-001: Safari validation fails
-    
+
     Reproduction: [brief description of scenario]
     Related spec: FEAT-001
     """
@@ -68,9 +69,9 @@ def test_bug_001_safari_validation_fails():
     # Assert: Verify correct behavior
 ```
 
-## Implementation Process
+### Implementation Process
 
-### For Investigation/Fix Tasks (T1)
+#### For Investigation/Fix Tasks (T1)
 
 1. **Locate the bug**
    - Follow the reproduction steps from BUG.md
@@ -87,7 +88,7 @@ def test_bug_001_safari_validation_fails():
    - Run the full test suite — existing tests must still pass
    - Paste raw terminal output as evidence
 
-### For Regression Test Tasks (T2)
+#### For Regression Test Tasks (T2)
 
 1. **Create the test**
    - Name it to reference the bug ID
@@ -98,20 +99,20 @@ def test_bug_001_safari_validation_fails():
    - Confirm the test passes with the fix in place
    - Explain why it would have failed before the fix
 
-## Standards Compliance
+### Standards Compliance
 
-### From CONSTITUTION.md
+#### From CONSTITUTION.md
 - Follow all coding standards (naming, structure, patterns)
 - Use specified tech stack and libraries
 - Follow file/folder structure conventions
 - Apply error handling patterns
 
-### From DESIGN.md
+#### From DESIGN.md
 - Respect the existing architecture
 - Do not introduce new patterns not in the design
 - Maintain component boundaries
 
-## Output
+### Output
 
 After implementing each task, provide:
 
@@ -129,7 +130,6 @@ After implementing each task, provide:
 
 **Files Changed:**
 - path/to/file.py (modified) - [what changed]
-- path/to/file.py (modified) - [what changed]
 
 **Regression Test:**
 - path/to/test_file.py (test_bug_XXX_description)
@@ -145,15 +145,15 @@ After implementing each task, provide:
 - [Any assumptions or decisions made, or "None"]
 ```
 
-## Constraints
+### Constraints
 
 - Do NOT implement without an approved BUG.md
 - Do NOT skip the regression test
 - Do NOT make changes beyond the bug scope
 - Do NOT modify the original SPEC.md or DESIGN.md
-- Do NOT approve your own changes - that's for bug-review.mdc
+- Do NOT approve your own changes — that's for `../bug-review/SKILL.md`
 
-## Checklist Before Done
+## Verification
 
 - [ ] BUG.md status is CONFIRMED (approved)
 - [ ] Only the specified task is implemented

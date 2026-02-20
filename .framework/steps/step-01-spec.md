@@ -4,7 +4,7 @@ description: 'Create or update SPEC.md for this feature'
 nextStepFile: './step-02-design.md'
 
 # References
-ruleRef: '@.cursor/rules/spec-creation.mdc'
+ruleRef: '@skills/spec-creation/SKILL.md'
 templateRef: '@.framework/templates/SPEC.template.md'
 constitutionRef: '@.framework/CONSTITUTION.md'
 stateFile: '{spec_folder}/.workflow-state.md'
