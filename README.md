@@ -152,9 +152,9 @@ your-project/
 │   ├── bug-implementation/SKILL.md
 │   ├── bug-review/SKILL.md
 │   └── change-request/SKILL.md
-├── .cursor-plugin/plugin.json         # Cursor adapter (points to ../skills)
+├── .cursor-plugin/plugin.json         # Cursor adapter
 ├── .claude-plugin/plugin.json         # Claude Code adapter
-├── .opencode/config.json              # OpenCode adapter
+├── .opencode/                         # OpenCode plugin (see .opencode/INSTALL.md for setup)
 ├── .cursor/
 │   └── commands/                      # Cursor slash commands: /specify, /design, /tasks, etc.
 ├── .framework/

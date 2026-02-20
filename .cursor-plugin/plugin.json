@@ -1,7 +1,14 @@
 {
   "name": "spec-first-framework",
-  "version": "0.9.0",
+  "displayName": "Spec-First Framework",
   "description": "Spec-driven development framework for AI coding agents",
-  "skills": "../skills",
-  "commands": ".cursor/commands"
+  "version": "0.9.1",
+  "author": {
+    "name": "Zlatko Matokanovic"
+  },
+  "repository": "https://github.com/zlatkomq/spec-first-framework",
+  "license": "MIT",
+  "keywords": ["spec-driven", "workflow", "quality-gates", "ai-coding"],
+  "skills": "./skills",
+  "commands": "./.cursor/commands"
 }

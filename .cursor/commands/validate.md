@@ -78,7 +78,7 @@ Report any broken references.
 |------|----------|
 | `.cursor-plugin/plugin.json` | Cursor |
 | `.claude-plugin/plugin.json` | Claude Code |
-| `.opencode/config.json` | OpenCode |
+| `.opencode/plugins/spec-first.js` | OpenCode |
 
 ### Output
 
@@ -114,7 +114,7 @@ Stale .mdc references:
 - .cursor/commands/implement.md → @.cursor/rules/implementation.mdc (STALE)
 
 Missing adapters:
-- .opencode/config.json (NOT FOUND)
+- .opencode/plugins/spec-first.js (NOT FOUND)
 
 Result: Framework integrity FAILED — [N] issues found.
 ```

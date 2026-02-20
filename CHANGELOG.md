@@ -2,6 +2,30 @@
 
 All notable changes to the Spec-First AI Development Framework will be documented in this file.
 
+## [0.9.1] - Adapter Fix (2026-02-20)
+
+### Summary
+
+Corrects platform adapter path format and replaces the OpenCode placeholder with a real plugin.
+
+### Fixed
+
+- **`.cursor-plugin/plugin.json`**: Path `"../skills"` → `"./skills"` — Cursor resolves manifest paths relative to repo root, not relative to `plugin.json` location. Previous path violated Cursor marketplace "no `..` paths" rule. Added full metadata fields (`displayName`, `author`, `repository`, `license`, `keywords`).
+- **`.claude-plugin/plugin.json`**: Same path fix. Added full metadata fields.
+- **`.opencode/`**: Replaced `config.json` (unrecognized JSON format) with `plugins/spec-first.js` (correct ES Module plugin) and `INSTALL.md` (symlink setup instructions). OpenCode plugins are JavaScript files registered via `~/.config/opencode/plugins/`.
+
+### Added
+
+- `.opencode/plugins/spec-first.js` — OpenCode ES Module plugin; injects framework context via `experimental.chat.system.transform` hook
+- `.opencode/INSTALL.md` — Manual setup instructions (symlink plugin + skills directory)
+
+### Removed
+
+- `.opencode/config.json` — replaced by `plugins/spec-first.js`
+- `.cursor/rules/` — empty directory leftover from v0.9.0 migration
+
+---
+
 ## [0.9.0] - Skills Migration (2026-02-20)
 
 ### Summary

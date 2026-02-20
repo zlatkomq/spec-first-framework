@@ -23,7 +23,9 @@ project/
 ├── .claude-plugin/
 │   └── plugin.json                     # Claude Code platform adapter (skills path)
 ├── .opencode/
-│   └── config.json                     # OpenCode platform adapter (skills path)
+│   ├── plugins/
+│   │   └── spec-first.js               # OpenCode ES Module plugin (system prompt injection)
+│   └── INSTALL.md                      # Manual setup instructions (symlink plugin + skills)
 │
 ├── .cursor/
 │   └── commands/                       # Cursor slash commands (invoke skills + context)
