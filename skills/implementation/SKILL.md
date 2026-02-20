@@ -104,6 +104,18 @@ Every task follows RED→GREEN→REFACTOR:
 3. **REFACTOR** — Clean up (only after green). Keep tests green. Don't add behavior.
 4. **Repeat** — Next test for next behavior within this task.
 
+#### Code Before Test? Delete It.
+
+If you wrote production code before writing the failing test — even "just to explore" — delete it. Start over with RED.
+
+**No exceptions:**
+- Do NOT keep it as "reference"
+- Do NOT "adapt" it while writing tests
+- Do NOT look at it while writing the test
+- Delete means delete
+
+The test must be written without knowledge of the implementation. That's what makes it a specification, not a confirmation.
+
 #### Mechanically Verifiable Constraint
 
 Test assertions must target **spec behavior**, not **implementation structure**:

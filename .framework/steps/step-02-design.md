@@ -34,6 +34,13 @@ Create (or update) DESIGN.md by applying the design-creation rules and template.
 
 Check gate per {ruleRef}. If gate fails: `[B] Back to Spec (step 1)` | `[X] Exit`. On [B]: load `./step-01-spec.md`. On [X]: STOP.
 
+<HARD-GATE>
+Do NOT create DESIGN.md without first reading SPEC.md completely (acceptance criteria, scope, user stories).
+Do NOT create DESIGN.md if SPEC.md Status is not APPROVED — check the gate first.
+Do NOT include task breakdowns, code, or implementation details in DESIGN.md — that belongs in later steps.
+Do NOT bypass user approval before proceeding to Task Breakdown.
+</HARD-GATE>
+
 ## SEQUENCE
 
 ### 1. Load inputs

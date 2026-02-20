@@ -99,6 +99,32 @@ def test_bug_001_safari_validation_fails():
    - Confirm the test passes with the fix in place
    - Explain why it would have failed before the fix
 
+### Red Flags — STOP
+
+If you notice yourself doing any of these, STOP immediately:
+
+- Fixing something without understanding why it broke
+- Skipping the regression test ("the fix is obvious, test isn't needed")
+- Changing more files than the bug requires
+- Writing the fix before writing the regression test
+- Saying "tests pass" without running them after the fix
+- Thinking "I'll just improve this adjacent code while I'm here"
+- Adding a feature disguised as a bug fix
+
+### Rationalization Traps
+
+These are common excuses AI agents use to bypass bugfix rules. If you catch yourself thinking any of these, the corresponding reality applies.
+
+| Excuse | Reality |
+|--------|---------|
+| "The fix is obvious, no need to investigate" | Obvious symptoms hide non-obvious root causes. Phase 1 investigation is fast for simple bugs. |
+| "Regression test isn't needed for this" | Every unfixed regression was once "too simple to test." Test takes 30 seconds. |
+| "I'll write the test after the fix" | Test-after confirms what you built, not what's needed. Write regression test first. |
+| "This adjacent code is broken too, might as well fix it" | Minimal change principle. File a separate bug for adjacent issues. |
+| "The fix requires refactoring this module" | If the fix requires refactoring, HALT — the scope has grown beyond a bugfix. |
+| "I already manually verified it works" | Manual verification leaves no record and can't be re-run. Automated regression test is mandatory. |
+| "The API contract needs to change for this fix" | API contract changes are scope creep. HALT and ask before modifying contracts. |
+
 ### Standards Compliance
 
 #### From CONSTITUTION.md
