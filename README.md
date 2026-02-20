@@ -4,32 +4,64 @@ A structured methodology for AI-assisted software development. Ensures traceabil
 
 ## Installation
 
-### Install the CLI
+### Option A: Install as a Plugin (Recommended)
+
+#### Cursor
+
+Run inside Cursor:
+
+```
+/add-plugin zlatkomq/spec-first-framework
+```
+
+Or browse and install from the [Cursor Marketplace](https://cursor.com/marketplace).
+
+#### Claude Code
+
+```bash
+claude plugin marketplace add zlatkomq/spec-first-framework
+claude plugin install spec-first-framework@spec-first-framework --scope project
+```
+
+Or inside Claude Code:
+
+```
+/plugin marketplace add zlatkomq/spec-first-framework
+/plugin install spec-first-framework@spec-first-framework
+```
+
+#### OpenCode
+
+See [.opencode/INSTALL.md](.opencode/INSTALL.md) for manual setup (symlink plugin and skills directory).
+
+### Option B: Install via CLI
+
+#### Install the CLI
 
 ```bash
 sudo curl -fsSL https://raw.githubusercontent.com/zlatkomq/spec-first-framework/main/spec-first.sh -o /usr/local/bin/spec-first && sudo chmod +x /usr/local/bin/spec-first
 ```
 
-### Initialize a project
+#### Initialize a project
 
 ```bash
 cd your-project
 spec-first init
 ```
 
-### Update to latest framework
+#### Update to latest framework
 
 ```bash
 spec-first update
 ```
 
-### Switch to a different branch
+#### Switch to a different branch
 
 ```bash
 spec-first update --branch <branch-name>
 ```
 
-### CLI Commands
+#### CLI Commands
 
 | Command | Description |
 |---------|-------------|
