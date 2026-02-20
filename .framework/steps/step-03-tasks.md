@@ -34,6 +34,12 @@ Create (or update) TASKS.md by applying the task-creation rules and template. Br
 
 Check gate per {ruleRef}. If gate fails: `[B] Back to Design (step 2)` | `[X] Exit`. On [B]: load `./step-02-design.md`. On [X]: STOP.
 
+<HARD-GATE>
+Do NOT create TASKS.md without first reading DESIGN.md and SPEC.md completely.
+Do NOT create tasks that are not traceable to a specific DESIGN.md section.
+Do NOT skip the adversarial self-validation — run ALL checks before presenting to user.
+</HARD-GATE>
+
 ## SEQUENCE
 
 ### 1. Load inputs

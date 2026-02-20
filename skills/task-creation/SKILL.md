@@ -96,6 +96,27 @@ Format:
 
 `Produces`/`Consumes` are only required when a task creates or depends on another task's public interface. Purely internal tasks (config files, constants) skip this.
 
+#### Verification Commands
+
+Tasks SHOULD include a Verify field specifying the command to run and expected outcome when the task is complete:
+
+```
+- [ ] T3: Create RegistrationService (DESIGN: Services)
+  - Produces: `RegistrationService.register(dto: CreateUserDTO) -> User`
+  - Verify: `npm test -- --grep "RegistrationService"` → Expected: PASS
+```
+
+The Verify command must be:
+- An actual executable command (not "run the tests")
+- Specific to this task's scope (not the full test suite)
+- Achievable given the task's scope
+
+If the task's verify command cannot be determined at TASKS.md time (e.g., exact test file path unknown until implementation), write: `Verify: Run tests for [component name] → Expected: PASS`. The implementer resolves the exact command during implementation.
+
+#### TDD Cycle
+
+Each implementation task follows the TDD mandate in the implementation skill (RED→GREEN→REFACTOR). The task's Verify command corresponds to the GREEN verification step. Task creators should ensure the verify command and expected outcome are realistic for the task scope.
+
 #### Testing (MANDATORY)
 - Unit tests are ALWAYS required — never skip
 - Create at least one unit test task per major component/function
@@ -151,6 +172,7 @@ After generating TASKS.md, run ALL checks below BEFORE presenting to the user. F
 - [ ] **Contract completeness**: Every inter-task dependency has matching Produces/Consumes declarations
 - [ ] **Integration coverage**: If DESIGN.md has >1 New interacting components, at least one test task tests them together without mocks
 - [ ] **Cross-spec reinvention**: No New component duplicates something from a previous spec's IMPLEMENTATION-SUMMARY.md
+- [ ] **Verification commands**: Every task with a testable component has a Verify field (command + expected outcome)
 
 ### Output
 

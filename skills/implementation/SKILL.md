@@ -51,7 +51,7 @@ STOP implementation and inform the user if any of these occur:
 
 | Condition | Action |
 |-----------|--------|
-| 3 consecutive failed attempts at the same sub-problem | HALT — this is an architectural signal, not an effort problem. Each failed attempt reveals coupling or assumptions that patching cannot fix. Explain: (1) what you tried, (2) why it failed, (3) what the pattern of failures suggests about the design. Recommend revisiting DESIGN.md (step 2) or TASKS.md (step 3) rather than trying a fourth time. |
+| 3 consecutive failed attempts at the same sub-problem | Invoke `../../skills/systematic-debugging/SKILL.md` (Phases 1-3) before halting. If debugging reveals root cause, proceed with Phase 4 fix. If debugging reveals architectural problem (3+ fixes rule), HALT — explain: (1) what you tried, (2) why it failed, (3) what the debugging investigation found, (4) what the pattern of failures suggests about the design. Recommend revisiting DESIGN.md (step 2) or TASKS.md (step 3). |
 | Same task fails validation gates 3 times | HALT — the problem is in the spec, not the implementation. Three validation failures means the task definition, interface contract, or design assumption is wrong. Recommend going back to TASKS.md (step 3) or DESIGN.md (step 2). Do not keep patching. |
 | Missing dependency not in DESIGN.md | HALT — do not install undocumented dependencies. Ask if the dependency should be added. |
 | Ambiguous requirement in DESIGN.md | HALT — quote the ambiguous section and ask for clarification. Do not guess. |
@@ -66,7 +66,7 @@ If you notice yourself doing any of these, STOP immediately. You are about to vi
 
 - Writing code before fully reading and understanding what the task requires
 - Thinking "this is simple enough to skip verification"
-- Writing a test after the code is already working instead of alongside it
+- Writing production code before writing a failing test (TDD mandate violation)
 - Changing a file not mentioned in any task
 - Using a library or dependency not listed in CONSTITUTION.md or DESIGN.md
 - Thinking "I'll just fix this other thing while I'm here"
@@ -79,31 +79,58 @@ These are common excuses AI agents use to bypass rules. If you catch yourself th
 
 | Excuse | Reality |
 |--------|---------|
-| "I'll add the test after the code works" | Test-accompaniment mandate: tests and code ship together. No exceptions. |
+| "I'll add the test after the code works" | TDD mandate: tests define correctness. Tests-after verify what you built, not what's required. |
 | "The test would pass if I could run it" | If you cannot run it, you cannot claim it passes. Mark as IMPLEMENTED-UNVERIFIED and HALT. |
 | "This TODO is temporary" | TODOs are prohibited. If the task is unclear, HALT and ask. |
 | "I fixed a small thing nearby while I was in the file" | Scope Control forbids unrelated changes. Revert it. |
 | "The design is obviously wrong here so I improved it" | Follow DESIGN.md exactly. Use the Design Feedback section for suggestions. |
 | "This is too simple to need tests" | Simple code breaks. The mandate has no complexity threshold. |
 | "I'll clean this up in a later task" | There is no later task for cleanup. Each task ships complete. |
+| "Tests after achieve same goals" | Tests-after = "what does this do?" Tests-first = "what should this do?" Different questions, different quality. |
+| "Need to explore first" | Fine. Throw away exploration, start with TDD. Exploration code is not production code. |
+| "Test is hard to write" | Hard to test = hard to use. Listen to the test — simplify the design. |
+| "TDD is dogmatic, I'm being pragmatic" | TDD IS pragmatic. Finds bugs before commit = faster than debugging after. |
 
-### Test-Accompaniment Mandate
+### TDD Mandate
 
 ```
-IRON LAW: No task is complete without corresponding test coverage.
-Tests must EXIST as files on disk and PASS when executed.
-"Tests would pass" is not evidence. Run them.
+IRON LAW: TEST FIRST, THEN IMPLEMENT
 ```
 
-Every implementation task MUST produce tests alongside code. The AI may write tests first, code first, or interleaved — the ORDER is not prescribed. But the OUTCOME is non-negotiable: when a task is marked complete, tests for that task's functionality must exist and pass.
+Every task follows RED→GREEN→REFACTOR:
 
+1. **RED** — Write test(s) that assert against SPEC.md acceptance criteria behavior (not implementation structure). Run tests. Confirm they FAIL for the expected reason (feature missing, not syntax error).
+2. **GREEN** — Write the simplest code to make tests pass. Run tests. Confirm they PASS. Confirm no regressions.
+3. **REFACTOR** — Clean up (only after green). Keep tests green. Don't add behavior.
+4. **Repeat** — Next test for next behavior within this task.
+
+#### Mechanically Verifiable Constraint
+
+Test assertions must target **spec behavior**, not **implementation structure**:
+- GOOD: `expect(response.status).toBe(401)` — tests the AC: "returns 401 for expired token"
+- BAD: `expect(validateToken).toHaveBeenCalled()` — tests implementation detail, not behavior
+
+The review phase (Phase 3 TDD Compliance Check) verifies this via git diff: if test files and implementation files are created in a single undifferentiated operation with tests that mirror implementation structure rather than spec criteria, the TDD gate fails.
+
+#### When Verify RED passes immediately
+You're testing existing behavior, not new behavior. Fix the test — it must assert something the current code does NOT satisfy.
+
+#### When Verify GREEN fails
+Fix the code, not the test. The test defines what "correct" means.
+
+#### Test Quality Signal
+If your test would pass against ANY implementation (not just the correct one), it tests nothing. Each test must be specific enough that a wrong implementation would fail it.
+
+#### Outcome Requirements
 - Implementation tasks produce code AND tests for that code
 - Testing tasks (if separate) produce additional test coverage
 - No task is complete without corresponding test coverage
+- Tests must EXIST as files on disk and PASS when executed
+- "Tests would pass" is not evidence. Run them.
 
 #### If the task is an Implementation task (code):
+- Write tests FIRST following the RED→GREEN→REFACTOR cycle above
 - Implement the specified component/function/endpoint
-- Write tests that verify the implementation works correctly
 - Ensure existing tests still compile (fix imports if needed)
 - Tests must assert real behavior, not trivial truths
 
@@ -117,6 +144,22 @@ Follow this sequence:
 4. **Do NOT change implementation code** unless fixing a bug the test reveals — and report that bug in your summary
 
 Testing tasks produce tests only. If a test reveals a bug, document it; do not silently fix production code during a testing task.
+
+### Verification Iron Law
+
+```
+NO COMPLETION CLAIMS WITHOUT FRESH VERIFICATION EVIDENCE
+```
+
+If you haven't run the verification command in this message, you cannot claim it passes.
+Hedging language ("should work", "probably passes", "likely correct") means you skipped verification. Go back and run it.
+
+**Red flags — STOP if you catch yourself:**
+- Using "should", "probably", "seems to"
+- Expressing satisfaction before verification ("Great!", "Perfect!", "Done!")
+- About to commit without running tests
+- Trusting a previous run instead of running fresh
+- Thinking "just this once"
 
 ### Verification Protocol
 
@@ -143,7 +186,11 @@ Before marking ANY task complete (updating the checkbox to [x]), ALL of these ga
 
 1. **Tests exist and pass**: Tests for this task's functionality ACTUALLY EXIST as files on disk. Run the tests and paste the raw terminal output (stdout/stderr) in the implementation summary under "Test output (raw)." If tests fail, fix the code and re-run until they pass.
 2. **Produces match**: If this task declares a Produces signature in TASKS.md, verify your implementation matches that signature exactly (method name, parameter types, return type).
-3. **AC traceability**: State which acceptance criterion/criteria from SPEC.md this task addresses and how (one line). This is a traceability annotation, not a self-assessment — the adversarial review will verify your claim.
+3. **Spec compliance**: For each acceptance criterion this task claims to address:
+   - Quote the criterion from SPEC.md
+   - Point to the specific code path that satisfies it (file + function)
+   - Point to the specific test that verifies it (file + test name)
+   - If any criterion cannot be traced to both code AND test, the gate fails — do not mark complete
 4. **No regressions**: Run the full test suite. No existing tests should fail.
 
 **If ANY gate fails: do NOT mark the task complete.** Fix the issue first. If you cannot fix it, HALT.
@@ -287,7 +334,7 @@ Before marking any task complete, ALL per-task validation gates must pass:
 
 - [ ] Tests exist as files on disk and pass (raw terminal output recorded)
 - [ ] Produces signatures match TASKS.md declarations exactly
-- [ ] Each task annotates which SPEC.md acceptance criterion it addresses
+- [ ] Each task's claimed AC traced to specific code path AND specific test (spec compliance gate)
 - [ ] Full test suite passes (no regressions)
 - [ ] No prohibited patterns in any produced code
 - [ ] IMPLEMENTATION-SUMMARY.md has an anchor entry for each completed task

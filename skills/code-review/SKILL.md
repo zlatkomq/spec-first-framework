@@ -215,6 +215,18 @@ For each check, show relevant code evidence and explain compliance or violation.
 | Test mocks the thing it's supposed to be testing | Circular testing |
 | All tests pass but none test edge cases from acceptance criteria | Incomplete coverage |
 
+**TDD Compliance Check:**
+- [ ] Tests assert against spec behavior (AC criteria), not implementation structure
+- [ ] Tests fail without the implementation (assertions target new behavior, not existing/trivial behavior)
+- [ ] No tests where assertions mirror implementation details (e.g., `expect(mockFn).toHaveBeenCalled()` instead of behavioral assertions)
+
+| TDD Red Flag | What It Means |
+|---|---|
+| Test assertions use mock call counts as primary verification | Tests validate wiring, not behavior |
+| All tests pass on first run without any implementation | Tests don't test new behavior — they test existing code |
+| Test assertions match implementation structure rather than spec behavior | Tests coupled to HOW, not WHAT |
+| Tests only assert `result is not None` or `expect(result).toBeDefined()` alongside implementation | Placeholder tests for coverage, not verification |
+
 ##### Step 7: DESIGN.md Alignment
 
 Verify implementation matches technical design:
@@ -319,6 +331,17 @@ Save review output to: `specs/XXX-{slug}/REVIEW.md`
 - Do NOT trust implementation summaries at face value — verify claims against actual code
 - Do NOT accept tests that only assert "no exception" or trivial truths — tests must validate real behavior
 - Do NOT produce a review with zero issues without explicitly justifying why
+
+### Auto-Fix Reception Rules
+
+When the [F] auto-fix loop is active and the AI is fixing issues from its own review:
+
+1. **Verify the finding first** — Check if the finding is actually correct against the codebase. The reviewer may have missed context or made a wrong judgment.
+2. **If finding is ambiguous** — Note "Unclear finding — skipping, requires human clarification" rather than guessing the intent.
+3. **One fix at a time, test each** — Fix one finding → run tests → confirm no regressions → next finding. Do not batch.
+4. **No performative agreement** — Do not write "Great catch!" or "You're right!". State the fix factually: "Fixed: added null check in validate_email()."
+5. **Push back if wrong** — If a finding is incorrect, note "Finding invalid — [evidence from code]" and skip the fix. This is expected and healthy.
+6. **YAGNI check** — If a finding suggests adding "professional" features (configurable retry, generic abstractions), check if the feature is actually used. If not: "Not needed — YAGNI."
 
 ### Severity Definitions
 

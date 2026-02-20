@@ -35,6 +35,13 @@ Implement all incomplete tasks from TASKS.md. Run a verification gate. Write the
 
 Check gate per {ruleRef}. If gate fails: `[B] Back to Tasks (step 3)` | `[X] Exit`. On [B]: load `./step-03-tasks.md`. On [X]: STOP.
 
+<HARD-GATE>
+Do NOT write production code without a failing test first (TDD mandate).
+Do NOT claim a task is complete without running verification commands and reading the output.
+Do NOT skip per-task validation gates — every gate must pass before checkbox update.
+Do NOT mark a task complete if spec compliance check fails (AC not traceable to code AND test).
+</HARD-GATE>
+
 ## SEQUENCE
 
 ### 1. Load inputs

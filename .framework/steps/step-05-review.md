@@ -34,6 +34,12 @@ Generate an adversarial REVIEW.md by applying the code-review rules. Inspect act
 
 All tasks in {tasksFile} must be marked `[x]`. If any are not: display "Not all tasks are implemented." Offer: `[B] Back to Implement (step 4)` | `[X] Exit`. On [B]: load `./step-04-implement.md`. On [X]: STOP.
 
+<HARD-GATE>
+Do NOT produce a review based solely on reading spec documents — you MUST inspect actual source code.
+Do NOT skip test execution — you MUST run tests and record the output.
+Do NOT approve with fewer than 3 issues without explicit one-sentence justification.
+</HARD-GATE>
+
 ## SEQUENCE
 
 ### 1. Load inputs
