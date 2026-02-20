@@ -16,6 +16,14 @@ Before creating a CONSTITUTION.md, you must have:
 
 If the input is too vague to fill required sections, ASK for clarification. Do not invent standards.
 
+#### Clarification Style
+
+When gathering project details or resolving ambiguity:
+- Ask ONE question at a time. Never dump a list of questions.
+- Prefer multiple-choice over open-ended ("Should we use pytest or unittest?" instead of "What testing framework?")
+- Wait for the user's answer before asking the next question.
+- Each question should build on the previous answer, narrowing scope progressively.
+
 ### Template
 
 Always use the template structure from `../../.framework/templates/CONSTITUTION.template.md`

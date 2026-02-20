@@ -128,6 +128,17 @@ Format:
 - Do NOT number tests separately — continue task numbering (T1, T2... T5, T6 for tests)
 - All bracket placeholders from template must be removed from output
 
+### Red Flags — STOP
+
+If you notice yourself doing any of these, STOP and reconsider before continuing.
+
+- Creating a task that doesn't map to any DESIGN.md section or component
+- Writing tasks so vague that two developers would implement them differently
+- Skipping test tasks because "the implementation tasks already include testing"
+- Including implementation details (actual code, algorithms) that belong in code, not TASKS.md
+- Creating a task that encompasses multiple components or endpoints
+- Omitting Produces/Consumes for tasks that clearly depend on each other
+
 ### Adversarial Self-Validation
 
 After generating TASKS.md, run ALL checks below BEFORE presenting to the user. Fix any issues found. Note significant findings when presenting.

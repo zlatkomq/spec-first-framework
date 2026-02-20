@@ -51,8 +51,8 @@ STOP implementation and inform the user if any of these occur:
 
 | Condition | Action |
 |-----------|--------|
-| 3 consecutive failed attempts at the same sub-problem | HALT — explain what's failing and ask for guidance. Do not keep retrying the same approach. |
-| Same task fails validation gates 3 times | HALT — suggest going back to TASKS.md (step 3) or DESIGN.md (step 2). The problem is likely in the spec, not the implementation. Do not keep patching. |
+| 3 consecutive failed attempts at the same sub-problem | HALT — this is an architectural signal, not an effort problem. Each failed attempt reveals coupling or assumptions that patching cannot fix. Explain: (1) what you tried, (2) why it failed, (3) what the pattern of failures suggests about the design. Recommend revisiting DESIGN.md (step 2) or TASKS.md (step 3) rather than trying a fourth time. |
+| Same task fails validation gates 3 times | HALT — the problem is in the spec, not the implementation. Three validation failures means the task definition, interface contract, or design assumption is wrong. Recommend going back to TASKS.md (step 3) or DESIGN.md (step 2). Do not keep patching. |
 | Missing dependency not in DESIGN.md | HALT — do not install undocumented dependencies. Ask if the dependency should be added. |
 | Ambiguous requirement in DESIGN.md | HALT — quote the ambiguous section and ask for clarification. Do not guess. |
 | Required file from another task doesn't exist yet | HALT — the task has an unmet dependency. Inform the user which task must be completed first. |
@@ -60,7 +60,40 @@ STOP implementation and inform the user if any of these occur:
 
 After halting, wait for user direction. Do not attempt workarounds unless explicitly told to.
 
+### Red Flags — STOP
+
+If you notice yourself doing any of these, STOP immediately. You are about to violate a rule.
+
+- Writing code before fully reading and understanding what the task requires
+- Thinking "this is simple enough to skip verification"
+- Writing a test after the code is already working instead of alongside it
+- Changing a file not mentioned in any task
+- Using a library or dependency not listed in CONSTITUTION.md or DESIGN.md
+- Thinking "I'll just fix this other thing while I'm here"
+- Describing what you "would" do instead of actually doing it
+- Saying tests "should pass" or "would pass" without running them
+
+### Rationalization Traps
+
+These are common excuses AI agents use to bypass rules. If you catch yourself thinking any of these, the corresponding reality applies.
+
+| Excuse | Reality |
+|--------|---------|
+| "I'll add the test after the code works" | Test-accompaniment mandate: tests and code ship together. No exceptions. |
+| "The test would pass if I could run it" | If you cannot run it, you cannot claim it passes. Mark as IMPLEMENTED-UNVERIFIED and HALT. |
+| "This TODO is temporary" | TODOs are prohibited. If the task is unclear, HALT and ask. |
+| "I fixed a small thing nearby while I was in the file" | Scope Control forbids unrelated changes. Revert it. |
+| "The design is obviously wrong here so I improved it" | Follow DESIGN.md exactly. Use the Design Feedback section for suggestions. |
+| "This is too simple to need tests" | Simple code breaks. The mandate has no complexity threshold. |
+| "I'll clean this up in a later task" | There is no later task for cleanup. Each task ships complete. |
+
 ### Test-Accompaniment Mandate
+
+```
+IRON LAW: No task is complete without corresponding test coverage.
+Tests must EXIST as files on disk and PASS when executed.
+"Tests would pass" is not evidence. Run them.
+```
 
 Every implementation task MUST produce tests alongside code. The AI may write tests first, code first, or interleaved — the ORDER is not prescribed. But the OUTCOME is non-negotiable: when a task is marked complete, tests for that task's functionality must exist and pass.
 
@@ -85,6 +118,25 @@ Follow this sequence:
 
 Testing tasks produce tests only. If a test reveals a bug, document it; do not silently fix production code during a testing task.
 
+### Verification Protocol
+
+For EACH claim you make (tests pass, file exists, coverage meets threshold), follow this exact sequence:
+
+1. **IDENTIFY** — What command or check proves this claim?
+2. **RUN** — Execute it now. Not "it ran earlier." Not "it should work." Now.
+3. **READ** — Read the COMPLETE output. Not a summary. The full output.
+4. **VERIFY** — Does the output actually confirm the claim? Be literal.
+5. **CLAIM** — Only now may you state the claim as fact.
+
+Hedging language ("should work", "probably passes", "likely correct") is a signal you skipped step 2, 3, or 4. Go back.
+
+| Claim | Required Evidence | Not Sufficient |
+|-------|-------------------|----------------|
+| "Tests pass" | Test command output showing 0 failures | Previous run, "should pass", memory |
+| "File exists" | Verified on disk (ls, read, or write confirmation) | "I created it" without verification |
+| "No regressions" | Full test suite output with 0 failures | Running only the new tests |
+| "Coverage meets threshold" | Coverage tool output with percentage | "Tests cover the main paths" |
+
 ### Per-Task Validation Gates
 
 Before marking ANY task complete (updating the checkbox to [x]), ALL of these gates must pass:
@@ -105,6 +157,12 @@ After completing a logical group of related tasks, commit changes with a descrip
 Terminal access is required for verified implementation. If you cannot execute commands to run tests and verify your work, HALT and inform the user that manual verification is needed.
 
 ### Honesty Requirements
+
+```
+IRON LAW: Never claim a file exists unless you verified it on disk.
+Never claim tests pass unless you ran them and saw the output.
+Fabricated evidence is grounds for immediate HALT.
+```
 
 These rules exist because AI coding agents have specific failure modes. Follow them without exception.
 

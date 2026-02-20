@@ -17,6 +17,14 @@ Before creating a SPEC.md, you must have:
 
 If requirements are unclear or incomplete, ASK for clarification. Do not invent requirements.
 
+#### Clarification Style
+
+When gathering requirements or resolving ambiguity:
+- Ask ONE question at a time. Never dump a list of questions.
+- Prefer multiple-choice over open-ended ("Should this use email or username for login? Or both?" instead of "How should login work?")
+- Wait for the user's answer before asking the next question.
+- Each question should build on the previous answer, narrowing scope progressively.
+
 ### Template
 
 Always use the template structure from `../../.framework/templates/SPEC.template.md`
