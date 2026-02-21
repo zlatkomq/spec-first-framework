@@ -118,6 +118,18 @@ if [ -n "$SPECIFIC_TEST" ]; then
     tests=("$SPECIFIC_TEST")
 fi
 
+# Portable timeout: use GNU timeout, gtimeout (macOS brew), or fallback
+_timeout_cmd() {
+    if command -v timeout &> /dev/null; then
+        timeout "$@"
+    elif command -v gtimeout &> /dev/null; then
+        gtimeout "$@"
+    else
+        shift  # drop the timeout value
+        "$@"
+    fi
+}
+
 # Track results
 passed=0
 failed=0
@@ -145,7 +157,7 @@ for test in "${tests[@]}"; do
     start_time=$(date +%s)
 
     if [ "$VERBOSE" = true ]; then
-        if timeout "$TIMEOUT" bash "$test_path"; then
+        if _timeout_cmd "$TIMEOUT" bash "$test_path"; then
             end_time=$(date +%s)
             duration=$((end_time - start_time))
             echo ""
@@ -165,7 +177,7 @@ for test in "${tests[@]}"; do
         fi
     else
         # Capture output for non-verbose mode
-        if output=$(timeout "$TIMEOUT" bash "$test_path" 2>&1); then
+        if output=$(_timeout_cmd "$TIMEOUT" bash "$test_path" 2>&1); then
             end_time=$(date +%s)
             duration=$((end_time - start_time))
             echo "  [PASS] (${duration}s)"
