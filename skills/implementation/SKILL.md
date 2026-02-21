@@ -27,6 +27,10 @@ Before implementing, you must have:
 
 If TASKS.md is not approved (Status != APPROVED), STOP and inform the user.
 
+### Workspace Isolation
+
+Before starting implementation, use the `../../skills/git-worktrees/SKILL.md` skill to set up an isolated workspace. The skill will detect if you are already inside a worktree and skip creation if so. This ensures the base branch remains clean and baseline tests are verified before any code changes.
+
 ### Scope Control
 
 - Implement exactly what each task specifies — nothing more, nothing less
