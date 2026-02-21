@@ -134,11 +134,28 @@ Each implementation task follows the TDD mandate in the implementation skill (RE
 
 ### Task Sizing Guidelines
 
-| Too Big (split it) | Right Size | Too Small (merge it) |
+Each task must be a single action completable in **2–5 minutes**. If you can't describe what to build, which files to touch, and how to verify it in a few sentences, the task is too big.
+
+| Too Big (split it) | Right Size (2–5 min) | Too Small (merge it) |
 |-------------------|------------|---------------------|
 | "Implement user authentication" | "Create login endpoint" | "Add import statement" |
 | "Build entire API" | "Implement password validation" | "Write one unit test" |
 | "Create database layer" | "Create User repository" | "Add field to model" |
+
+#### Task Specificity Requirements
+
+Every task MUST include:
+- **Exact file paths** — `Create: src/services/registration.service.ts`, not "create a service for registration"
+- **Exact verification command** — `npm test -- --grep "RegistrationService"`, not "run the tests"
+- **Expected output** — `Expected: PASS (2 tests)`, not "should work"
+
+Vague tasks are rejected. If two developers would create different files or run different commands from the same task description, the task is too vague.
+
+| Vague (rejected) | Specific (accepted) |
+|-------------------|---------------------|
+| "Add validation" | "Add email format validation to `src/services/registration.service.ts`, test in `tests/services/registration.service.test.ts`" |
+| "Create the data model" | "Create `src/models/user.model.ts` with fields from DESIGN.md Data Model section" |
+| "Write tests for the API" | "Create `tests/routes/auth.register.test.ts` covering AC-1 through AC-3" |
 
 ### Constraints
 
@@ -173,6 +190,8 @@ After generating TASKS.md, run ALL checks below BEFORE presenting to the user. F
 - [ ] **Integration coverage**: If DESIGN.md has >1 New interacting components, at least one test task tests them together without mocks
 - [ ] **Cross-spec reinvention**: No New component duplicates something from a previous spec's IMPLEMENTATION-SUMMARY.md
 - [ ] **Verification commands**: Every task with a testable component has a Verify field (command + expected outcome)
+- [ ] **File paths**: Every task specifies exact file paths to create or modify (no "create a file for X")
+- [ ] **Granularity**: Every task is completable in 2–5 minutes as a single action
 
 ### Output
 
