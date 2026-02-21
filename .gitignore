@@ -5,8 +5,8 @@
 # Application code (test project)
 app/
 
-# Tests (test project)
-tests/
+# Tests (test project, not framework skill tests)
+# tests/
 
 # Dependencies (test project)
 requirements.txt
