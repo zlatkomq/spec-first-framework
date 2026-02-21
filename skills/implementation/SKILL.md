@@ -40,6 +40,10 @@ Before starting implementation, use the `../../skills/git-worktrees/SKILL.md` sk
 - You may refactor across task boundaries if it produces cleaner code, as long as all tasks are satisfied
 - If a task is unclear, ASK for clarification before proceeding
 
+#### Multi-Task Execution with Subagents
+
+For implementations with multiple independent tasks, consider using the `../../skills/subagent-driven-development/SKILL.md` skill. It dispatches a fresh subagent per task with two-stage review (spec compliance, then code quality), preventing context pollution between tasks and catching issues early. The rules in this skill (TDD mandate, verification iron law, per-task validation gates) apply to each subagent.
+
 #### Allowed Supporting Changes
 - You MAY make minimal supporting changes strictly required to compile/run the code:
   - Wiring new files into index/export
