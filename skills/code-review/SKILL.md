@@ -59,7 +59,13 @@ Before reviewing, you must have access to:
 
 ### Review Process
 
-The review is organized into four phases (Phase 0 through Phase 3). Complete all phases in order.
+The review is organized into four phases (Phase 0 through Phase 3) across two stages. Complete all phases in order.
+
+**Two-Stage Review Order:**
+- **Stage 1 — Spec Compliance** (Phase 0 + Phase 1 + Phase 2): Verify the work is done and matches the spec.
+- **Stage 2 — Code Quality** (Phase 3): Verify the code is built correctly.
+
+Stage 1 must complete and pass BEFORE Stage 2 begins. Do NOT proceed to code quality review until spec compliance is verified.
 
 ---
 
@@ -169,7 +175,26 @@ If tasks are missing or incomplete, set Verdict = BLOCKED.
 
 ---
 
+#### STAGE GATE: Spec Compliance → Code Quality
+
+```
+HARD GATE: Do NOT proceed to Phase 3 until Phase 2 is fully verified.
+```
+
+**Check before continuing:**
+- [ ] All acceptance criteria traced to code with PASS/FAIL status
+- [ ] All tasks in TASKS.md verified as implemented
+- [ ] No CRITICAL findings from Phase 2 (acceptance criteria failures, missing tasks)
+
+**If any Phase 2 check fails:** STOP. Set verdict to BLOCKED or CHANGES REQUESTED based on severity. Do NOT begin Phase 3 — spec compliance issues must be resolved first. Report findings from Phases 0–2 only.
+
+**If Phase 2 passes:** Proceed to Phase 3 (Code Quality).
+
+---
+
 #### PHASE 3: Quality Audit
+
+*Prerequisite: Phase 2 (Spec Compliance) must pass the Stage Gate before this phase begins.*
 
 *Purpose: Verify the code is built correctly according to project standards.*
 
@@ -359,9 +384,10 @@ When the [F] auto-fix loop is active and the AI is fixing issues from its own re
 
 ## Verification
 
-- [ ] All four phases completed in order (Phase 0 → Phase 3 → POST-PHASE)
+- [ ] All four phases completed in order (Phase 0 → Phase 1 → Phase 2 → Stage Gate → Phase 3 → POST-PHASE)
 - [ ] File inventory confirmed before any code review
 - [ ] Every SPEC.md acceptance criterion traced to specific code
+- [ ] Stage gate passed: spec compliance verified before code quality review began
 - [ ] Test suite executed and results recorded (or explicitly noted as not available)
 - [ ] At least 3 issues found, or justification provided for fewer
 - [ ] REVIEW.md saved to correct location

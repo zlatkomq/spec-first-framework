@@ -90,6 +90,12 @@ These are common excuses AI agents use to bypass rules. If you catch yourself th
 | "Need to explore first" | Fine. Throw away exploration, start with TDD. Exploration code is not production code. |
 | "Test is hard to write" | Hard to test = hard to use. Listen to the test — simplify the design. |
 | "TDD is dogmatic, I'm being pragmatic" | TDD IS pragmatic. Finds bugs before commit = faster than debugging after. |
+| "I already manually tested it" | Ad-hoc ≠ systematic. No record, can't re-run, can't prove edge cases. |
+| "Deleting X hours of work is wasteful" | Sunk cost fallacy. Keeping unverified code is technical debt. |
+| "Keep it as reference, write tests first" | You'll adapt it. That's testing after with extra steps. Delete means delete. |
+| "TDD will slow me down" | TDD IS faster: finds bugs before commit, prevents regressions, enables refactoring. |
+| "Manual testing is faster" | Manual doesn't prove edge cases. You'll re-test every change manually. |
+| "Existing code has no tests" | You're improving it. Start here: add tests for the code you're changing. |
 
 ### TDD Mandate
 
@@ -133,6 +139,45 @@ Fix the code, not the test. The test defines what "correct" means.
 #### Test Quality Signal
 If your test would pass against ANY implementation (not just the correct one), it tests nothing. Each test must be specific enough that a wrong implementation would fail it.
 
+#### Good vs Bad Tests
+
+**Good test** — clear name, tests real behavior, one assertion per concern:
+```typescript
+test('retries failed operations 3 times', async () => {
+  let attempts = 0;
+  const operation = () => {
+    attempts++;
+    if (attempts < 3) throw new Error('fail');
+    return 'success';
+  };
+
+  const result = await retryOperation(operation);
+
+  expect(result).toBe('success');
+  expect(attempts).toBe(3);
+});
+```
+
+**Bad test** — vague name, tests mock call count not actual behavior:
+```typescript
+test('retry works', async () => {
+  const mock = jest.fn()
+    .mockRejectedValueOnce(new Error())
+    .mockRejectedValueOnce(new Error())
+    .mockResolvedValueOnce('success');
+  await retryOperation(mock);
+  expect(mock).toHaveBeenCalledTimes(3);
+});
+```
+
+#### Good Tests Quality
+
+| Quality | Good | Bad |
+|---------|------|-----|
+| **Minimal** | One thing. "and" in name? Split it. | `test('validates email and domain and whitespace')` |
+| **Clear** | Name describes behavior | `test('test1')` |
+| **Shows intent** | Demonstrates desired API | Obscures what code should do |
+
 #### Outcome Requirements
 - Implementation tasks produce code AND tests for that code
 - Testing tasks (if separate) produce additional test coverage
@@ -157,6 +202,35 @@ Follow this sequence:
 
 Testing tasks produce tests only. If a test reveals a bug, document it; do not silently fix production code during a testing task.
 
+#### TDD Red Flags — STOP and Start Over
+
+If you catch yourself doing any of these, STOP. Delete the code. Start over with a failing test.
+
+- Writing production code before writing a failing test
+- Writing test after implementation is complete
+- Test passes immediately on first run (you're testing existing behavior, not new)
+- Can't explain why the test failed
+- Tests added "later" after implementation
+- Rationalizing "just this once" or "this is different"
+- "I already manually tested it"
+- "Tests after achieve the same purpose"
+- "It's about the spirit, not the ritual"
+- "Keep as reference" or "adapt existing code"
+- "Already spent X hours, deleting is wasteful"
+- "TDD is dogmatic, I'm being pragmatic"
+- "This is different because..."
+
+**All of these mean: Delete the code. Start over with RED.**
+
+#### When Stuck on TDD
+
+| Problem | Solution |
+|---------|----------|
+| Don't know how to test | Write the API you wish existed. Write the assertion first. Ask for clarification. |
+| Test too complicated | Design too complicated. Simplify the interface first. |
+| Must mock everything | Code too coupled. Use dependency injection. |
+| Test setup is huge | Extract test helpers. Still complex? Simplify the design. |
+
 ### Verification Iron Law
 
 ```
@@ -169,9 +243,26 @@ Hedging language ("should work", "probably passes", "likely correct") means you 
 **Red flags — STOP if you catch yourself:**
 - Using "should", "probably", "seems to"
 - Expressing satisfaction before verification ("Great!", "Perfect!", "Done!")
-- About to commit without running tests
+- About to commit/push/PR without running tests
 - Trusting a previous run instead of running fresh
 - Thinking "just this once"
+- Trusting agent success reports without independent verification
+- Relying on partial verification (linter passed ≠ build passed ≠ tests passed)
+- Tired and wanting work to be over (exhaustion ≠ excuse)
+- ANY wording implying success without having run verification
+
+#### Verification Rationalization Prevention
+
+| Excuse | Reality |
+|--------|---------|
+| "Should work now" | RUN the verification. |
+| "I'm confident" | Confidence ≠ evidence. |
+| "Just this once" | No exceptions. |
+| "Linter passed" | Linter ≠ compiler ≠ tests. |
+| "Agent said success" | Verify independently. |
+| "I'm tired" | Exhaustion ≠ excuse. |
+| "Partial check is enough" | Partial proves nothing. |
+| "Different words so rule doesn't apply" | Spirit over letter. Always. |
 
 ### Verification Protocol
 
@@ -191,6 +282,50 @@ Hedging language ("should work", "probably passes", "likely correct") is a signa
 | "File exists" | Verified on disk (ls, read, or write confirmation) | "I created it" without verification |
 | "No regressions" | Full test suite output with 0 failures | Running only the new tests |
 | "Coverage meets threshold" | Coverage tool output with percentage | "Tests cover the main paths" |
+| "Linter clean" | Linter output showing 0 errors | Partial check, extrapolation |
+| "Build succeeds" | Build command output with exit 0 | Linter passing, "logs look good" |
+| "Bug fixed" | Test original reproduction steps: passes | Code changed, assumed fixed |
+
+#### Key Verification Patterns
+
+**Tests:**
+```
+✅ [Run test command] → [See: 34/34 pass] → "All tests pass"
+❌ "Should pass now" / "Looks correct"
+```
+
+**Regression tests (TDD Red-Green):**
+```
+✅ Write → Run (pass) → Revert fix → Run (MUST FAIL) → Restore → Run (pass)
+❌ "I've written a regression test" (without red-green verification)
+```
+
+**Build:**
+```
+✅ [Run build] → [See: exit 0] → "Build passes"
+❌ "Linter passed" (linter doesn't check compilation)
+```
+
+**Requirements:**
+```
+✅ Re-read plan → Create checklist → Verify each → Report gaps or completion
+❌ "Tests pass, phase complete"
+```
+
+**Agent delegation:**
+```
+✅ Agent reports success → Check VCS diff → Verify changes → Report actual state
+❌ Trust agent report
+```
+
+#### Why Verification Matters
+
+From real failure patterns:
+- Human partner said "I don't believe you" — trust broken
+- Undefined functions shipped — would crash in production
+- Missing requirements shipped — incomplete features
+- Time wasted on false completion → redirect → rework
+- Violates the iron law: honesty requires evidence, not claims
 
 ### Per-Task Validation Gates
 
