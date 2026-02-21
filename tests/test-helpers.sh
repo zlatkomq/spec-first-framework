@@ -132,6 +132,22 @@ assert_order() {
     if [ "$line_a" -lt "$line_b" ]; then
         echo "  [PASS] $test_name (A at line $line_a, B at line $line_b)"
         return 0
+    elif [ "$line_a" -eq "$line_b" ]; then
+        # Same line: check which pattern appears first by byte offset
+        local the_line
+        the_line=$(echo "$output" | sed -n "${line_a}p")
+        local pos_a pos_b
+        pos_a=$(echo "$the_line" | grep -bo "$pattern_a" | head -1 | cut -d: -f1)
+        pos_b=$(echo "$the_line" | grep -bo "$pattern_b" | head -1 | cut -d: -f1)
+        if [ -n "$pos_a" ] && [ -n "$pos_b" ] && [ "$pos_a" -lt "$pos_b" ]; then
+            echo "  [PASS] $test_name (both on line $line_a, A at pos $pos_a, B at pos $pos_b)"
+            return 0
+        else
+            echo "  [FAIL] $test_name"
+            echo "  Expected '$pattern_a' before '$pattern_b'"
+            echo "  But found both on line $line_a, A at pos ${pos_a:-?}, B at pos ${pos_b:-?}"
+            return 1
+        fi
     else
         echo "  [FAIL] $test_name"
         echo "  Expected '$pattern_a' before '$pattern_b'"
