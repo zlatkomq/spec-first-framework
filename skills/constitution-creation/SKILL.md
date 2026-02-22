@@ -45,8 +45,23 @@ Always use the template structure from `../../.framework/templates/CONSTITUTION.
 #### Tech Stack
 - Every layer mentioned must have a concrete version (e.g., "Python 3.12", not "Python" or "latest")
 - If version not specified, ASK
-- Common layers: Language, Framework, Database, Testing, Linting
+- Common layers: Language, Framework, Database, Testing, Linting, Package Manager
+- **Package Manager**: Must be specified (e.g., npm, yarn, pnpm, bun, pip, poetry, go modules). If not specified, ASK.
+- **Module System**: For JavaScript/TypeScript projects, must specify ESM or CJS. For other languages, use N/A.
 - Add rows for additional tech (ORM, caching, message queue, etc.) if mentioned
+
+#### Project Structure
+- **Source and Test directories must be explicitly named** in the directory table (e.g., Source: `src/`, Tests: `test/`). These are referenced by downstream skills (implementation, code-review) to locate code and tests.
+- Show actual folder tree below the table, reflecting the framework's conventions (e.g., FastAPI, Django, Express patterns)
+- If not specified, propose standard structure for the chosen framework
+
+#### Commands
+- Every action in the table must have a concrete, executable command (e.g., `npm test`, not "run the tests")
+- **Run all tests** and **Build** are mandatory. If the project has no build step, write `N/A`.
+- **Run single test file**: Must include the placeholder pattern (e.g., `npm test -- <file>`, `pytest <file>`, `go test <package>`)
+- **Lint**, **Type check**, **Format**: Fill if applicable, remove row if not
+- If commands are not specified, derive from the tech stack and confirm with user
+- These commands are used by task-creation (Verify fields) and code-review (test execution)
 
 #### Coding Standards
 
@@ -55,15 +70,16 @@ Always use the template structure from `../../.framework/templates/CONSTITUTION.
 - Provide concrete examples for each element
 - If not specified, propose language-standard conventions and confirm with user
 
-**File Structure**
-- Show actual folder tree, not abstract descriptions
-- Must reflect the framework's conventions (e.g., FastAPI, Django, Express patterns)
-- If not specified, propose standard structure for the chosen framework
-
 **Patterns to Use / Avoid**
 - Be specific (e.g., "Repository pattern for data access" not "use good patterns")
 - Include at least 2 items in each list
 - If not specified, propose common patterns for the tech stack and confirm
+
+#### Error Handling
+- **Strategy**: Must specify the approach (throw exceptions, return Result/Either type, error codes). If not specified, ASK — this affects every file the implementation skill creates.
+- **Logging**: Must specify library and level conventions (e.g., "pino with levels: error, warn, info" or "logging module, WARNING level for production"). If no logging needed, write "No logging — CLI/library project."
+- **User-facing errors**: Must specify format. For APIs, reference the API Standards error format. For CLIs, describe error output conventions. For libraries, describe error types/classes.
+- If not specified, propose conventions for the tech stack and confirm
 
 #### Testing Standards
 - Coverage threshold must be a number (e.g., "80%", not "high")
@@ -76,12 +92,16 @@ Always use the template structure from `../../.framework/templates/CONSTITUTION.
 - If project has no API, remove this section entirely
 
 #### Security Standards
-- Must include at least: input validation approach, authentication method (if applicable), secrets handling
-- Be specific (e.g., "Use Pydantic for input validation" not "validate inputs")
+- Must use the structured table format with three mandatory concerns:
+  - **Input Validation**: Specific library or approach (e.g., "Zod schemas" or "Pydantic models" or "manual validation with early returns")
+  - **Authentication**: Method if applicable (e.g., "JWT with RS256", "session-based", or "N/A — no auth")
+  - **Secrets Handling**: How secrets are managed (e.g., "env vars via dotenv, never committed", "AWS Secrets Manager")
+- Be specific (e.g., "Zod for input validation" not "validate inputs")
 - If not specified, propose security baseline and confirm
 
 #### Quality Gates
 - List concrete checks that must pass before merge
+- Each gate should reference a command from the Commands section where applicable (e.g., "All tests pass (`npm test`)")
 - Typical gates: linting, type checking, unit tests, coverage threshold, security scan
 - These should be automatable in CI/CD
 
@@ -98,6 +118,7 @@ Always use the template structure from `../../.framework/templates/CONSTITUTION.
 - Do NOT include brownfield sections (Legacy Boundaries, Migration Strategy) for greenfield projects
 - All bracket placeholders from template must be removed from output
 - Versions must be concrete (3.12, not "latest")
+- Commands must be executable (not descriptions of what to do)
 
 ### Output
 
@@ -107,8 +128,14 @@ Save the file to: `.framework/CONSTITUTION.md`
 
 - [ ] All required sections filled (no placeholders)
 - [ ] Tech stack has concrete versions
+- [ ] Package manager specified
+- [ ] Module system specified (or N/A for non-JS/TS)
+- [ ] Source and test directories explicitly named in Project Structure table
+- [ ] Commands table has executable commands for test and build
 - [ ] Naming conventions have examples
+- [ ] Error handling strategy, logging, and user-facing error format specified
+- [ ] Security standards table has input validation, authentication, and secrets handling
 - [ ] Coverage threshold is a specific number
-- [ ] Quality gates are actionable
+- [ ] Quality gates are actionable and reference commands where applicable
 - [ ] Status set to DRAFT
 - [ ] File saved in correct location
