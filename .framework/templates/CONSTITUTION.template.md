@@ -28,24 +28,6 @@
 | Testing | | |
 | Linting | | |
 | Package Manager | | |
-| Module System | ESM / CJS / N/A |
-
----
-
-## Project Structure
-
-| Directory | Purpose |
-|-----------|---------|
-| Source | |
-| Tests | |
-| Config | |
-
-```
-src/
-├── ...
-test/
-├── ...
-```
 
 ---
 
@@ -73,6 +55,15 @@ test/
 | Classes | | |
 | Variables | | |
 | Constants | | |
+
+### File Structure
+
+```
+src/
+├── ...
+test/
+├── ...
+```
 
 ### Patterns to Use
 

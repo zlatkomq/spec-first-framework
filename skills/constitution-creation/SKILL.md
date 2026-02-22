@@ -28,6 +28,52 @@ When gathering project details or resolving ambiguity:
 
 Always use the template structure from `../../.framework/templates/CONSTITUTION.template.md`
 
+### Creation Flow
+
+Follow this sequence when creating a constitution:
+
+#### Phase 1: Gather Essentials
+
+Get the minimum needed to derive everything else:
+1. Project name and overview (extract from input or ask)
+2. Project type: GREENFIELD or BROWNFIELD
+3. Tech stack: Language, Framework, Database, Testing framework
+
+These four decisions unlock the defaults for everything else.
+
+#### Phase 2: Propose Defaults
+
+Once the tech stack is known, propose a **complete constitution draft** with industry-standard defaults derived from the tech stack. Present it as a single block for the user to review, not as individual questions.
+
+Derivable defaults (propose based on tech stack):
+- **Package Manager**: npm for Node.js, pip/poetry for Python, go modules for Go, etc.
+- **Commands**: Test, build, lint commands standard for the tech stack
+- **Naming Conventions**: Language-standard conventions (camelCase for JS, snake_case for Python, etc.)
+- **File Structure**: Framework-standard directory layout
+- **Test File Conventions**: Standard for the chosen test framework
+- **Quality Gates**: Standard set (tests pass, lint clean, coverage threshold)
+
+Present as: "Based on [tech stack], here are the proposed defaults. Review and tell me what to change:"
+
+#### Phase 3: Ask Project-Specific Questions
+
+After defaults are confirmed, ask ONE AT A TIME about fields that genuinely vary between projects and cannot be derived from the tech stack:
+
+1. **Error handling strategy** — "Should errors be thrown as exceptions, returned as Result types, or use error codes?"
+2. **Logging** — "What logging library and level conventions? Or no logging if it's a simple project?"
+3. **User-facing error format** — "For API errors, use RFC 7807, custom JSON, or HTTP status only?" (skip if no API)
+4. **Security: Input validation** — "What library for input validation? (e.g., Zod, Joi, Pydantic, manual)"
+5. **Security: Authentication** — "What auth method? (JWT, session-based, API key, or N/A)"
+6. **Security: Secrets handling** — "How are secrets managed? (env vars, vault, config files)"
+7. **Coverage threshold** — "What minimum test coverage? (e.g., 80%)"
+8. **Patterns to Use / Avoid** — "Any specific patterns you want enforced or banned beyond the defaults?"
+
+Skip questions the user already answered in their initial description. Skip questions that don't apply (e.g., don't ask about API error format for a CLI tool).
+
+#### Phase 4: Generate
+
+Produce the final CONSTITUTION.md with all confirmed values.
+
 ### Field Rules
 
 #### Metadata
@@ -46,21 +92,13 @@ Always use the template structure from `../../.framework/templates/CONSTITUTION.
 - Every layer mentioned must have a concrete version (e.g., "Python 3.12", not "Python" or "latest")
 - If version not specified, ASK
 - Common layers: Language, Framework, Database, Testing, Linting, Package Manager
-- **Package Manager**: Must be specified (e.g., npm, yarn, pnpm, bun, pip, poetry, go modules). If not specified, ASK.
-- **Module System**: For JavaScript/TypeScript projects, must specify ESM or CJS. For other languages, use N/A.
 - Add rows for additional tech (ORM, caching, message queue, etc.) if mentioned
-
-#### Project Structure
-- **Source and Test directories must be explicitly named** in the directory table (e.g., Source: `src/`, Tests: `test/`). These are referenced by downstream skills (implementation, code-review) to locate code and tests.
-- Show actual folder tree below the table, reflecting the framework's conventions (e.g., FastAPI, Django, Express patterns)
-- If not specified, propose standard structure for the chosen framework
 
 #### Commands
 - Every action in the table must have a concrete, executable command (e.g., `npm test`, not "run the tests")
 - **Run all tests** and **Build** are mandatory. If the project has no build step, write `N/A`.
 - **Run single test file**: Must include the placeholder pattern (e.g., `npm test -- <file>`, `pytest <file>`, `go test <package>`)
 - **Lint**, **Type check**, **Format**: Fill if applicable, remove row if not
-- If commands are not specified, derive from the tech stack and confirm with user
 - These commands are used by task-creation (Verify fields) and code-review (test execution)
 
 #### Coding Standards
@@ -68,18 +106,21 @@ Always use the template structure from `../../.framework/templates/CONSTITUTION.
 **Naming Conventions**
 - Must be specific and enforceable (e.g., "snake_case" not "descriptive names")
 - Provide concrete examples for each element
-- If not specified, propose language-standard conventions and confirm with user
+- Propose language-standard conventions as defaults — only ask if the user wants non-standard conventions
+
+**File Structure**
+- Show actual folder tree, reflecting the framework's conventions (e.g., FastAPI, Django, Express patterns)
+- Propose standard structure for the chosen framework as default
 
 **Patterns to Use / Avoid**
 - Be specific (e.g., "Repository pattern for data access" not "use good patterns")
 - Include at least 2 items in each list
-- If not specified, propose common patterns for the tech stack and confirm
+- Propose common patterns for the tech stack as defaults, confirm with user
 
 #### Error Handling
-- **Strategy**: Must specify the approach (throw exceptions, return Result/Either type, error codes). If not specified, ASK — this affects every file the implementation skill creates.
-- **Logging**: Must specify library and level conventions (e.g., "pino with levels: error, warn, info" or "logging module, WARNING level for production"). If no logging needed, write "No logging — CLI/library project."
+- **Strategy**: Must specify the approach (throw exceptions, return Result/Either type, error codes). ASK — this affects every file the implementation skill creates.
+- **Logging**: Must specify library and level conventions. If no logging needed, write "No logging — CLI/library project."
 - **User-facing errors**: Must specify format. For APIs, reference the API Standards error format. For CLIs, describe error output conventions. For libraries, describe error types/classes.
-- If not specified, propose conventions for the tech stack and confirm
 
 #### Testing Standards
 - Coverage threshold must be a number (e.g., "80%", not "high")
@@ -97,7 +138,6 @@ Always use the template structure from `../../.framework/templates/CONSTITUTION.
   - **Authentication**: Method if applicable (e.g., "JWT with RS256", "session-based", or "N/A — no auth")
   - **Secrets Handling**: How secrets are managed (e.g., "env vars via dotenv, never committed", "AWS Secrets Manager")
 - Be specific (e.g., "Zod for input validation" not "validate inputs")
-- If not specified, propose security baseline and confirm
 
 #### Quality Gates
 - List concrete checks that must pass before merge
@@ -129,10 +169,9 @@ Save the file to: `.framework/CONSTITUTION.md`
 - [ ] All required sections filled (no placeholders)
 - [ ] Tech stack has concrete versions
 - [ ] Package manager specified
-- [ ] Module system specified (or N/A for non-JS/TS)
-- [ ] Source and test directories explicitly named in Project Structure table
 - [ ] Commands table has executable commands for test and build
 - [ ] Naming conventions have examples
+- [ ] File structure reflects framework conventions
 - [ ] Error handling strategy, logging, and user-facing error format specified
 - [ ] Security standards table has input validation, authentication, and secrets handling
 - [ ] Coverage threshold is a specific number

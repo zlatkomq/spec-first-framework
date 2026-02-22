@@ -28,27 +28,6 @@ A simple Node.js project used for E2E testing of the spec-first workflow.
 | Testing | node:test | built-in |
 | Linting | None | N/A |
 | Package Manager | npm | 10.x |
-| Module System | ESM | N/A |
-
----
-
-## Project Structure
-
-| Directory | Purpose |
-|-----------|---------|
-| Source | `src/` |
-| Tests | `test/` |
-| Config | N/A |
-
-```
-src/
-├── services/
-├── models/
-└── utils/
-test/
-├── unit/
-└── integration/
-```
 
 ---
 
@@ -59,7 +38,6 @@ test/
 | Run all tests | `npm test` |
 | Run single test file | `node --test <file>` |
 | Build | N/A |
-| Lint | N/A |
 
 ---
 
@@ -74,6 +52,18 @@ test/
 | Classes | PascalCase | UserService |
 | Variables | camelCase | userName |
 | Constants | UPPER_SNAKE | MAX_RETRIES |
+
+### File Structure
+
+```
+src/
+├── services/
+├── models/
+└── utils/
+test/
+├── unit/
+└── integration/
+```
 
 ### Patterns to Use
 
@@ -94,7 +84,7 @@ test/
 | Concern | Approach |
 |---------|----------|
 | Strategy | Throw exceptions (custom Error subclasses) |
-| Logging | No logging — simple CLI/test project |
+| Logging | No logging — simple test project |
 | User-facing errors | Thrown errors with descriptive message property |
 
 ---
