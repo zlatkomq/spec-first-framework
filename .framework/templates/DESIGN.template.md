@@ -47,9 +47,19 @@ Include ONLY the sections relevant to this design. Omit sections that don't appl
 
 ---
 
+## Acceptance Criteria Traceability
+
+[Map each SPEC.md acceptance criterion to the component/mechanism that addresses it.]
+
+| Acceptance Criterion | Addressed By |
+|----------------------|--------------|
+| | |
+
+---
+
 ## Open Questions
 
 [Optional: Unresolved technical decisions that need answers before implementation]
 
-- [ ] 
-- [ ] 
+- [ ]
+- [ ]

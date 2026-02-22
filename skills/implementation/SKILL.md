@@ -42,7 +42,9 @@ Before starting implementation, use the `../../skills/git-worktrees/SKILL.md` sk
 
 #### Multi-Task Execution with Subagents
 
-For implementations with multiple independent tasks, consider using the `../../skills/subagent-driven-development/SKILL.md` skill. It dispatches a fresh subagent per task with two-stage review (spec compliance, then code quality), preventing context pollution between tasks and catching issues early. The rules in this skill (TDD mandate, verification iron law, per-task validation gates) apply to each subagent.
+For implementations with multiple tasks, the **default execution strategy** is `../../skills/subagent-driven-development/SKILL.md`. It dispatches a fresh subagent per task with two-stage review (spec compliance, then code quality), preventing context pollution between tasks and catching issues early. The rules in this skill (TDD mandate, verification iron law, per-task validation gates) apply to each subagent.
+
+Use direct implementation (this skill alone) only for single-task specs or when the user explicitly requests it.
 
 #### Allowed Supporting Changes
 - You MAY make minimal supporting changes strictly required to compile/run the code:

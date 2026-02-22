@@ -22,6 +22,13 @@ Task tool (general-purpose):
     **HEAD SHA:** [current commit after this task]
     **Files changed:** [list from implementer's report]
 
+    ## Project Standards
+
+    [Paste relevant sections from CONSTITUTION.md: coding standards, naming conventions,
+    file structure, error handling patterns, error response format, test framework,
+    test commands, coverage thresholds, security standards.
+    The subagent cannot read CONSTITUTION.md — provide what it needs here.]
+
     ## Review Scope
 
     Review ONLY the changes between Base SHA and HEAD SHA.
@@ -31,22 +38,22 @@ Task tool (general-purpose):
 
     Follow Phase 3 (Quality Audit) methodology. Check all of the following:
 
-    ### 1. CONSTITUTION.md Compliance
+    ### 1. Project Standards Compliance
 
-    Check the changed code against project standards.
+    Check the changed code against the Project Standards provided above.
 
     **Mechanically Verifiable** (show specific violations or confirm clean scan):
-    - **Naming conventions:** Check against CONSTITUTION.md naming rules. Show violations.
-    - **File/folder structure:** Compare actual file locations against CONSTITUTION.md structure. Flag misplaced files.
+    - **Naming conventions:** Check against Project Standards naming conventions above. Show violations.
+    - **File/folder structure:** Compare actual file locations against Project Standards file structure above. Flag misplaced files.
     - **Import patterns:** Check for prohibited import patterns. Show violations.
     - **Prohibited patterns scan:** TODO, FIXME, HACK, XXX, empty catch blocks,
       hardcoded stubs, debug prints, commented-out code (>2 lines), empty function
       bodies, not-implemented throws, unused imports. Flag every instance.
 
     **Requires Judgment** (show relevant code evidence, explain compliance or violation):
-    - **Architectural patterns:** Verify classes/functions follow CONSTITUTION.md patterns.
-    - **Error handling patterns:** Verify error handling matches CONSTITUTION.md strategy.
-    - **Error responses:** Verify error response format matches CONSTITUTION.md.
+    - **Architectural patterns:** Verify classes/functions follow Project Standards patterns above.
+    - **Error handling patterns:** Verify error handling matches Project Standards strategy above.
+    - **Error responses:** Verify error response format matches Project Standards above.
     - **Security checks:** Input validation, auth checks, data handling.
     - **Secrets/credentials:** Check for hardcoded strings, API keys, passwords.
     - **Sensitive data in logs:** Check for user data in logging statements.

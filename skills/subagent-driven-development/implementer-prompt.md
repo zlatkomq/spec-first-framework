@@ -33,6 +33,12 @@ Task tool (general-purpose):
     [Relevant patterns or decisions from IMPLEMENTATION-SUMMARY.md]
     [Architectural context from DESIGN.md relevant to this task]
 
+    ## Project Standards
+
+    [Paste relevant sections from CONSTITUTION.md: coding standards, naming conventions,
+    file structure, error handling, test framework, test commands, coverage thresholds.
+    The subagent cannot read CONSTITUTION.md — provide what it needs here.]
+
     ## Before You Begin
 
     If you have questions about:
@@ -48,30 +54,54 @@ Task tool (general-purpose):
 
     Once you are clear on requirements, implement the task following these rules strictly.
 
-    ### TDD Mandate (RED-GREEN-REFACTOR)
+    ### Scope Control
+
+    - Implement exactly what the task specifies — nothing more, nothing less
+    - Do NOT refactor unrelated code or add features not in the task
+    - Do NOT change files not mentioned in the task
+    - Do NOT use libraries or dependencies not listed in the project standards
+    - If a task is unclear, ASK for clarification before proceeding
+
+    **Allowed supporting changes** (must be listed in your report):
+    - Wiring new files into index/export
+    - Route registration for new endpoints
+    - Module registry updates
+    - Import statements
+    - Fixing compile errors caused by the change
+
+    ### Halt Conditions
+
+    STOP and report back (do NOT attempt workarounds) if any of these occur:
+
+    | Condition | Action |
+    |-----------|--------|
+    | 3 consecutive failed attempts at the same sub-problem | HALT — explain: (1) what you tried, (2) why it failed, (3) what the pattern suggests. |
+    | Same validation gate fails 3 times | HALT — the problem is in the spec, not the implementation. |
+    | Missing dependency not in project standards | HALT — do not install undocumented dependencies. Ask. |
+    | Ambiguous requirement in task or AC | HALT — quote the ambiguous part and ask for clarification. Do not guess. |
+    | Required file from another task doesn't exist | HALT — the task has an unmet dependency. Report which task must complete first. |
+    | Design contradicts project standards | HALT — quote both and ask which takes precedence. |
+
+    After halting, wait for direction. Do not attempt workarounds.
+
+    ### TDD Mandate
 
     ```
-    IRON LAW: TEST FIRST, THEN IMPLEMENT
+    IRON LAW: Write failing tests FIRST, then implement. No exceptions.
     ```
 
-    Every piece of functionality follows this cycle:
-    1. **RED** — Write test(s) that assert against acceptance criteria behavior
-       (not implementation structure). Run tests. Confirm they FAIL for the
-       expected reason (feature missing, not syntax error).
-    2. **GREEN** — Write the simplest code to make tests pass. Run tests.
-       Confirm they PASS. Confirm no regressions.
-    3. **REFACTOR** — Clean up (only after green). Keep tests green.
-       Do not add behavior.
-    4. **Repeat** — Next test for next behavior within this task.
+    Every behavior follows RED-GREEN-REFACTOR:
+    1. **RED** — Write test(s) asserting acceptance criteria behavior (not implementation structure). Run. Confirm FAIL (feature missing, not syntax error).
+    2. **GREEN** — Simplest code to pass. Run. Confirm PASS + no regressions.
+    3. **REFACTOR** — Clean up only after green. No new behavior.
 
-    **Code before test? Delete it.** If you wrote production code before writing
-    the failing test — even "just to explore" — delete it. Start over with RED.
-    No exceptions: do not keep it as "reference", do not "adapt" it, do not
-    look at it while writing the test.
+    **Code before test? Delete it.** No keeping as "reference." Start over with RED.
 
-    Test assertions must target **spec behavior**, not **implementation structure**:
+    **Test assertions must target spec behavior:**
     - GOOD: `expect(response.status).toBe(401)` — tests the AC
     - BAD: `expect(validateToken).toHaveBeenCalled()` — tests implementation detail
+
+    **Testing tasks:** Write tests only. Do NOT change implementation unless fixing a bug the test reveals — report that bug.
 
     ### Verification Iron Law
 
@@ -79,16 +109,43 @@ Task tool (general-purpose):
     NO COMPLETION CLAIMS WITHOUT FRESH VERIFICATION EVIDENCE
     ```
 
-    If you have not run the verification command in this message, you cannot claim
-    it passes. "Should work", "probably passes", "likely correct" means you skipped
-    verification. Go back and run it.
+    For each claim (tests pass, file exists, no regressions, coverage meets threshold):
+    1. **RUN** the verification command NOW. Not "earlier." Not "should work." Now.
+    2. **READ** the complete output.
+    3. **VERIFY** the output actually confirms the claim.
+    4. Only then may you state the claim as fact.
 
-    For EACH claim you make (tests pass, file exists, no regressions):
-    1. **IDENTIFY** — What command proves this claim?
-    2. **RUN** — Execute it now. Not "it ran earlier." Now.
-    3. **READ** — Read the COMPLETE output.
-    4. **VERIFY** — Does the output actually confirm the claim?
-    5. **CLAIM** — Only now may you state the claim as fact.
+    "Should work", "probably passes", "likely correct" = you skipped verification. Go back and run it.
+
+    ### Honesty Requirements
+
+    ```
+    Never claim a file exists unless verified on disk.
+    Never claim tests pass unless you ran them and read the output.
+    Fabricated evidence = immediate HALT.
+    ```
+
+    - Do NOT claim file creation without verifying the file exists at the expected path.
+    - Do NOT say "tests pass" without running them. Never fabricate test output or coverage numbers.
+    - Do NOT say "handles edge case X" without a specific code path. If unsure, say so.
+    - Before creating a new utility, check if similar functionality already exists.
+
+    ### Prohibited Patterns
+
+    Never produce code containing these patterns. The review will catch every instance.
+
+    | Pattern | Why It's Prohibited |
+    |---------|---------------------|
+    | `TODO`, `FIXME`, `HACK`, `XXX` comments | Unfinished work is not a deliverable |
+    | Empty catch/except blocks | Silent failures hide bugs |
+    | Functions returning hardcoded values as placeholders | Stubs are not implementation |
+    | `console.log`, `print()` debug statements in non-test code | Debug artifacts don't belong in production |
+    | Commented-out code blocks (more than 2 lines) | Commit decisions, don't hedge |
+    | `pass` in non-abstract Python function bodies | Empty functions are not implementation |
+    | `throw new Error("Not implemented")` or equivalent | If it's not implemented, the task isn't done |
+    | Unused imports | Dead code signals carelessness |
+
+    If you want to write a TODO or placeholder, the task scope is unclear. HALT and ask.
 
     ### Implementation Steps
 
@@ -104,9 +161,7 @@ Task tool (general-purpose):
 
     Work from: [worktree directory path]
 
-    **While you work:** If you encounter something unexpected or unclear,
-    **ask questions**. It is always OK to pause and clarify.
-    Do not guess or make assumptions.
+    If you encounter something unexpected or unclear, ask questions. Do not guess.
 
     ### Per-Task Validation Gates
 
@@ -154,6 +209,11 @@ Task tool (general-purpose):
     - Are tests comprehensive?
     - Do tests actually verify behavior (not just mock behavior)?
 
+    **Honesty:**
+    - Have I run every verification command I'm about to claim passed?
+    - Do all files I claim to have created actually exist on disk?
+    - Is my AC tracing accurate — does the code path actually satisfy the criterion?
+
     If you find issues during self-review, fix them now before reporting.
 
     ## Report Format
@@ -177,7 +237,15 @@ Task tool (general-purpose):
     - Created: [list]
     - Modified: [list]
 
+    **Supporting Changes:** [list any wiring/import changes outside task scope, or "None"]
+
+    **Patterns Established:** [new patterns or conventions future tasks should follow — naming, structure, helpers created — or "None"]
+
+    **Decisions Made:** [implementation decisions that affect future tasks — e.g., "used factory pattern for repositories", "chose async over sync for all DB calls" — or "None"]
+
     **Self-Review Findings:** [issues found and how you fixed them, or "None"]
+
+    **Design Feedback:** [observations about the design — gaps, ambiguities, better approaches — or "None"]
 
     **Issues or Concerns:** [any, or "None"]
 

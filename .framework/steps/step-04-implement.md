@@ -5,6 +5,7 @@ nextStepFile: './step-05-review.md'
 
 # References
 ruleRef: '@skills/implementation/SKILL.md'
+subagentRef: '@skills/subagent-driven-development/SKILL.md'
 constitutionRef: '@.framework/CONSTITUTION.md'
 verificationChecklist: '@.framework/checklists/verification-checklist.md'
 stateFile: '{spec_folder}/.workflow-state.md'
@@ -26,7 +27,7 @@ Implement all incomplete tasks from TASKS.md. Run a verification gate. Write the
 ## RULES
 
 - READ this entire step file before taking any action.
-- Apply {ruleRef} for all domain behavior, constraints, and output. Do not restate or override the rule.
+- Default execution strategy is **subagent-driven** ({subagentRef}) for multi-task specs. Use direct implementation ({ruleRef}) only for single-task specs or when the user explicitly requests it.
 - Load {constitutionRef}, {designFile}, and {tasksFile}.
 - HALT and WAIT for user input at every menu.
 - Do NOT load or look ahead to future step files.
@@ -77,13 +78,18 @@ Do NOT mark a task complete if spec compliance check fails (AC not traceable to 
 
 ### 3. Implementation session
 
-Apply {ruleRef} with full context ({tasksFile}, {constitutionRef}, {designFile}, {specFile} for AC reference).
-
 **Summary file lifecycle:**
 - **Fresh entry or retry:** Delete existing `{summaryFile}` — rebuild from scratch.
 - **Re-entry from review:** Keep existing `{summaryFile}`. Append only fix task entries.
 
-Implement all incomplete tasks per {ruleRef}. When all done, proceed to section 4.
+**Execution strategy:**
+
+Count incomplete tasks in {tasksFile}.
+
+- **Multiple incomplete tasks (default):** Apply {subagentRef}. The subagent skill dispatches a fresh subagent per task with two-stage review (spec compliance, then code quality) after each. All rules from {ruleRef} (TDD mandate, verification iron law, per-task validation gates) apply to each subagent.
+- **Single incomplete task, or user requests direct:** Apply {ruleRef} directly with full context ({tasksFile}, {constitutionRef}, {designFile}, {specFile} for AC reference).
+
+Implement all incomplete tasks. When all done, proceed to section 4.
 
 ### 4. Verification gate
 

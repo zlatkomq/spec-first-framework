@@ -54,6 +54,12 @@ Data Model, API/Interfaces, Dependencies, Security Considerations, and Risks & T
 
 Omit the section. Do not write "No X required" or "Standard X per CONSTITUTION.md" — if CONSTITUTION.md already covers it, silence is the correct output.
 
+#### Acceptance Criteria Traceability
+- Map every SPEC.md acceptance criterion to the component or mechanism that addresses it
+- Format as table: Acceptance Criterion | Addressed By
+- Every AC must have at least one entry — if an AC cannot be addressed, add an Open Question
+- This section is critical for downstream: Tasks uses it for AC coverage validation, Implementation uses it for per-task compliance gates, Review uses it to trace ACs to code
+
 #### Open Questions
 - Unresolved technical decisions that need answers
 - Format as checklist: `- [ ] Question here?`
@@ -77,6 +83,7 @@ Must be in the same folder as the corresponding SPEC.md.
 ## Verification
 
 - [ ] All acceptance criteria from SPEC.md are technically addressable
+- [ ] Acceptance Criteria Traceability table maps every AC to a component
 - [ ] Architecture follows CONSTITUTION.md patterns
 - [ ] No scope creep beyond SPEC.md boundaries
 - [ ] All applicable sections filled; inapplicable conditional sections omitted entirely

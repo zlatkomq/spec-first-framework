@@ -73,6 +73,13 @@ Always use the template structure from `../../.framework/templates/SPEC.template
 - Format as checklist: `- [ ] Question here?`
 - These must be resolved before moving to DESIGN.md
 
+#### Decisions Made
+- Resolved questions and key decisions captured during spec refinement
+- When an Open Question is answered, move it here with the decision
+- Format as table: Question | Decision
+- Downstream steps (Design, Tasks, Implementation) rely on these decisions
+- Leave the table with a single empty row if no decisions yet
+
 ### Constraints
 
 - Do NOT include technical implementation details

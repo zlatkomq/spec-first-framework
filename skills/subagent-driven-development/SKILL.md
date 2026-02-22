@@ -59,18 +59,20 @@ At the start, before dispatching any subagent:
 1. Read TASKS.md once — extract every task with its full text, Produces/Consumes declarations, and Verify commands
 2. Read SPEC.md once — note which acceptance criteria each task addresses
 3. Read DESIGN.md once — note architectural context and component relationships
-4. Create TodoWrite with all tasks
-5. Read IMPLEMENTATION-SUMMARY.md if it exists (re-entry scenario)
+4. Read CONSTITUTION.md once — extract project standards (coding conventions, naming rules, file structure, test framework, test commands, coverage thresholds)
+5. Create TodoWrite with all tasks
+6. Read IMPLEMENTATION-SUMMARY.md if it exists (re-entry scenario)
 
 **Do NOT:**
 - Re-read TASKS.md for each task
-- Make subagents read TASKS.md, SPEC.md, or DESIGN.md
+- Make subagents read TASKS.md, SPEC.md, DESIGN.md, or CONSTITUTION.md
 - Summarize task text — provide it in full
 
 **Do:**
 - Provide each subagent with complete task text (from upfront extraction)
 - Provide relevant acceptance criteria (from SPEC.md)
 - Provide Produces/Consumes declarations (from TASKS.md)
+- Provide project standards in the `## Project Standards` section of BOTH the implementer prompt AND the quality reviewer prompt (from CONSTITUTION.md — coding conventions, naming rules, file structure, test framework, test commands, coverage thresholds, error handling patterns, security standards)
 - Provide scene-setting context (from IMPLEMENTATION-SUMMARY.md and previous task results)
 
 ### The Process
@@ -100,8 +102,7 @@ digraph process {
 
     "Extract all tasks from TASKS.md, read SPEC.md ACs, create TodoWrite" [shape=box];
     "More tasks remain?" [shape=diamond];
-    "Dispatch final code reviewer for entire implementation (Phase 0-3)" [shape=box];
-    "Use finishing-development-branch skill" [shape=box style=filled fillcolor=lightgreen];
+    "Return to caller (step-04 runs verification gate)" [shape=box style=filled fillcolor=lightgreen];
 
     "Extract all tasks from TASKS.md, read SPEC.md ACs, create TodoWrite" -> "Read IMPLEMENTATION-SUMMARY.md (reload context)";
     "Read IMPLEMENTATION-SUMMARY.md (reload context)" -> "Dispatch implementer subagent (./implementer-prompt.md)";
@@ -123,8 +124,7 @@ digraph process {
     "Write per-task anchor entry to IMPLEMENTATION-SUMMARY.md" -> "Mark task complete in TodoWrite";
     "Mark task complete in TodoWrite" -> "More tasks remain?";
     "More tasks remain?" -> "Read IMPLEMENTATION-SUMMARY.md (reload context)" [label="yes - next task"];
-    "More tasks remain?" -> "Dispatch final code reviewer for entire implementation (Phase 0-3)" [label="no"];
-    "Dispatch final code reviewer for entire implementation (Phase 0-3)" -> "Use finishing-development-branch skill";
+    "More tasks remain?" -> "Return to caller (step-04 runs verification gate)" [label="no"];
 }
 ```
 
@@ -155,7 +155,7 @@ Rules:
 - **Re-read before each task:** Before dispatching each task's implementer, read the entire IMPLEMENTATION-SUMMARY.md to reload context. Treat it as authoritative.
 - **Gate results logged immediately:** Log spec review result as soon as it returns, before dispatching quality reviewer. Log quality review result as soon as it returns, before writing the full anchor entry.
 
-After ALL tasks complete and final code review passes, finalize IMPLEMENTATION-SUMMARY.md by appending aggregate sections following the format in `../../skills/implementation/SKILL.md`.
+After ALL tasks complete, finalize IMPLEMENTATION-SUMMARY.md by appending aggregate sections following the format in `../../skills/implementation/SKILL.md`. Then return to the caller (step-04) which runs the verification gate.
 
 ### Example Workflow
 
@@ -254,11 +254,9 @@ Quality reviewer: APPROVED
 
 ...
 
-[After all tasks]
-[Dispatch final code reviewer — full Phase 0-3 review]
-Final reviewer: APPROVED — all acceptance criteria met, no issues
-
-[Use finishing-development-branch skill]
+[After all tasks complete]
+[Finalize IMPLEMENTATION-SUMMARY.md — append aggregate sections]
+[Return to caller (step-04 runs verification gate, then proceeds to step-05 code review)]
 Done!
 ```
 
@@ -298,7 +296,7 @@ Done!
 ### Re-Review Loop Rules
 
 When a reviewer finds issues:
-1. The **same implementer subagent** fixes them (if still active) or a new fix subagent is dispatched with specific instructions
+1. **Resume the implementer subagent** (by agent ID) if the platform supports it. Otherwise, dispatch a **new fix subagent** with: (a) original task context, (b) the implementer's report, (c) the reviewer's specific findings, and (d) instruction to fix only the cited issues.
 2. The **same reviewer** reviews again (not a different reviewer)
 3. Loop continues until approved
 4. **Maximum 3 attempts per review gate** — if 3 failures on the same gate for the same task, HALT. The problem is likely in the spec, not the implementation.
@@ -315,6 +313,9 @@ STOP and inform the user if any of these occur:
 | Subagent cannot resolve question | HALT — ask user for clarification |
 | Missing dependency from another task | HALT — inform user which task must be completed first |
 | Subagent fails task completely | Dispatch fix subagent with specific instructions. If fix also fails, HALT. |
+| Subagent times out or returns no response | Retry once with a fresh subagent and identical context. If second attempt also fails, HALT — report the failure mode and the task being attempted. |
+| Subagent returns garbled or incomplete output | Discard the output. Dispatch a fresh subagent with identical context. If second attempt also fails, HALT. |
+| Task too large for subagent context window | HALT — recommend splitting the task in TASKS.md into smaller subtasks. |
 
 ### Red Flags — Never Do
 
@@ -341,9 +342,9 @@ STOP and inform the user if any of these occur:
 - Don't rush them into implementation
 
 **If reviewer finds issues:**
-- Implementer (same subagent) fixes them
-- Reviewer reviews again
-- Repeat until approved
+- Resume the implementer subagent or dispatch a new fix subagent with original context + reviewer findings
+- Reviewer reviews again (fresh reviewer subagent each re-review)
+- Repeat until approved or halt threshold (3 attempts)
 - Don't skip the re-review
 
 **If subagent fails task:**
@@ -354,12 +355,14 @@ STOP and inform the user if any of these occur:
 
 **Required workflow skills:**
 - **git-worktrees** (`../../skills/git-worktrees/SKILL.md`) — REQUIRED: Set up isolated workspace before starting
-- **code-review** (`../../skills/code-review/SKILL.md`) — Full Phase 0-3 review methodology for final reviewer
-- **finishing-development-branch** (`../../skills/finishing-development-branch/SKILL.md`) — Complete development after all tasks and final review
 
 **Subagents should follow:**
 - **implementation** (`../../skills/implementation/SKILL.md`) — TDD mandate, verification iron law, per-task validation gates, prohibited patterns
 - **code-review** Phase 3 (`../../skills/code-review/SKILL.md`) — Quality Audit methodology for quality reviewer
+
+**Caller handles (not this skill's responsibility):**
+- Final code review (step-05 in /flow workflow)
+- Branch finalization (finishing-development-branch skill)
 
 **Alternative:**
 - **implementation** (`../../skills/implementation/SKILL.md`) — Use directly for single-task or tightly-coupled implementations without subagent dispatch
@@ -374,5 +377,5 @@ STOP and inform the user if any of these occur:
 - [ ] All review gate results logged to IMPLEMENTATION-SUMMARY.md with timestamps
 - [ ] Per-task anchor entries written to IMPLEMENTATION-SUMMARY.md
 - [ ] Produces/Consumes verified by spec reviewer for each task
-- [ ] Final code review (Phase 0-3) dispatched after all tasks complete
-- [ ] finishing-development-branch skill invoked after final review passes
+- [ ] IMPLEMENTATION-SUMMARY.md finalized with aggregate sections after all tasks complete
+- [ ] Control returned to caller (step-04) for verification gate

@@ -62,8 +62,18 @@
 
 [Optional: Unresolved decisions that need answers before implementation]
 
-- [ ] 
-- [ ] 
+- [ ]
+- [ ]
+
+---
+
+## Decisions Made
+
+[Resolved questions and key decisions made during spec refinement. Moves from Open Questions once answered.]
+
+| Question | Decision |
+|----------|----------|
+| | |
 
 ---
 
