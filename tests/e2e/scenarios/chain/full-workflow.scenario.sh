@@ -82,12 +82,16 @@ run_chain() {
         180) || true
 
     local spec_file="$project_dir/specs/001-user-registration/SPEC.md"
-    if [ -f "$spec_file" ]; then
-        echo "  [PASS] Step 1: SPEC.md created"
-        _ASSERTION_PASS=$((_ASSERTION_PASS + 1))
+    if assert_file_exists "$spec_file" "Step 1: SPEC.md created"; then
+        # Content/structure validation
+        assert_md_field "$spec_file" "Status" "DRAFT" "Step 1: Status is DRAFT" || true
+        assert_md_field "$spec_file" "ID" "001" "Step 1: ID is 001" || true
+        assert_md_section "$spec_file" "Acceptance Criteria" "Step 1: Has Acceptance Criteria section" || true
+        assert_md_section "$spec_file" "User Stories" "Step 1: Has User Stories section" || true
+        assert_md_section "$spec_file" "Scope" "Step 1: Has Scope section" || true
+        assert_ac_format "$spec_file" "Step 1: ACs use Given/When/Then format" || true
+        assert_no_placeholders "$spec_file" "Step 1: No template placeholders" || true
     else
-        echo "  [FAIL] Step 1: SPEC.md not created"
-        _ASSERTION_FAIL=$((_ASSERTION_FAIL + 1))
         chain_failed=true
     fi
 
@@ -112,12 +116,13 @@ run_chain() {
         180) || true
 
     local design_file="$project_dir/specs/001-user-registration/DESIGN.md"
-    if [ -f "$design_file" ]; then
-        echo "  [PASS] Step 2: DESIGN.md created"
-        _ASSERTION_PASS=$((_ASSERTION_PASS + 1))
+    if assert_file_exists "$design_file" "Step 2: DESIGN.md created"; then
+        # Content/structure validation
+        assert_md_field "$design_file" "Status" "DRAFT" "Step 2: Status is DRAFT" || true
+        assert_md_section "$design_file" "Architecture" "Step 2: Has Architecture section" || true
+        assert_md_section "$design_file" "Overview" "Step 2: Has Overview section" || true
+        assert_no_placeholders "$design_file" "Step 2: No template placeholders" || true
     else
-        echo "  [FAIL] Step 2: DESIGN.md not created"
-        _ASSERTION_FAIL=$((_ASSERTION_FAIL + 1))
         chain_failed=true
     fi
 
@@ -142,21 +147,15 @@ run_chain() {
         180) || true
 
     local tasks_file="$project_dir/specs/001-user-registration/TASKS.md"
-    if [ -f "$tasks_file" ]; then
-        echo "  [PASS] Step 3: TASKS.md created"
-        _ASSERTION_PASS=$((_ASSERTION_PASS + 1))
-
-        # Verify task structure
-        if grep -q "T1:" "$tasks_file"; then
-            echo "  [PASS] Step 3: Tasks have T1"
-            _ASSERTION_PASS=$((_ASSERTION_PASS + 1))
-        else
-            echo "  [FAIL] Step 3: No T1 in tasks"
-            _ASSERTION_FAIL=$((_ASSERTION_FAIL + 1))
-        fi
+    if assert_file_exists "$tasks_file" "Step 3: TASKS.md created"; then
+        # Content/structure validation
+        assert_md_field "$tasks_file" "Status" "DRAFT" "Step 3: Status is DRAFT" || true
+        assert_file_contains "$tasks_file" "T1:" "Step 3: Has task T1" || true
+        assert_file_contains "$tasks_file" "T2:" "Step 3: Has task T2 (more than one task)" || true
+        assert_md_section "$tasks_file" "Definition of Done" "Step 3: Has Definition of Done section" || true
+        assert_md_section "$tasks_file" "Testing" "Step 3: Has Testing section" || true
+        assert_no_placeholders "$tasks_file" "Step 3: No template placeholders" || true
     else
-        echo "  [FAIL] Step 3: TASKS.md not created"
-        _ASSERTION_FAIL=$((_ASSERTION_FAIL + 1))
         chain_failed=true
     fi
 
@@ -222,21 +221,14 @@ run_chain() {
         300) || true
 
     local review_file="$project_dir/specs/001-user-registration/REVIEW.md"
-    if [ -f "$review_file" ]; then
-        echo "  [PASS] Step 5: REVIEW.md created"
-        _ASSERTION_PASS=$((_ASSERTION_PASS + 1))
-
-        # Check for verdict
-        if grep -qiE "APPROVED|CHANGES REQUESTED|BLOCKED" "$review_file"; then
-            echo "  [PASS] Step 5: Review has a verdict"
-            _ASSERTION_PASS=$((_ASSERTION_PASS + 1))
-        else
-            echo "  [WARN] Step 5: No explicit verdict found in REVIEW.md"
-            _ASSERTION_SKIP=$((_ASSERTION_SKIP + 1))
-        fi
+    if assert_file_exists "$review_file" "Step 5: REVIEW.md created"; then
+        # Content/structure validation
+        assert_file_contains "$review_file" "APPROVED\|CHANGES REQUESTED\|BLOCKED" "Step 5: Has verdict" || true
+        assert_md_section "$review_file" "Phase 0" "Step 5: Has Phase 0 (File Inventory)" || true
+        assert_md_section "$review_file" "Phase 1" "Step 5: Has Phase 1 (Reality Check)" || true
+        assert_md_section "$review_file" "Phase 2" "Step 5: Has Phase 2 (Spec Verification)" || true
+        assert_md_section "$review_file" "Issues Found" "Step 5: Has Issues Found section" || true
     else
-        echo "  [FAIL] Step 5: REVIEW.md not created"
-        _ASSERTION_FAIL=$((_ASSERTION_FAIL + 1))
         chain_failed=true
     fi
 
