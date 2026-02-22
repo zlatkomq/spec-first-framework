@@ -6,18 +6,8 @@
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PLUGIN_DIR="$(cd "$SCRIPT_DIR/.." && pwd)"
 
-# Portable timeout: use GNU timeout, gtimeout (macOS brew), or fallback to no timeout
-_timeout_cmd() {
-    if command -v timeout &> /dev/null; then
-        timeout "$@"
-    elif command -v gtimeout &> /dev/null; then
-        gtimeout "$@"
-    else
-        # No timeout available — skip the timeout arg, run directly
-        shift  # drop the timeout value
-        "$@"
-    fi
-}
+# Source shared utilities (_timeout_cmd)
+source "$SCRIPT_DIR/shared-utils.sh"
 
 # Run Claude Code with a prompt and capture output
 # Usage: run_claude "prompt text" [timeout_seconds] [allowed_tools]
@@ -174,7 +164,6 @@ cleanup_test_project() {
 
 # Export functions for use in tests
 export PLUGIN_DIR
-export -f _timeout_cmd
 export -f run_claude
 export -f assert_contains
 export -f assert_not_contains

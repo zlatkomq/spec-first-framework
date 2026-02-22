@@ -118,17 +118,8 @@ if [ -n "$SPECIFIC_TEST" ]; then
     tests=("$SPECIFIC_TEST")
 fi
 
-# Portable timeout: use GNU timeout, gtimeout (macOS brew), or fallback
-_timeout_cmd() {
-    if command -v timeout &> /dev/null; then
-        timeout "$@"
-    elif command -v gtimeout &> /dev/null; then
-        gtimeout "$@"
-    else
-        shift  # drop the timeout value
-        "$@"
-    fi
-}
+# Source shared utilities (_timeout_cmd)
+source "$SCRIPT_DIR/shared-utils.sh"
 
 # Track results
 passed=0
