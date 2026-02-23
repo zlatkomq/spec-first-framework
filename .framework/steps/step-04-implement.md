@@ -98,9 +98,9 @@ Run {verificationChecklist}.
 - **PASS:** Proceed to section 5.
 - **FAIL:** Increment `implementationAttempts` in {stateFile}. Display failures. Return to section 2 (retry path).
 
-### 5. Finalize implementation summary
+### 5. Verify implementation summary
 
-Finalize `{summaryFile}`: per-task anchor entries exist from section 3. Append aggregate sections per {ruleRef}: consolidated file list, test totals with raw output, key decisions, patterns, design feedback.
+Check `{summaryFile}`: per-task anchor entries and aggregate sections should already exist from section 3 (both {subagentRef} and {ruleRef} finalize the summary before returning). If the aggregate section (`## Aggregate`) is missing (e.g., direct implementation fallback), append it now per {ruleRef}: consolidated file list, test totals with raw output, key decisions, patterns, design feedback.
 
 ### 6. Present MENU
 

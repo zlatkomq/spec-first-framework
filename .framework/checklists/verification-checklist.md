@@ -46,7 +46,8 @@ If CONSTITUTION.md does not define lint or type-check commands, mark N/A.
 
 - [ ] `IMPLEMENTATION-SUMMARY.md` exists in the spec folder
 - [ ] Contains at least one per-task anchor entry (`### T{N}`)
-- [ ] Contains Aggregate section with Files created/modified and Tests
+
+Note: Aggregate section (`## Aggregate`) is verified and appended if missing in step-04 section 5, after this gate passes.
 
 ## 5. HALT Conditions
 

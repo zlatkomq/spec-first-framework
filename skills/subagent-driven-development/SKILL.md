@@ -73,6 +73,7 @@ At the start, before dispatching any subagent:
 - Provide relevant acceptance criteria (from SPEC.md)
 - Provide Produces/Consumes declarations (from TASKS.md)
 - Provide project standards in the `## Project Standards` section of BOTH the implementer prompt AND the quality reviewer prompt (from CONSTITUTION.md — coding conventions, naming rules, file structure, test framework, test commands, coverage thresholds, error handling patterns, security standards)
+- Provide relevant DESIGN.md context in the `## Design Context` section of the quality reviewer prompt (architecture decisions, data models, API/interface designs, component relationships, dependency choices relevant to this task)
 - Provide scene-setting context (from IMPLEMENTATION-SUMMARY.md and previous task results)
 
 ### The Process
@@ -95,6 +96,8 @@ digraph process {
         "Dispatch quality reviewer subagent (./quality-reviewer-prompt.md)" [shape=box];
         "Quality reviewer approves?" [shape=diamond];
         "Implementer fixes quality issues" [shape=box];
+        "Run full test suite (regression guard)" [shape=box];
+        "Tests still pass?" [shape=diamond];
         "Log Quality Review: PASS to IMPLEMENTATION-SUMMARY.md" [shape=box];
         "Write per-task anchor entry to IMPLEMENTATION-SUMMARY.md" [shape=box];
         "Mark task complete in TodoWrite" [shape=box];
@@ -118,7 +121,10 @@ digraph process {
     "Log Spec Review: PASS to IMPLEMENTATION-SUMMARY.md" -> "Dispatch quality reviewer subagent (./quality-reviewer-prompt.md)";
     "Dispatch quality reviewer subagent (./quality-reviewer-prompt.md)" -> "Quality reviewer approves?";
     "Quality reviewer approves?" -> "Implementer fixes quality issues" [label="no"];
-    "Implementer fixes quality issues" -> "Dispatch quality reviewer subagent (./quality-reviewer-prompt.md)" [label="re-review"];
+    "Implementer fixes quality issues" -> "Run full test suite (regression guard)";
+    "Run full test suite (regression guard)" -> "Tests still pass?";
+    "Tests still pass?" -> "Dispatch quality reviewer subagent (./quality-reviewer-prompt.md)" [label="yes — re-review"];
+    "Tests still pass?" -> "Implementer fixes quality issues" [label="no — fix regression first"];
     "Quality reviewer approves?" -> "Log Quality Review: PASS to IMPLEMENTATION-SUMMARY.md" [label="yes"];
     "Log Quality Review: PASS to IMPLEMENTATION-SUMMARY.md" -> "Write per-task anchor entry to IMPLEMENTATION-SUMMARY.md";
     "Write per-task anchor entry to IMPLEMENTATION-SUMMARY.md" -> "Mark task complete in TodoWrite";
@@ -203,7 +209,7 @@ Spec reviewer:
 
 [Log to IMPLEMENTATION-SUMMARY.md: Spec Review: PASS 2026-02-21 14:30]
 
-[Get git SHAs, dispatch quality reviewer with task context + commit range]
+[Get git SHAs, dispatch quality reviewer with task context + Design Context + commit range]
 Quality reviewer:
   Strengths: Clean interface, good test coverage, TDD followed
   Issues: None
@@ -239,12 +245,13 @@ Spec reviewer: PASS — retry logic verified, all ACs satisfied
 
 [Log: Spec Review: PASS 2026-02-21 15:10]
 
-[Dispatch quality reviewer]
+[Dispatch quality reviewer with Design Context + commit range]
 Quality reviewer:
   Issues (Minor): Magic number 3 for retry count — extract to constant
   Assessment: ISSUES FOUND
 
 [Implementer fixes: extracts MAX_RETRY_ATTEMPTS constant]
+[Run full test suite (regression guard): 53/53 pass — no regressions]
 [Quality reviewer re-reviews]
 Quality reviewer: APPROVED
 
@@ -300,6 +307,8 @@ When a reviewer finds issues:
 2. The **same reviewer** reviews again (not a different reviewer)
 3. Loop continues until approved
 4. **Maximum 3 attempts per review gate** — if 3 failures on the same gate for the same task, HALT. The problem is likely in the spec, not the implementation.
+
+**Quality fix regression guard:** After the implementer fixes quality issues, the controller must run the full test suite before dispatching the quality re-reviewer. If any previously-passing test now fails, do NOT dispatch the quality re-reviewer. Instead, route back to the implementer with both the original quality issues AND the regression. This prevents quality fixes from silently breaking spec compliance. **Regression failures count toward the quality review attempt limit** (max 3 total — whether the failure comes from the reviewer or from the regression guard).
 
 ### Halt Conditions
 
@@ -373,7 +382,8 @@ STOP and inform the user if any of these occur:
 - [ ] All tasks extracted upfront from TASKS.md (controller reads once)
 - [ ] Each task dispatched to fresh implementer subagent with full text, ACs, and Produces/Consumes
 - [ ] Spec compliance review completed for every task before quality review
-- [ ] Code quality review completed for every task before moving to next
+- [ ] Code quality review completed for every task (with Design Context from DESIGN.md) before moving to next
+- [ ] Quality fix regression guard run after each quality fix (full test suite pass before re-review)
 - [ ] All review gate results logged to IMPLEMENTATION-SUMMARY.md with timestamps
 - [ ] Per-task anchor entries written to IMPLEMENTATION-SUMMARY.md
 - [ ] Produces/Consumes verified by spec reviewer for each task

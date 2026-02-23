@@ -86,66 +86,16 @@ Task tool (general-purpose):
 
     ### TDD Mandate
 
-    ```
-    IRON LAW: Write failing tests FIRST, then implement. No exceptions.
-    ```
-
-    Every behavior follows RED-GREEN-REFACTOR:
-    1. **RED** — Write test(s) asserting acceptance criteria behavior (not implementation structure). Run. Confirm FAIL (feature missing, not syntax error).
-    2. **GREEN** — Simplest code to pass. Run. Confirm PASS + no regressions.
-    3. **REFACTOR** — Clean up only after green. No new behavior.
-
-    **Code before test? Delete it.** No keeping as "reference." Start over with RED.
-
-    **Test assertions must target spec behavior:**
-    - GOOD: `expect(response.status).toBe(401)` — tests the AC
-    - BAD: `expect(validateToken).toHaveBeenCalled()` — tests implementation detail
-
+    Follow TDD (tests first, then implementation) for every behavior.
     **Testing tasks:** Write tests only. Do NOT change implementation unless fixing a bug the test reveals — report that bug.
 
-    ### Verification Iron Law
+    ### Verification Requirement
 
-    ```
-    NO COMPLETION CLAIMS WITHOUT FRESH VERIFICATION EVIDENCE
-    ```
-
-    For each claim (tests pass, file exists, no regressions, coverage meets threshold):
-    1. **RUN** the verification command NOW. Not "earlier." Not "should work." Now.
-    2. **READ** the complete output.
-    3. **VERIFY** the output actually confirms the claim.
-    4. Only then may you state the claim as fact.
-
-    "Should work", "probably passes", "likely correct" = you skipped verification. Go back and run it.
-
-    ### Honesty Requirements
-
-    ```
-    Never claim a file exists unless verified on disk.
-    Never claim tests pass unless you ran them and read the output.
-    Fabricated evidence = immediate HALT.
-    ```
-
-    - Do NOT claim file creation without verifying the file exists at the expected path.
-    - Do NOT say "tests pass" without running them. Never fabricate test output or coverage numbers.
-    - Do NOT say "handles edge case X" without a specific code path. If unsure, say so.
-    - Before creating a new utility, check if similar functionality already exists.
+    Verify every claim by running commands and reading output before reporting. No claim without fresh evidence.
 
     ### Prohibited Patterns
 
-    Never produce code containing these patterns. The review will catch every instance.
-
-    | Pattern | Why It's Prohibited |
-    |---------|---------------------|
-    | `TODO`, `FIXME`, `HACK`, `XXX` comments | Unfinished work is not a deliverable |
-    | Empty catch/except blocks | Silent failures hide bugs |
-    | Functions returning hardcoded values as placeholders | Stubs are not implementation |
-    | `console.log`, `print()` debug statements in non-test code | Debug artifacts don't belong in production |
-    | Commented-out code blocks (more than 2 lines) | Commit decisions, don't hedge |
-    | `pass` in non-abstract Python function bodies | Empty functions are not implementation |
-    | `throw new Error("Not implemented")` or equivalent | If it's not implemented, the task isn't done |
-    | Unused imports | Dead code signals carelessness |
-
-    If you want to write a TODO or placeholder, the task scope is unclear. HALT and ask.
+    No TODOs, stubs, or placeholder code. If scope is unclear, halt and ask.
 
     ### Implementation Steps
 
@@ -192,27 +142,8 @@ Task tool (general-purpose):
     - Are there edge cases I did not handle?
     - Does my Produces signature match exactly?
 
-    **Quality:**
-    - Is this my best work?
-    - Are names clear and accurate (match what things do, not how they work)?
-    - Is the code clean and maintainable?
-
-    **Discipline:**
-    - Did I avoid overbuilding (YAGNI)?
-    - Did I only build what was requested?
-    - Did I follow existing patterns in the codebase?
-    - Did I follow TDD strictly (tests first)?
-
     **Testing:**
     - Do tests assert against acceptance criteria behavior, not implementation structure?
-    - Did I follow RED-GREEN-REFACTOR?
-    - Are tests comprehensive?
-    - Do tests actually verify behavior (not just mock behavior)?
-
-    **Honesty:**
-    - Have I run every verification command I'm about to claim passed?
-    - Do all files I claim to have created actually exist on disk?
-    - Is my AC tracing accurate — does the code path actually satisfy the criterion?
 
     If you find issues during self-review, fix them now before reporting.
 

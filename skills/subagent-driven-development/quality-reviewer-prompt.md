@@ -29,6 +29,12 @@ Task tool (general-purpose):
     test commands, coverage thresholds, security standards.
     The subagent cannot read CONSTITUTION.md — provide what it needs here.]
 
+    ## Design Context
+
+    [Paste relevant sections from DESIGN.md: architecture decisions, data models,
+    API/interface designs, component relationships, and dependency choices relevant
+    to this task. The subagent cannot read DESIGN.md — provide what it needs here.]
+
     ## Review Scope
 
     Review ONLY the changes between Base SHA and HEAD SHA.
@@ -43,12 +49,7 @@ Task tool (general-purpose):
     Check the changed code against the Project Standards provided above.
 
     **Mechanically Verifiable** (show specific violations or confirm clean scan):
-    - **Naming conventions:** Check against Project Standards naming conventions above. Show violations.
-    - **File/folder structure:** Compare actual file locations against Project Standards file structure above. Flag misplaced files.
-    - **Import patterns:** Check for prohibited import patterns. Show violations.
-    - **Prohibited patterns scan:** TODO, FIXME, HACK, XXX, empty catch blocks,
-      hardcoded stubs, debug prints, commented-out code (>2 lines), empty function
-      bodies, not-implemented throws, unused imports. Flag every instance.
+    Scan changed code against all Project Standards conventions above (naming, file structure, imports, prohibited patterns). Flag every violation with file and line.
 
     **Requires Judgment** (show relevant code evidence, explain compliance or violation):
     - **Architectural patterns:** Verify classes/functions follow Project Standards patterns above.
@@ -77,31 +78,17 @@ Task tool (general-purpose):
     - No tests where assertions mirror implementation details
       (e.g., `expect(mockFn).toHaveBeenCalled()` instead of behavioral assertions)
 
-    **Test Quality Checks:**
-    - Tests assert real behavior, not trivial truths
-    - Tests cover error paths, not just happy paths
-    - Assertions are specific (not just "no exception" or "result is not null")
-    - No duplicate test logic with only descriptions changed
-    - No tests that mock the thing being tested
+    **Test Quality:** Verify tests would fail without the implementation and cover error paths, not just happy paths.
 
-    **Red Flags:**
-    | Red Flag | What It Means |
-    |----------|---------------|
-    | Test only asserts `result is not None` or `.toBeDefined()` | Tests the mock, not the code |
-    | Test has no assertions at all | Placeholder test for coverage |
-    | Test description says "should handle errors" but only tests happy path | Misleading test |
-    | Multiple tests with identical structure, different descriptions | Copy-paste tests |
-    | Test mocks the thing it's supposed to be testing | Circular testing |
-    | All tests pass but none test edge cases from acceptance criteria | Incomplete coverage |
+    ### Re-Review After Fixes
 
-    ### 4. Code Quality
-
-    - Clean, readable, maintainable
-    - No magic numbers or strings (extract to named constants)
-    - Single responsibility (functions/classes do one thing)
-    - Appropriate abstraction level (not over-engineered, not under-engineered)
-    - Error messages are helpful and specific
-    - No dead code or unreachable paths
+    When re-reviewing after the implementer has fixed issues from a previous review:
+    - Verify the fixes address each cited issue
+    - Verify fixes did NOT introduce behavioral regressions — check that the full
+      test suite still passes and no acceptance criteria behavior was altered
+    - If you detect a behavioral change (test failures, altered AC behavior, changed
+      interface signatures), report it as a **Critical** issue — the fix broke
+      spec compliance
 
     ## Report Format
 
