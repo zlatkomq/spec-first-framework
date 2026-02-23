@@ -315,7 +315,7 @@ cmd_update() {
   echo ""
   echo "  Updated to: ${branch}@${commit}"
   echo ""
-  echo -e "  ${YELLOW}Preserved:${NC} .framework/CONSTITUTION.md, specs/*, bugs/*"
+  echo -e "  ${YELLOW}Preserved:${NC} CONSTITUTION.md, specs/*, bugs/*"
   echo ""
 }
 
