@@ -13,7 +13,7 @@ You are creating a Change Proposal document and, on approval, updating the affec
 
 Before proceeding, you must have:
 - An existing, approved SPEC.md (load `specs/XXX/SPEC.md`)
-- Access to `../../.framework/CONSTITUTION.md` for project standards
+- Access to `../../CONSTITUTION.md` for project standards
 - The change description from the user (what changed and why)
 
 If SPEC.md does not exist or is not APPROVED, STOP and inform the user.

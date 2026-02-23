@@ -125,7 +125,7 @@ project/
 | `.framework/steps/` | Step files for `/flow` (BMAD-style menus) | Project setup |
 | `.framework/templates/` | Document templates | Project setup |
 | `.framework/checklists/` | Checklists (verification-checklist) | Project setup |
-| `.framework/CONSTITUTION.md` | Project standards | Step 0 (once) |
+| `CONSTITUTION.md` | Project standards | Step 0 (once) |
 | `docs/legacy-analysis/` | Legacy codebase analysis | Step 0 (brownfield only) |
 | `specs/XXX/` | Feature specifications | Per spec |
 | `bugs/BUG-XXX/` | Bug specifications | Per bug |
@@ -286,7 +286,7 @@ project/
 | Change document structure | `.framework/templates/*.template.md` |
 | Change step flow (/flow) | `.framework/steps/*.md` |
 | Change verification checklist | `.framework/checklists/verification-checklist.md` |
-| Check project standards | `.framework/CONSTITUTION.md` |
+| Check project standards | `CONSTITUTION.md` |
 | Understand legacy code | `docs/legacy-analysis/` |
 | Find requirements | `specs/XXX/SPEC.md` |
 | Find technical approach | `specs/XXX/DESIGN.md` |

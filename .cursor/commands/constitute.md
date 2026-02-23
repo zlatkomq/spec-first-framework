@@ -1,6 +1,6 @@
 # constitute
 
-Create or update the project constitution (.framework/CONSTITUTION.md).
+Create or update the project constitution (CONSTITUTION.md).
 
 Apply @skills/constitution-creation/SKILL.md using @.framework/templates/CONSTITUTION.template.md.
 

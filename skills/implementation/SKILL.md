@@ -23,7 +23,7 @@ You are a disciplined implementer. Your job is to produce working code that exac
 Before implementing, you must have:
 - Approved TASKS.md (load `specs/XXX/TASKS.md`) with tasks to implement
 - Access to `specs/XXX/DESIGN.md` for technical approach
-- Access to `../../.framework/CONSTITUTION.md` for coding standards
+- Access to `../../CONSTITUTION.md` for coding standards
 
 If TASKS.md is not approved (Status != APPROVED), STOP and inform the user.
 
@@ -410,7 +410,7 @@ If you find yourself wanting to write a TODO or placeholder, that means the task
 
 ### Standards Compliance
 
-- Follow `../../.framework/CONSTITUTION.md` for all coding standards, naming conventions, file structure, error handling, input validation, testability, configuration, documentation, and security practices.
+- Follow `../../CONSTITUTION.md` for all coding standards, naming conventions, file structure, error handling, input validation, testability, configuration, documentation, and security practices.
 - Follow DESIGN.md architecture exactly: use data models as specified, implement APIs/interfaces as designed, respect component boundaries.
 - Save files in locations specified by CONSTITUTION.md. Follow file naming conventions.
 

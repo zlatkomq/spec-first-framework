@@ -13,7 +13,7 @@ You are creating a technical design document. Follow these rules strictly.
 
 Before creating a DESIGN.md, you must have:
 - Approved SPEC.md (load `specs/XXX/SPEC.md`)
-- Access to `../../.framework/CONSTITUTION.md` for project standards
+- Access to `../../CONSTITUTION.md` for project standards
 
 If SPEC.md is not approved (Status != APPROVED), STOP and inform the user.
 

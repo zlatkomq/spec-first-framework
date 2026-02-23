@@ -213,7 +213,7 @@ Added **Cursor slash commands** as the primary way to run the spec-first workflo
 ### What's New
 
 #### Cursor Commands (`.cursor/commands/`)
-- `/constitute` — Create or update `.framework/CONSTITUTION.md`
+- `/constitute` — Create or update `CONSTITUTION.md`
 - `/specify` — Create `specs/XXX-slug/SPEC.md`
 - `/design` — Create `specs/XXX-slug/DESIGN.md`
 - `/tasks` — Create `specs/XXX-slug/TASKS.md`

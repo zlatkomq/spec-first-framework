@@ -52,7 +52,7 @@ Before reviewing, you must have access to:
 - `specs/XXX/SPEC.md` for acceptance criteria
 - `specs/XXX/DESIGN.md` for technical approach
 - `specs/XXX/TASKS.md` for task list
-- `../../.framework/CONSTITUTION.md` for coding standards
+- `../../CONSTITUTION.md` for coding standards
 - The actual source code files implementing this feature
 
 ---

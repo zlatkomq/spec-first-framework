@@ -60,11 +60,11 @@ This is a read-only diagnostic. It does not modify any files.
 | `skills/bug-review/` | Bug review |
 | `skills/change-request/` | Change requests |
 
-**5. CONSTITUTION.md** — Check if `.framework/CONSTITUTION.md` exists. If missing, warn: "No CONSTITUTION.md found. Run `/constitute` to create one."
+**5. CONSTITUTION.md** — Check if `CONSTITUTION.md` exists. If missing, warn: "No CONSTITUTION.md found. Run `/constitute` to create one."
 
 **6. Cross-references** — Verify that all skill and command references resolve to existing files:
 
-- For each `skills/<name>/SKILL.md`: verify that relative framework refs (`../../.framework/templates/*.md`, `../../.framework/CONSTITUTION.md`, `../../.framework/checklists/*.md`) point to files that exist. Verify that cross-skill refs (`../other-skill/SKILL.md`) point to files that exist.
+- For each `skills/<name>/SKILL.md`: verify that relative framework refs (`../../.framework/templates/*.md`, `../../CONSTITUTION.md`, `../../.framework/checklists/*.md`) point to files that exist. Verify that cross-skill refs (`../other-skill/SKILL.md`) point to files that exist.
 - For each command file in `.cursor/commands/`: verify that `@skills/<name>/SKILL.md` paths point to existing SKILL.md files.
 - For each step file in `.framework/steps/`: verify that `ruleRef: '@skills/<name>/SKILL.md'` paths point to existing SKILL.md files, and that `templateRef` paths exist.
 

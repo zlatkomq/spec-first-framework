@@ -25,7 +25,7 @@ Do NOT produce a review based solely on reading BUG.md. You must verify the actu
 Before reviewing, you must have access to:
 - `bugs/BUG-XXX/BUG.md` for bug details and fix criteria
 - The original `specs/XXX/SPEC.md` (linked in BUG.md)
-- `../../.framework/CONSTITUTION.md` for coding standards
+- `../../CONSTITUTION.md` for coding standards
 - The actual source code files modified for the fix
 - The regression test file
 

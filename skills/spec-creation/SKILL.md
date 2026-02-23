@@ -13,7 +13,7 @@ You are creating a specification document. Follow these rules strictly.
 
 Before creating a SPEC.md, you must have:
 - Description or requirements from PO/BA/Client
-- Access to `../../.framework/CONSTITUTION.md` for project context
+- Access to `../../CONSTITUTION.md` for project context
 
 If requirements are unclear or incomplete, ASK for clarification. Do not invent requirements.
 

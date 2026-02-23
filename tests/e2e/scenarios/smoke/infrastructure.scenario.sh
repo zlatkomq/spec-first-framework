@@ -30,7 +30,7 @@ PROMPT
 assert_artifacts() {
     local project_dir="$1"
     assert_file_exists "$project_dir/package.json" "Base fixture intact"
-    assert_file_exists "$project_dir/.framework/CONSTITUTION.md" "Constitution present"
+    assert_file_exists "$project_dir/CONSTITUTION.md" "Constitution present"
     assert_file_exists "$project_dir/specs/001-user-registration/SPEC.md" "Spec present"
 }
 

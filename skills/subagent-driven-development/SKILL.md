@@ -41,7 +41,7 @@ Before starting, you must have:
 - Approved TASKS.md (load `specs/XXX/TASKS.md`) — Status must be APPROVED
 - Access to `specs/XXX/SPEC.md` for acceptance criteria
 - Access to `specs/XXX/DESIGN.md` for technical approach
-- Access to `../../.framework/CONSTITUTION.md` for coding standards
+- Access to `../../CONSTITUTION.md` for coding standards
 
 If TASKS.md is not approved (Status != APPROVED), STOP and inform the user.
 

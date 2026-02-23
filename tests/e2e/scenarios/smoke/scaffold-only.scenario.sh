@@ -31,8 +31,8 @@ run_smoke() {
     scaffold_project "$dir1" "node-project" "with-constitution" "with-approved-spec"
 
     assert_file_exists "$dir1/package.json" "Base has package.json" || fail=true
-    assert_file_exists "$dir1/.framework/CONSTITUTION.md" "Constitution overlay applied" || fail=true
-    assert_md_field "$dir1/.framework/CONSTITUTION.md" "Status" "APPROVED" "Constitution is APPROVED" || fail=true
+    assert_file_exists "$dir1/CONSTITUTION.md" "Constitution overlay applied" || fail=true
+    assert_md_field "$dir1/CONSTITUTION.md" "Status" "APPROVED" "Constitution is APPROVED" || fail=true
     assert_file_exists "$dir1/specs/001-user-registration/SPEC.md" "Spec overlay applied" || fail=true
     assert_md_field "$dir1/specs/001-user-registration/SPEC.md" "Status" "APPROVED" "Spec is APPROVED" || fail=true
     assert_file_exists "$dir1/.git/HEAD" "Git repo initialized" || fail=true

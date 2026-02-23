@@ -6,7 +6,7 @@ nextStepFile: './step-04-implement.md'
 # References
 ruleRef: '@skills/task-creation/SKILL.md'
 templateRef: '@.framework/templates/TASKS.template.md'
-constitutionRef: '@.framework/CONSTITUTION.md'
+constitutionRef: '@CONSTITUTION.md'
 stateFile: '{spec_folder}/.workflow-state.md'
 specFile: '{spec_folder}/SPEC.md'
 designFile: '{spec_folder}/DESIGN.md'

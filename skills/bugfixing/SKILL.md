@@ -14,7 +14,7 @@ You are creating a bug specification document. Follow these rules strictly.
 Before creating a BUG.md, you must have:
 - Bug description from the reporter (what's wrong, how to reproduce)
 - Reference to the original SPEC.md where the bug exists
-- Access to `../../.framework/CONSTITUTION.md` for project context
+- Access to `../../CONSTITUTION.md` for project context
 
 If the bug description is unclear or the original spec is not provided, ASK for clarification. Do not guess.
 

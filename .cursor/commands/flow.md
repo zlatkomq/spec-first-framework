@@ -35,7 +35,7 @@ The user's message after `/flow` can take several forms. Parse it as follows:
 
 ## 3. Check for CONSTITUTION.md
 
-- Verify `.framework/CONSTITUTION.md` exists.
+- Verify `CONSTITUTION.md` exists.
 - If missing: display "No CONSTITUTION.md found. Run `/constitute` first to set up project standards." STOP.
 
 ## 4. Check workflow state
@@ -89,4 +89,4 @@ When a step file says "Read fully and follow: {nextStepFile}":
 - State template: `.framework/templates/workflow-state.template.md`
 - Skills: `skills/spec-creation/SKILL.md`, `skills/design-creation/SKILL.md`, `skills/task-creation/SKILL.md`, `skills/implementation/SKILL.md`, `skills/code-review/SKILL.md`
 - Templates: `.framework/templates/SPEC.template.md`, `DESIGN.template.md`, `TASKS.template.md`, `REVIEW.template.md`
-- Project standards: `.framework/CONSTITUTION.md`
+- Project standards: `CONSTITUTION.md`

@@ -8,7 +8,7 @@ How to use the Cursor commands to run the full spec-first workflow. Each command
 
 | Command | What it does | User provides |
 |--------|----------------|----------------|
-| `/constitute` | Create/update `.framework/CONSTITUTION.md` | Project description (tech stack, standards) |
+| `/constitute` | Create/update `CONSTITUTION.md` | Project description (tech stack, standards) |
 | `/specify` | Create `specs/XXX-slug/SPEC.md` | Spec ID + requirement (or just requirement; ID asked if missing) |
 | `/design` | Create `specs/XXX-slug/DESIGN.md` | Spec reference (e.g. 006 or path) |
 | `/tasks` | Create `specs/XXX-slug/TASKS.md` | Spec/design reference (e.g. 006 or path) |
@@ -30,7 +30,7 @@ How to use the Cursor commands to run the full spec-first workflow. Each command
 ```
 /constitute FastAPI backend, Python 3.12, PostgreSQL 16, 80% coverage, Pydantic validation, Ruff + mypy.
 ```
-→ Creates/updates `.framework/CONSTITUTION.md`. Human (Tech Lead) approves.
+→ Creates/updates `CONSTITUTION.md`. Human (Tech Lead) approves.
 
 ---
 

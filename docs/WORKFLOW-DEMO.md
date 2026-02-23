@@ -43,7 +43,7 @@ A real walkthrough of building 001 User Registration using the framework.
 
 **AI Action:** Updated CONSTITUTION.md, removed open questions.
 
-**Output:** `.framework/CONSTITUTION.md` (Status: DRAFT → ready for approval)
+**Output:** `CONSTITUTION.md` (Status: DRAFT → ready for approval)
 
 ---
 

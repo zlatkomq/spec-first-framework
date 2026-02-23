@@ -26,7 +26,7 @@ Optionally include a Jira ticket reference after a colon:
 - Read `{spec_folder}/SPEC.md` (acceptance criteria, scope, Bug History, Amendment History).
 - Read `{spec_folder}/DESIGN.md` (if exists).
 - Read `{spec_folder}/TASKS.md` (if exists).
-- Read `.framework/CONSTITUTION.md` for project standards.
+- Read `CONSTITUTION.md` for project standards.
 
 ## 4. Apply rules
 

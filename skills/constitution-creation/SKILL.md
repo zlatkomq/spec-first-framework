@@ -162,7 +162,7 @@ Produce the final CONSTITUTION.md with all confirmed values.
 
 ### Output
 
-Save the file to: `.framework/CONSTITUTION.md`
+Save the file to: `CONSTITUTION.md`
 
 ## Verification
 

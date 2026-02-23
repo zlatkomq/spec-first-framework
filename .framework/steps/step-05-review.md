@@ -5,7 +5,7 @@ description: 'Generate adversarial code review (REVIEW.md) for this feature'
 # References
 ruleRef: '@skills/code-review/SKILL.md'
 templateRef: '@.framework/templates/REVIEW.template.md'
-constitutionRef: '@.framework/CONSTITUTION.md'
+constitutionRef: '@CONSTITUTION.md'
 stateFile: '{spec_folder}/.workflow-state.md'
 specFile: '{spec_folder}/SPEC.md'
 designFile: '{spec_folder}/DESIGN.md'

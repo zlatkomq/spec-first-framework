@@ -14,7 +14,7 @@ You are creating a task breakdown document. Follow these rules strictly.
 Before creating a TASKS.md, you must have:
 - Approved DESIGN.md (load `specs/XXX/DESIGN.md`)
 - Approved SPEC.md (load `specs/XXX/SPEC.md`) — for acceptance criteria traceability
-- Access to `../../.framework/CONSTITUTION.md` for project standards
+- Access to `../../CONSTITUTION.md` for project standards
 
 If DESIGN.md is not approved (Status != APPROVED), STOP and inform the user.
 

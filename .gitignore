@@ -27,9 +27,6 @@ specs/*
 # But keep .gitkeep to preserve folder structure
 !specs/.gitkeep
 
-# Instance constitution (template is in templates/)
-.framework/CONSTITUTION.md
-
 # ===================
 # Python
 # ===================

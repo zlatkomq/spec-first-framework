@@ -6,7 +6,7 @@ nextStepFile: './step-05-review.md'
 # References
 ruleRef: '@skills/implementation/SKILL.md'
 subagentRef: '@skills/subagent-driven-development/SKILL.md'
-constitutionRef: '@.framework/CONSTITUTION.md'
+constitutionRef: '@CONSTITUTION.md'
 verificationChecklist: '@.framework/checklists/verification-checklist.md'
 stateFile: '{spec_folder}/.workflow-state.md'
 specFile: '{spec_folder}/SPEC.md'

@@ -20,7 +20,7 @@ Before implementing, you must have:
 - Access to `bugs/BUG-XXX/BUG.md` for bug details
 - Access to the original `specs/XXX/SPEC.md` (linked in BUG.md)
 - Access to the original `specs/XXX/DESIGN.md` for architecture context
-- Access to `../../.framework/CONSTITUTION.md` for coding standards
+- Access to `../../CONSTITUTION.md` for coding standards
 
 If BUG.md is not approved (Status != CONFIRMED), STOP and inform the user.
 
