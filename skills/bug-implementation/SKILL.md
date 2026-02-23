@@ -24,6 +24,12 @@ Before implementing, you must have:
 
 If BUG.md is not approved (Status != CONFIRMED), STOP and inform the user.
 
+### Workspace Isolation
+
+Before starting the bugfix, use `../git-worktrees/SKILL.md` to set up an isolated workspace. The skill will detect if you are already inside a worktree and skip creation if so.
+
+Branch naming convention: `bugfix/{bug-id}-{short-description}` (e.g., `bugfix/BUG-001-safari-validation`).
+
 ### Scope Control
 
 #### Minimal Change Principle

@@ -6,6 +6,7 @@ nextStepFile: './step-05-review.md'
 # References
 ruleRef: '@skills/implementation/SKILL.md'
 subagentRef: '@skills/subagent-driven-development/SKILL.md'
+worktreeRef: '@skills/git-worktrees/SKILL.md'
 constitutionRef: '@CONSTITUTION.md'
 verificationChecklist: '@.framework/checklists/verification-checklist.md'
 stateFile: '{spec_folder}/.workflow-state.md'
@@ -27,6 +28,7 @@ Implement all incomplete tasks from TASKS.md. Run a verification gate. Write the
 ## RULES
 
 - READ this entire step file before taking any action.
+- When this step says "Apply {ref}", read the referenced file completely and follow ALL its sections in order.
 - Default execution strategy is **subagent-driven** ({subagentRef}) for multi-task specs. Use direct implementation ({ruleRef}) only for single-task specs or when the user explicitly requests it.
 - Load {constitutionRef}, {designFile}, and {tasksFile}.
 - HALT and WAIT for user input at every menu.
@@ -79,7 +81,7 @@ Do NOT mark a task complete if spec compliance check fails (AC not traceable to 
 ### 3. Implementation session
 
 **Workspace isolation:**
-Apply `../../skills/git-worktrees/SKILL.md` to set up an isolated workspace. The skill will detect if already inside a worktree and skip creation if so.
+Apply {worktreeRef} to set up an isolated workspace. The skill will detect if already inside a worktree and skip creation if so.
 
 **Summary file lifecycle:**
 - **Fresh entry or retry:** Delete existing `{summaryFile}` — rebuild from scratch.

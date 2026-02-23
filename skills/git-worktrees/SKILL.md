@@ -158,7 +158,14 @@ Baseline tests failed (<N> failures). The base branch has pre-existing issues.
 
 #### 5. Log to Workflow State
 
-If `.workflow-state.md` exists in the spec directory, append worktree information:
+If `.workflow-state.md` exists in the spec directory:
+
+**Update frontmatter fields:**
+- Set `featureBranch` to the branch name (e.g. `feat/001-note-crud`)
+- Set `baseBranch` to the base branch (e.g. `main`)
+- Set `worktreePath` to the full worktree path (e.g. `.worktrees/feat/001-note-crud`)
+
+**Append worktree markdown section:**
 
 ```markdown
 ## Worktree

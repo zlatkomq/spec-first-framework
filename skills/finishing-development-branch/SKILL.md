@@ -37,19 +37,15 @@ Stop. Do NOT proceed to Step 2.
 
 ### Step 2: Determine Base Branch
 
-Check `.workflow-state.md` first (the git-worktrees skill records the base branch there):
+Check `.workflow-state.md` frontmatter first (the git-worktrees skill records `baseBranch` there):
 
-```bash
-grep "Base branch:" .workflow-state.md 2>/dev/null
-```
-
-If not found, detect from git:
-
-```bash
-git merge-base HEAD main 2>/dev/null || git merge-base HEAD master 2>/dev/null
-```
-
-Or ask: "This branch split from main — is that correct?"
+1. Read `baseBranch` from `.workflow-state.md` frontmatter. If set, use it.
+2. If not in frontmatter, check the `## Worktree` markdown section for `**Base branch:**`.
+3. If not found, detect from git:
+   ```bash
+   git merge-base HEAD main 2>/dev/null || git merge-base HEAD master 2>/dev/null
+   ```
+4. Or ask: "This branch split from main — is that correct?"
 
 ### Step 3: Present Options
 
@@ -191,7 +187,13 @@ Then: Log to workflow state (Step 5), Cleanup worktree (Step 6).
 
 ### Step 5: Log to Workflow State
 
-If `.workflow-state.md` exists in the spec directory, append a Branch Completion section:
+If `.workflow-state.md` exists in the spec directory:
+
+**Update frontmatter fields:**
+- For Options 1 (merge) and 4 (discard): clear `featureBranch`, `baseBranch`, and `worktreePath` to `''` (branch no longer active).
+- For Options 2 (PR) and 3 (keep): leave frontmatter fields unchanged (branch still exists).
+
+**Append a Branch Completion section** (historical record, always append regardless of option):
 
 ```markdown
 ## Branch Completion

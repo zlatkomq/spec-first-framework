@@ -24,6 +24,7 @@ Create (or update) TASKS.md by applying the task-creation rules and template. Br
 ## RULES
 
 - READ this entire step file before taking any action.
+- When this step says "Apply {ref}", read the referenced file completely and follow ALL its sections in order.
 - Apply {ruleRef} for all domain behavior, constraints, and output. Do not restate or override the rule.
 - Use the template from {templateRef}.
 - Load {constitutionRef}, {specFile}, and {designFile}.
@@ -64,7 +65,7 @@ Do NOT skip the adversarial self-validation — run ALL checks before presenting
 - Present TASKS.md to the user.
 - Ask: "Review the TASKS. Approve to continue to Implementation, or tell me what to change. (Say [V] to view DESIGN.md, [B] to go back to Design, [B2] to go back to Spec, or [X] to exit.)"
 - If user requests changes: apply, re-save, re-present. Loop until approved.
-- If user approves: update Status → APPROVED. Update `{stateFile}`: append `'step-03-tasks'` to `stepsCompleted` (early save). Auto-continue: load and follow `{nextStepFile}`.
+- If user approves: update Status → APPROVED. Update `{stateFile}`: append `'step-03-tasks'` to `stepsCompleted` (early save). Offer to commit: "Commit TASKS.md to the current branch? [Y/n]" — if yes: `git add {outputFile} {stateFile}` and commit with message `"spec({spec_id}): create task breakdown"`. Auto-continue: load and follow `{nextStepFile}`.
 - **[V]:** Display {designFile}. Re-ask.
 - **[B]:** Trim `stepsCompleted` in `{stateFile}` to keep only up to `'step-01-spec'`. Load `./step-02-design.md`.
 - **[B2]:** Set `stepsCompleted` to `[]`. Load `./step-01-spec.md`.

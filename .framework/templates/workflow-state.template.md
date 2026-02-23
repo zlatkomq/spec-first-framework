@@ -9,6 +9,9 @@ sowRef: ''
 fixAttempts: 0
 previousIssueCount: 0
 fixLoopActive: false
+featureBranch: ''
+baseBranch: ''
+worktreePath: ''
 ---
 
 Workflow state for this spec. Managed by `/flow` — do not edit manually.
@@ -20,3 +23,6 @@ Workflow state for this spec. Managed by `/flow` — do not edit manually.
 - **fixAttempts**: Number of times [F] Fix automatically has been used in the current step 5 session. Resets to 0 on fresh entry or any [B] exit. Capped at 3.
 - **previousIssueCount**: Total issue count from the last review run. Used to detect whether auto-fixes are converging (count decreasing) or diverging (count increasing). Resets alongside fixAttempts.
 - **fixLoopActive**: Set to `true` by the [F] handler before re-running the review. Section 2 of step 5 checks this flag: if `false`, resets fixAttempts and previousIssueCount (fresh entry). If `true`, preserves them (loop iteration).
+- **featureBranch**: The feature branch name for this spec's implementation (e.g. `feat/001-note-crud`). Set by git-worktrees skill at step 4. Empty until implementation begins.
+- **baseBranch**: The branch that was current when the feature branch was created (e.g. `main`, `dev`). Set by git-worktrees skill. Used by finishing-development-branch to know where to merge back.
+- **worktreePath**: Full path to the worktree directory (e.g. `.worktrees/feat/001-note-crud`). Empty if no worktree was created. Set by git-worktrees skill. Used by step-00-continue to verify workspace context on resume.

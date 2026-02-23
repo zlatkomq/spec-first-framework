@@ -3,6 +3,7 @@ name: 'step-00-continue'
 description: 'Resume an interrupted workflow from the last completed step'
 stateFile: '{spec_folder}/.workflow-state.md'
 tasksFile: '{spec_folder}/TASKS.md'
+worktreeRef: '@skills/git-worktrees/SKILL.md'
 ---
 
 # Step 0: Workflow Continuation
@@ -43,7 +44,64 @@ Workflow state is corrupted: {specific problem}.
 - **[R]:** Set `stepsCompleted` to `[]`, reset all counters. Load `./step-01-spec.md`.
 - **[X]:** STOP.
 
-### 2. Handle workflow completion
+### 2. Verify workspace context
+
+Read `featureBranch`, `baseBranch`, `worktreePath` from {stateFile} frontmatter.
+
+**If `featureBranch` is set** (implementation has started or completed):
+
+1. Check current branch: `git branch --show-current`
+2. Check if inside a worktree: compare `git rev-parse --show-toplevel` vs `git rev-parse --git-common-dir` (if they differ, you're in a worktree)
+
+**If `worktreePath` is set and we are NOT inside it:**
+
+```
+A worktree exists for this spec at {worktreePath} on branch {featureBranch}.
+You are currently on branch {currentBranch} at {currentPath}.
+
+[W] Switch to worktree — cd into {worktreePath}
+[C] Continue here — proceed on current branch
+[X] Exit
+```
+
+- **[W]:** `cd` into `{worktreePath}`. Verify we're now on `{featureBranch}`. Proceed to section 3.
+- **[C]:** Proceed to section 3 on the current branch.
+- **[X]:** STOP.
+
+**If `featureBranch` is set but `worktreePath` is empty** (direct branch, no worktree):
+
+Check if current branch matches `{featureBranch}`. If not, display:
+
+```
+Note: This spec's work is on branch {featureBranch}, but you are on {currentBranch}.
+Consider switching: git checkout {featureBranch}
+```
+
+Proceed to section 3 regardless.
+
+**If `featureBranch` is empty** (steps 1-3, no implementation yet):
+
+Skip this check. No branch context expected.
+
+**State drift detection:**
+
+If the last completed step is `step-03-tasks` (or earlier) but {tasksFile} has tasks marked `[x]`:
+
+```
+State drift detected: TASKS.md has completed tasks but workflow state shows
+step 3 as last completed step. This may indicate implementation happened
+outside the workflow.
+
+[A] Accept — treat tasks as implemented, advance state to step-04-implement
+[I] Ignore — proceed as if tasks are not implemented (re-implementation)
+[X] Exit — investigate manually
+```
+
+- **[A]:** Append `'step-04-implement'` to `stepsCompleted` in {stateFile}. Proceed to section 3.
+- **[I]:** Proceed to section 3 without changing state.
+- **[X]:** STOP.
+
+### 3. Handle workflow completion
 
 If `stepsCompleted` contains `'step-05-review'`:
 
@@ -58,7 +116,7 @@ All artifacts are in {specFolder}/.
 - **[B]:** Ask which step (1-5). Trim `stepsCompleted` to keep entries before the chosen step. Reset all counters. Load the corresponding step file.
 - **[X]:** STOP.
 
-### 3. Determine next step and present menu
+### 4. Determine next step and present menu
 
 Get the last element from `stepsCompleted`. Load that step file's frontmatter and extract `nextStepFile`.
 

@@ -72,6 +72,21 @@ Step files use these to construct paths like `{spec_folder}/SPEC.md`, `{spec_fol
 
 These variables are set ONCE during flow.md execution and remain constant for the entire workflow session (all step files use the same values).
 
+## Skill Application Protocol
+
+When a step file says "Apply {ref}":
+1. Read the referenced skill file **completely**.
+2. Follow **ALL** sections in order — including preamble sections (Workspace Isolation, Required Inputs, Announce at start).
+3. Do not skip sections because they seem like "setup" — they are mandatory preconditions.
+
+If a mandatory behavior (worktree setup, branch finishing) is already explicit in the step file, the step file takes precedence. Do not duplicate the action.
+
+## Branch Strategy
+
+- **Steps 1-3** (Spec, Design, Tasks): Artifacts are created on the current branch. No feature branch is created yet. After each approval gate, the step offers to commit the artifact. Committing is recommended but not mandatory.
+- **Step 4** (Implementation): A feature branch is created via git-worktrees. Code changes happen on this branch.
+- **Step 5** (Review): Review happens on the feature branch. On APPROVED [C], finishing-development-branch handles merge/PR/cleanup.
+
 ## Step execution rules
 
 When a step file says "Read fully and follow: {nextStepFile}":

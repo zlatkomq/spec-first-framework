@@ -5,6 +5,7 @@ description: 'Generate adversarial code review (REVIEW.md) for this feature'
 # References
 ruleRef: '@skills/code-review/SKILL.md'
 templateRef: '@.framework/templates/REVIEW.template.md'
+finishRef: '@skills/finishing-development-branch/SKILL.md'
 constitutionRef: '@CONSTITUTION.md'
 stateFile: '{spec_folder}/.workflow-state.md'
 specFile: '{spec_folder}/SPEC.md'
@@ -24,6 +25,7 @@ Generate an adversarial REVIEW.md by applying the code-review rules. Inspect act
 ## RULES
 
 - READ this entire step file before taking any action.
+- When this step says "Apply {ref}", read the referenced file completely and follow ALL its sections in order.
 - Apply {ruleRef} for all domain behavior, constraints, and output. Do not restate or override the rule.
 - Use the template from {templateRef}.
 - Load {constitutionRef}, {specFile}, {designFile}, and {tasksFile}.
@@ -132,7 +134,7 @@ REVIEW: BLOCKED — {reason}
 
 **APPROVED path:**
 
-- **[C]:** Apply `../../skills/finishing-development-branch/SKILL.md` to handle branch merge/PR/cleanup. Display: "Feature workflow complete for spec {spec_id}. All artifacts in `{spec_folder}/`. Human reviewer should make the final decision at Gate 4." STOP (state already saved in section 3).
+- **[C]:** Apply {finishRef} to handle branch merge/PR/cleanup. Display: "Feature workflow complete for spec {spec_id}. All artifacts in `{spec_folder}/`. Human reviewer should make the final decision at Gate 4." STOP (state already saved in section 3).
 - **[B]:** Reset `fixAttempts` = 0, `previousIssueCount` = 0, `fixLoopActive` = false. Trim `stepsCompleted` to keep up to `'step-03-tasks'`. Load `./step-04-implement.md`.
 - **[X]:** STOP (state already saved in section 3).
 

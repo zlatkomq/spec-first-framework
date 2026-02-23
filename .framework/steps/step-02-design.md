@@ -23,6 +23,7 @@ Create (or update) DESIGN.md by applying the design-creation rules and template.
 ## RULES
 
 - READ this entire step file before taking any action.
+- When this step says "Apply {ref}", read the referenced file completely and follow ALL its sections in order.
 - Apply {ruleRef} for all domain behavior, constraints, and output. Do not restate or override the rule.
 - Use the template from {templateRef}.
 - Load project context from {constitutionRef}.
@@ -57,7 +58,7 @@ Do NOT bypass user approval before proceeding to Task Breakdown.
 - Present DESIGN.md to the user.
 - Ask: "Review the DESIGN. Approve to continue to Task Breakdown, or tell me what to change. (Say [V] to view SPEC.md, [B] to go back to Spec, or [X] to exit.)"
 - If user requests changes: apply, re-save, re-present. Loop until approved.
-- If user approves: update Status → APPROVED. Update `{stateFile}`: append `'step-02-design'` to `stepsCompleted` (early save). Auto-continue: load and follow `{nextStepFile}`.
+- If user approves: update Status → APPROVED. Update `{stateFile}`: append `'step-02-design'` to `stepsCompleted` (early save). Offer to commit: "Commit DESIGN.md to the current branch? [Y/n]" — if yes: `git add {outputFile} {stateFile}` and commit with message `"spec({spec_id}): create technical design"`. Auto-continue: load and follow `{nextStepFile}`.
 - **[V]:** Display {specFile}. Re-ask.
 - **[B]:** Trim `stepsCompleted` in `{stateFile}` to keep only up to `'step-01-spec'`. Load `./step-01-spec.md`.
 - **[X]:** Update `{stateFile}`: append `'step-02-design'` to `stepsCompleted` (if approved). Display: "Workflow paused. Run `/flow {spec_id}` to resume." STOP.
