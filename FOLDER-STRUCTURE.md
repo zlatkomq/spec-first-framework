@@ -64,9 +64,10 @@ project/
 │   │   ├── SPEC-CURRENT.template.md    # Template for compiled spec (SPEC + bugs + CRs)
 │   │   ├── CODEBASE-ANALYSIS.template.md   # Template for codebase analysis (legacy)
 │   │   └── LEGACY-ASSESSMENT.template.md   # Template for legacy assessment
-│   ├── checklists/
-│   │   └── verification-checklist.md  # Step 4 verification gate after implementation
-│   └── CONSTITUTION.md                 # Project-level standards (THE source of truth)
+│   └── checklists/
+│       └── verification-checklist.md  # Step 4 verification gate after implementation
+│
+├── CONSTITUTION.md                     # Project-level standards (THE source of truth)
 │
 ├── docs/
 │   └── legacy-analysis/                # Only for brownfield projects
@@ -246,8 +247,8 @@ project/
 ├── .claude-plugin/         ✓ Claude Code adapter
 ├── .opencode/              ✓ OpenCode adapter
 ├── .framework/
-│   ├── templates/          ✓ All templates
-│   └── CONSTITUTION.md     ✓ Created fresh
+│   └── templates/          ✓ All templates
+├── CONSTITUTION.md          ✓ Created fresh
 ├── docs/
 │   └── legacy-analysis/    ✗ NOT NEEDED
 ├── specs/                  ✓ Specs
@@ -263,8 +264,8 @@ project/
 ├── .claude-plugin/         ✓ Claude Code adapter
 ├── .opencode/              ✓ OpenCode adapter
 ├── .framework/
-│   ├── templates/          ✓ All templates
-│   └── CONSTITUTION.md     ✓ Created from analysis
+│   └── templates/          ✓ All templates
+├── CONSTITUTION.md          ✓ Created from analysis
 ├── docs/
 │   └── legacy-analysis/    ✓ REQUIRED
 │       ├── CODEBASE-ANALYSIS.md
