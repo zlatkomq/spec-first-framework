@@ -210,7 +210,8 @@ your-project/
 │   │   └── SPEC-CURRENT.template.md      # Compiled spec view
 │   ├── checklists/
 │   │   └── verification-checklist.md     # Step 4 verification gate
-│   └── CONSTITUTION.md          ← You create this
+│   └── ...
+├── CONSTITUTION.md              ← You create this (project root)
 ├── specs/
 │   └── XXX-description/
 │       ├── .workflow-state.md          ← Created by /flow (tracks progress)
