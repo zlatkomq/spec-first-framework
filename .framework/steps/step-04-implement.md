@@ -78,6 +78,9 @@ Do NOT mark a task complete if spec compliance check fails (AC not traceable to 
 
 ### 3. Implementation session
 
+**Workspace isolation:**
+Apply `../../skills/git-worktrees/SKILL.md` to set up an isolated workspace. The skill will detect if already inside a worktree and skip creation if so.
+
 **Summary file lifecycle:**
 - **Fresh entry or retry:** Delete existing `{summaryFile}` — rebuild from scratch.
 - **Re-entry from review:** Keep existing `{summaryFile}`. Append only fix task entries.
@@ -95,7 +98,7 @@ Implement all incomplete tasks. When all done, proceed to section 4.
 
 Run {verificationChecklist}.
 
-- **PASS:** Proceed to section 5.
+- **PASS:** Update `{stateFile}`: append `'step-04-implement'` to `stepsCompleted` (early save — prevents context-loss from discarding progress). Proceed to section 5.
 - **FAIL:** Increment `implementationAttempts` in {stateFile}. Display failures. Return to section 2 (retry path).
 
 ### 5. Verify implementation summary
@@ -113,8 +116,8 @@ All {total} tasks implemented. Verification: PASS.
 [X] Exit — pause workflow; resume later with /flow
 ```
 
-- **[C]:** Update `{stateFile}`: append `'step-04-implement'` to `stepsCompleted`. Load and follow `{nextStepFile}`.
+- **[C]:** Load and follow `{nextStepFile}` (state already saved in section 4).
 - **[B]:** Trim `stepsCompleted` to keep up to `'step-02-design'`. Load `./step-03-tasks.md`.
 - **[B2]:** Trim `stepsCompleted` to keep up to `'step-01-spec'`. Load `./step-02-design.md`.
-- **[X]:** Update `{stateFile}`: append `'step-04-implement'` to `stepsCompleted`. Display: "Workflow paused. Run `/flow {spec_id}` to resume." STOP.
+- **[X]:** Display: "Workflow paused. Run `/flow {spec_id}` to resume." STOP (state already saved in section 4).
 - **Anything else:** Answer, then redisplay menu.

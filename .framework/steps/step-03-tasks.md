@@ -62,25 +62,11 @@ Do NOT skip the adversarial self-validation — run ALL checks before presenting
 ### 4. Approval gate
 
 - Present TASKS.md to the user.
-- Ask: "Review the TASKS. Approve it (say 'approve' or 'yes') or tell me what to change."
-- If user approves: update Status → APPROVED.
+- Ask: "Review the TASKS. Approve to continue to Implementation, or tell me what to change. (Say [V] to view DESIGN.md, [B] to go back to Design, [B2] to go back to Spec, or [X] to exit.)"
 - If user requests changes: apply, re-save, re-present. Loop until approved.
-
-### 5. Present MENU
-
-```
-TASKS.md is APPROVED.
-
-[C] Continue — proceed to Implementation (Step 4 of 5)
-[V] View DESIGN.md — display for reference (read-only)
-[B] Back to Design — re-edit DESIGN.md (step 2)
-[B2] Back to Spec — re-edit SPEC.md (step 1)
-[X] Exit — pause workflow; resume later with /flow
-```
-
-- **[C]:** Update `{stateFile}`: append `'step-03-tasks'` to `stepsCompleted`. Load and follow `{nextStepFile}`.
-- **[V]:** Display {designFile}. Redisplay menu.
+- If user approves: update Status → APPROVED. Update `{stateFile}`: append `'step-03-tasks'` to `stepsCompleted` (early save). Auto-continue: load and follow `{nextStepFile}`.
+- **[V]:** Display {designFile}. Re-ask.
 - **[B]:** Trim `stepsCompleted` in `{stateFile}` to keep only up to `'step-01-spec'`. Load `./step-02-design.md`.
 - **[B2]:** Set `stepsCompleted` to `[]`. Load `./step-01-spec.md`.
 - **[X]:** Update `{stateFile}`: append `'step-03-tasks'` to `stepsCompleted` (if approved). Display: "Workflow paused. Run `/flow {spec_id}` to resume." STOP.
-- **Anything else:** Answer, then redisplay menu.
+- **Anything else:** Answer, then re-ask.

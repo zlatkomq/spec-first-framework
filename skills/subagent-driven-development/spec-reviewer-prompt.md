@@ -4,7 +4,7 @@ Use this template when dispatching a spec compliance reviewer subagent. Fill in 
 
 **Purpose:** Verify the implementer built what was requested (nothing more, nothing less), against SPEC.md acceptance criteria and TASKS.md interface contracts.
 
-**Dispatch IMMEDIATELY after implementer reports. Do NOT dispatch quality reviewer until this returns PASS.**
+**HARD GATE: Dispatch IMMEDIATELY after implementer reports. Do NOT dispatch quality reviewer until this returns PASS. Do NOT skip this reviewer for any reason — controller self-review is NOT a substitute.**
 
 ```
 Task tool (general-purpose):

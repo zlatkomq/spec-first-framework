@@ -60,6 +60,8 @@ Apply {ruleRef} in full (all phases). Save to {outputFile} using {templateRef}.
 
 Display verdict and summary of findings.
 
+**If APPROVED:** Update `{stateFile}`: append `'step-05-review'` to `stepsCompleted` (early save — prevents context-loss from discarding progress).
+
 ### 4. Present MENU
 
 **IF APPROVED:**
@@ -130,9 +132,9 @@ REVIEW: BLOCKED — {reason}
 
 **APPROVED path:**
 
-- **[C]:** Update {stateFile}: append `'step-05-review'` to `stepsCompleted`. Display: "Feature workflow complete for spec {spec_id}. All artifacts in `{spec_folder}/`. Human reviewer should make the final decision at Gate 4." STOP.
+- **[C]:** Apply `../../skills/finishing-development-branch/SKILL.md` to handle branch merge/PR/cleanup. Display: "Feature workflow complete for spec {spec_id}. All artifacts in `{spec_folder}/`. Human reviewer should make the final decision at Gate 4." STOP (state already saved in section 3).
 - **[B]:** Reset `fixAttempts` = 0, `previousIssueCount` = 0, `fixLoopActive` = false. Trim `stepsCompleted` to keep up to `'step-03-tasks'`. Load `./step-04-implement.md`.
-- **[X]:** Update {stateFile}: append `'step-05-review'`. STOP.
+- **[X]:** STOP (state already saved in section 3).
 
 **CHANGES REQUESTED path:**
 

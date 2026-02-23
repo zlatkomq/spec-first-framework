@@ -47,20 +47,10 @@ None — this is the first step.
 
 ### 3. Approval gate
 
-- If user approves: update SPEC.md status per {ruleRef}.
+- Present SPEC.md to the user.
+- Ask: "Review the SPEC. Approve to continue to Technical Design, or tell me what to change. (Say [B] to re-edit or [X] to exit.)"
 - If user requests changes: apply, re-save, re-present. Loop until approved.
-
-### 4. Present MENU
-
-```
-SPEC.md is APPROVED.
-
-[C] Continue — proceed to Technical Design (Step 2 of 5)
-[B] Back to Spec — re-edit SPEC.md
-[X] Exit — pause workflow; resume later with /flow
-```
-
-- **[C]:** Update `{stateFile}`: append `'step-01-spec'` to `stepsCompleted`. Load and follow `{nextStepFile}`.
-- **[B]:** Return to section 1. Redisplay menu after approval.
+- If user approves: update SPEC.md status per {ruleRef}. Update `{stateFile}`: append `'step-01-spec'` to `stepsCompleted` (early save). Auto-continue: load and follow `{nextStepFile}`.
+- **[B]:** Return to section 1. Re-present after changes.
 - **[X]:** Update `{stateFile}`: append `'step-01-spec'` to `stepsCompleted` (if approved). Display: "Workflow paused. Run `/flow {spec_id}` to resume." STOP.
-- **Anything else:** Answer, then redisplay menu.
+- **Anything else:** Answer, then re-ask.

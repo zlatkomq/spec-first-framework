@@ -109,6 +109,15 @@ Task tool (general-purpose):
     8. Self-review (see below)
     9. Report back
 
+    ### After Your Report
+
+    Your work will be reviewed in two mandatory stages:
+    1. **Spec Compliance Review** — independent reviewer verifies your code against acceptance criteria
+    2. **Code Quality Review** — independent reviewer verifies code standards and design alignment
+
+    If either reviewer finds issues, you will be called back to fix them.
+    Do NOT consider your task complete until both reviews pass.
+
     Work from: [worktree directory path]
 
     If you encounter something unexpected or unclear, ask questions. Do not guess.

@@ -55,23 +55,10 @@ Do NOT bypass user approval before proceeding to Task Breakdown.
 ### 3. Approval gate
 
 - Present DESIGN.md to the user.
-- Ask: "Review the DESIGN. Approve it (say 'approve' or 'yes') or tell me what to change."
-- If user approves: update Status → APPROVED.
+- Ask: "Review the DESIGN. Approve to continue to Task Breakdown, or tell me what to change. (Say [V] to view SPEC.md, [B] to go back to Spec, or [X] to exit.)"
 - If user requests changes: apply, re-save, re-present. Loop until approved.
-
-### 4. Present MENU
-
-```
-DESIGN.md is APPROVED.
-
-[C] Continue — proceed to Task Breakdown (Step 3 of 5)
-[V] View SPEC.md — display for reference (read-only)
-[B] Back to Spec — re-edit SPEC.md (step 1)
-[X] Exit — pause workflow; resume later with /flow
-```
-
-- **[C]:** Update `{stateFile}`: append `'step-02-design'` to `stepsCompleted`. Load and follow `{nextStepFile}`.
-- **[V]:** Display {specFile}. Redisplay menu.
+- If user approves: update Status → APPROVED. Update `{stateFile}`: append `'step-02-design'` to `stepsCompleted` (early save). Auto-continue: load and follow `{nextStepFile}`.
+- **[V]:** Display {specFile}. Re-ask.
 - **[B]:** Trim `stepsCompleted` in `{stateFile}` to keep only up to `'step-01-spec'`. Load `./step-01-spec.md`.
 - **[X]:** Update `{stateFile}`: append `'step-02-design'` to `stepsCompleted` (if approved). Display: "Workflow paused. Run `/flow {spec_id}` to resume." STOP.
-- **Anything else:** Answer, then redisplay menu.
+- **Anything else:** Answer, then re-ask.

@@ -76,6 +76,18 @@ At the start, before dispatching any subagent:
 - Provide relevant DESIGN.md context in the `## Design Context` section of the quality reviewer prompt (architecture decisions, data models, API/interface designs, component relationships, dependency choices relevant to this task)
 - Provide scene-setting context (from IMPLEMENTATION-SUMMARY.md and previous task results)
 
+<HARD-GATE>
+After EVERY implementer subagent reports, you MUST:
+1. Dispatch spec compliance reviewer (./spec-reviewer-prompt.md) — NO EXCEPTIONS
+2. Wait for PASS — if FAIL, implementer fixes, re-review
+3. ONLY THEN dispatch quality reviewer (./quality-reviewer-prompt.md)
+4. Wait for PASS — if FAIL, implementer fixes, regression guard, re-review
+
+Skipping either review for ANY reason (context limits, time pressure, "obvious" task,
+controller self-review instead) is a HALT violation. If you catch yourself about to skip
+a review, STOP and dispatch it.
+</HARD-GATE>
+
 ### The Process
 
 ```dot
@@ -325,6 +337,7 @@ STOP and inform the user if any of these occur:
 | Subagent times out or returns no response | Retry once with a fresh subagent and identical context. If second attempt also fails, HALT — report the failure mode and the task being attempted. |
 | Subagent returns garbled or incomplete output | Discard the output. Dispatch a fresh subagent with identical context. If second attempt also fails, HALT. |
 | Task too large for subagent context window | HALT — recommend splitting the task in TASKS.md into smaller subtasks. |
+| Controller skips spec or quality review dispatch | HALT — both reviews are mandatory for every task. Controller self-review is NOT a substitute. Dispatch the reviewer subagent. |
 
 ### Red Flags — Never Do
 
