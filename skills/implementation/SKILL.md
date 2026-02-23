@@ -414,12 +414,19 @@ If you find yourself wanting to write a TODO or placeholder, that means the task
 - Follow DESIGN.md architecture exactly: use data models as specified, implement APIs/interfaces as designed, respect component boundaries.
 - Save files in locations specified by CONSTITUTION.md. Follow file naming conventions.
 
+<HARD-GATE>
+Do NOT defer IMPLEMENTATION-SUMMARY.md to the end — write each per-task anchor entry IMMEDIATELY after the task's validation gates pass, BEFORE proceeding to the next task.
+</HARD-GATE>
+
 ### Per-Task Anchor Entry
 
 After completing each task (checkbox updated to `[x]` and per-task validation gates passed), append a compact anchor entry to IMPLEMENTATION-SUMMARY.md. This creates a living context document that the AI re-reads before starting each subsequent task, counteracting context window degradation on large specs.
 
+**This is incremental, not batched.** Each entry is written as its task completes. Writing all entries at the end defeats the purpose (context reload between tasks) and violates the hard gate above.
+
 #### Format
 
+**Direct implementation (single-task or explicit user request):**
 ```
 ### T{N}: {task title}
 **Files:** {created: [list] | modified: [list]}
@@ -428,8 +435,12 @@ After completing each task (checkbox updated to `[x]` and per-task validation ga
 **Deviations:** {deviations from DESIGN.md with reason | "None"}
 ```
 
+**Subagent-driven development (multi-task default):**
+The subagent-driven skill extends this format with review gate fields and subagent IDs — see `../../skills/subagent-driven-development/SKILL.md` for the extended format. When using subagent-driven development, use the extended format, not this base format.
+
 #### Rules
 - **Token budget:** Each entry MUST be 100-200 tokens. List paths only, no file contents or test details.
+- **Timing:** Write IMMEDIATELY after task validation gates pass — not at the end of implementation.
 - **Patterns field:** Only note patterns a future task would need to follow or build on.
 - **Decisions field:** Only note decisions that constrain or inform future tasks. Do not repeat what DESIGN.md already says.
 - **Deviations field:** Only note deviations FROM DESIGN.md with reason. "None" is the expected value for most tasks.

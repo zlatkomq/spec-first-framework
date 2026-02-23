@@ -152,6 +152,11 @@ digraph process {
 - `./spec-reviewer-prompt.md` — Dispatch spec compliance reviewer after implementation
 - `./quality-reviewer-prompt.md` — Dispatch code quality reviewer after spec compliance passes
 
+<HARD-GATE>
+Do NOT proceed to the next task until the current task's anchor entry (with subagent IDs and review gate results) is written to IMPLEMENTATION-SUMMARY.md.
+Do NOT write all anchor entries as a batch at the end — each entry MUST be written immediately after both review gates pass.
+</HARD-GATE>
+
 ### IMPLEMENTATION-SUMMARY.md Integration
 
 Gate results are logged as part of each task's anchor entry. The format extends the standard anchor entry from the implementation skill:
@@ -162,9 +167,12 @@ Gate results are logged as part of each task's anchor entry. The format extends 
 **Patterns:** {pattern established or followed | "None"}
 **Decisions:** {decisions affecting future tasks | "None"}
 **Deviations:** {deviations from DESIGN.md with reason | "None"}
-**Spec Review:** PASS [YYYY-MM-DD HH:MM] | FAIL (attempt N) [YYYY-MM-DD HH:MM] — [issues summary]
-**Quality Review:** PASS [YYYY-MM-DD HH:MM] | FAIL (attempt N) [YYYY-MM-DD HH:MM] — [issues summary]
+**Implementer:** {subagent ID} [YYYY-MM-DD HH:MM]
+**Spec Review:** PASS [YYYY-MM-DD HH:MM] (reviewer: {subagent ID}) | FAIL (attempt N) [YYYY-MM-DD HH:MM] (reviewer: {subagent ID}) — [issues summary]
+**Quality Review:** PASS [YYYY-MM-DD HH:MM] (reviewer: {subagent ID}) | FAIL (attempt N) [YYYY-MM-DD HH:MM] (reviewer: {subagent ID}) — [issues summary]
 ```
+
+Subagent IDs are the agent IDs returned by the Task tool. These are mechanically checkable — they can only exist if subagents were actually dispatched. Do NOT fabricate IDs.
 
 Rules:
 - **Token budget:** Each entry MUST be 100-250 tokens. List paths only, no file contents or test details.
@@ -219,16 +227,16 @@ Spec reviewer:
   - No extra work found
   PASS
 
-[Log to IMPLEMENTATION-SUMMARY.md: Spec Review: PASS 2026-02-21 14:30]
+[Log to IMPLEMENTATION-SUMMARY.md: Spec Review: PASS 2026-02-21 14:30 (reviewer: sr_abc123)]
 
 [Get git SHAs, dispatch quality reviewer with task context + Design Context + commit range]
-Quality reviewer:
+Quality reviewer (agent: qr_def456):
   Strengths: Clean interface, good test coverage, TDD followed
   Issues: None
   Assessment: APPROVED
 
-[Log to IMPLEMENTATION-SUMMARY.md: Quality Review: PASS 2026-02-21 14:35]
-[Write per-task anchor entry]
+[Log to IMPLEMENTATION-SUMMARY.md: Quality Review: PASS 2026-02-21 14:35 (reviewer: qr_def456)]
+[Write per-task anchor entry with implementer: impl_xyz789, reviewer IDs: sr_abc123, qr_def456]
 [Mark Task 1 complete]
 
 Task 2: Create StripeAdapter (DESIGN: Architecture - StripeAdapter)

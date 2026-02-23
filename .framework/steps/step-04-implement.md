@@ -43,6 +43,8 @@ Do NOT write production code without a failing test first (TDD mandate).
 Do NOT claim a task is complete without running verification commands and reading the output.
 Do NOT skip per-task validation gates — every gate must pass before checkbox update.
 Do NOT mark a task complete if spec compliance check fails (AC not traceable to code AND test).
+Do NOT implement multiple tasks directly — use subagent-driven development ({subagentRef}) for multi-task specs. Direct implementation is ONLY permitted for single-task specs or explicit user request.
+Do NOT write IMPLEMENTATION-SUMMARY.md as a single batch at the end — write per-task anchor entries incrementally after each task's review gates pass.
 </HARD-GATE>
 
 ## SEQUENCE
@@ -77,6 +79,20 @@ Do NOT mark a task complete if spec compliance check fails (AC not traceable to 
 - **[B]:** Trim `stepsCompleted` to keep up to `'step-02-design'`. Load `./step-03-tasks.md`.
 - **[B2]:** Trim `stepsCompleted` to keep up to `'step-01-spec'`. Load `./step-02-design.md`.
 - **[X]:** STOP.
+
+### 2.5 Execution strategy confirmation
+
+Count incomplete tasks in {tasksFile}.
+
+- If count > 1 and the user has NOT explicitly requested direct implementation:
+  - Display: `"This spec has {N} incomplete tasks. Using subagent-driven development ({subagentRef})."`
+  - **If you are about to implement directly: STOP. You are violating the default execution strategy (see HARD-GATE).**
+- If count = 1:
+  - Display: `"Single task remaining. Using direct implementation ({ruleRef})."`
+- If the user explicitly requested direct implementation:
+  - Display: `"User requested direct implementation for {N} tasks."`
+
+Proceed to section 3.
 
 ### 3. Implementation session
 
