@@ -81,9 +81,13 @@ clone_repo() {
 COPY_DIRS=(
   ".cursor/commands"
   ".cursor/rules"
+  ".cursor-plugin"
+  ".claude-plugin"
+  ".opencode/plugins"
   ".framework/templates"
   ".framework/steps"
   ".framework/checklists"
+  "skills"
 )
 
 # Individual files to copy (relative to repo root)
