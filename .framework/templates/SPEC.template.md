@@ -10,15 +10,12 @@
 | Status | DRAFT / APPROVED |
 | Author | |
 | Date | |
-| Approved By | |
-| Approval Date | |
-| Jira Ticket | |
 
 ---
 
 ## Overview
 
-[What is this and why are we building/fixing it?]
+[2-3 sentences: What is this and why are we building/fixing it?]
 
 ---
 
@@ -62,18 +59,8 @@
 
 [Optional: Unresolved decisions that need answers before implementation]
 
-- [ ]
-- [ ]
-
----
-
-## Decisions Made
-
-[Resolved questions and key decisions made during spec refinement. Moves from Open Questions once answered.]
-
-| Question | Decision |
-|----------|----------|
-| | |
+- [ ] 
+- [ ] 
 
 ---
 
@@ -81,16 +68,6 @@
 
 [Automatically updated when bugs are fixed against this spec]
 
-| Bug ID | Severity | Date Fixed | Description |
-|--------|----------|------------|-------------|
-| - | - | No bugs reported | - |
-
----
-
-## Amendment History
-
-[Automatically updated when change requests are implemented against this spec]
-
-| CR ID | Date | Description | Approved By |
-|-------|------|-------------|-------------|
-| - | - | No amendments | - |
+| Bug ID | Summary | Date Fixed |
+|--------|---------|------------|
+| - | No bugs reported | - |

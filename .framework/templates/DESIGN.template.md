@@ -10,15 +10,12 @@
 | Author | |
 | Reviewer | |
 | Date | |
-| Approved By | |
-| Approval Date | |
-| Jira Ticket | |
 
 ---
 
 ## Overview
 
-[What is the technical approach? How will this be built at a high level?]
+[1-2 paragraphs: What is the technical approach? How will this be built at a high level?]
 
 ---
 
@@ -35,25 +32,55 @@
 
 ---
 
-## Conditional Sections
+## Data Model
 
-Include ONLY the sections relevant to this design. Omit sections that don't apply.
+[Optional: New or modified entities, fields, relationships]
 
-- **Data Model** — New or modified entities, fields, relationships
-- **API / Interfaces** — New or modified endpoints, contracts, inputs/outputs
-- **Dependencies** — Libraries, services, external systems required
-- **Security Considerations** — Authentication, authorization, validation, data protection
-- **Risks & Tradeoffs** — Key technical risks, rejected alternatives, and why
+Write "No data model changes required." if not applicable.
+
+**New/Modified Entities:**
+
+| Entity | Field | Type | Description |
+|--------|-------|------|-------------|
+| | | | |
 
 ---
 
-## Acceptance Criteria Traceability
+## API / Interfaces
 
-[Map each SPEC.md acceptance criterion to the component/mechanism that addresses it.]
+[Optional: New or modified endpoints, contracts, inputs/outputs]
 
-| Acceptance Criterion | Addressed By |
-|----------------------|--------------|
-| | |
+Write "No API changes required." if not applicable.
+
+**Endpoints:**
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| | | |
+
+---
+
+## Dependencies
+
+[Optional: Libraries, services, external systems required]
+
+Write "No new dependencies required." if not applicable.
+
+---
+
+## Security Considerations
+
+[Optional: Authentication, authorization, validation, data protection]
+
+Write "No additional security considerations." if not applicable.
+
+---
+
+## Risks & Tradeoffs
+
+[Optional: Key technical risks, rejected alternatives, and why]
+
+Write "No significant risks identified." if not applicable.
 
 ---
 
@@ -61,5 +88,5 @@ Include ONLY the sections relevant to this design. Omit sections that don't appl
 
 [Optional: Unresolved technical decisions that need answers before implementation]
 
-- [ ]
-- [ ]
+- [ ] 
+- [ ] 

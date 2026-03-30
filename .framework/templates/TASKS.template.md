@@ -9,39 +9,21 @@
 | Status | DRAFT / APPROVED |
 | Author | |
 | Date | |
-| Approved By | |
-| Approval Date | |
-| Jira Ticket | |
 
 ---
 
 ## Overview
 
-[Brief summary of implementation approach from DESIGN.md]
+[1-2 sentences: Brief summary of implementation approach from DESIGN.md]
 
 ---
 
 ## Tasks
 
 - [ ] T1: [description] (DESIGN: [section])
-  - Produces: `[ClassName.method(param: Type) -> ReturnType]`
-  - Verify: `[test command]` → Expected: [outcome]
 - [ ] T2: [description] (DESIGN: [section])
-  - Consumes: T1.[ComponentName]
-  - Produces: `[ClassName.method(param: Type) -> ReturnType]`
-  - Verify: `[test command]` → Expected: [outcome]
 - [ ] T3: [description] (DESIGN: [section])
-  - Consumes: T1.[ComponentName], T2.[ComponentName]
-  - Produces: `[endpoint or interface]`
-  - Verify: `[test command]` → Expected: [outcome]
-- [ ] T4: [description] (DESIGN: [section])
-  - Verify: `[test command]` → Expected: [outcome]
-
-Produces/Consumes only required for tasks with inter-task dependencies. Consumes references use task ID (e.g. T1.UserRepository), not duplicated signatures.
-
-Verify: executable command + expected outcome. Must be task-scoped (not full test suite). Corresponds to TDD GREEN verification step.
-
-Task markers: `[ ]` not started | `[x]` complete (verified)
+- [ ] T4: [description] (DESIGN: [section]) 
 
 ---
 
@@ -57,24 +39,6 @@ Unit tests are always mandatory - never skip this section.
 
 ---
 
-## Previous Spec Learnings
-
-[Populated from the most recent completed spec's REVIEW.md and IMPLEMENTATION-SUMMARY.md. Leave empty if first spec.]
-
-- Patterns established in prior specs
-- Review feedback to apply
-- Code reuse opportunities
-
----
-
-## References
-
-[Cite all technical details with source paths and sections]
-
-- [Source: DESIGN.md#Section] for each technical detail referenced in tasks
-
----
-
 ## Definition of Done
 
 - [ ] All tasks completed (T1-Tx)
@@ -82,4 +46,3 @@ Unit tests are always mandatory - never skip this section.
 - [ ] Test coverage meets CONSTITUTION.md threshold
 - [ ] Code reviewed and approved
 - [ ] No open questions remaining
-

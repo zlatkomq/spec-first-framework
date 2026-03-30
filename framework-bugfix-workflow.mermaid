@@ -1,0 +1,50 @@
+flowchart TD
+    subgraph BUGSTEP1["STEP 1: Create Bug Report"]
+        B1A[Bug reported with reference to original SPEC.md]
+        B1B["Developer prompts AI:<br/><i>'Create BUG.md for issue in @SPEC.md'</i>"]
+        B1C["AI reads:<br/>• bugfixing.mdc (rules)<br/>• BUG.template.md (structure)<br/>• Original SPEC.md (context)"]
+        B1D[AI generates BUG.md]
+        B1E{Gate 1<br/>Tech Lead confirms?}
+        
+        B1A --> B1B --> B1C --> B1D --> B1E
+        B1E -->|No| B1B
+    end
+
+    subgraph BUGSTEP2["STEP 2: Implement Fix"]
+        B2A["Developer prompts AI:<br/><i>'Implement T1 from @BUG.md'</i>"]
+        B2B["AI reads:<br/>• bug-implementation.mdc (rules)<br/>• BUG.md (what to fix)<br/>• Original DESIGN.md (architecture)<br/>• CONSTITUTION.md (standards)"]
+        B2C[AI implements fix + regression test]
+        B2D[Complete all tasks from BUG.md]
+        
+        B2A --> B2B --> B2C --> B2D
+        B2D -->|next task| B2A
+    end
+
+    subgraph BUGSTEP3["STEP 3: Review Fix"]
+        B3A["Developer prompts AI:<br/><i>'Review fix against @BUG.md'</i>"]
+        B3B["AI reads:<br/>• bug-review.mdc (rules)<br/>• BUG.md (fix criteria)<br/>• Original SPEC.md (acceptance criteria)"]
+        B3C[AI verifies fix + regression test]
+        B3D{Gate 2<br/>Reviewer approves?}
+        B3E[Update original SPEC.md Bug History]
+        B3F((Done))
+        
+        B3A --> B3B --> B3C --> B3D
+        B3D -->|No| B2A
+        B3D -->|Yes| B3E --> B3F
+    end
+
+    B1E -->|Yes| BUGSTEP2
+    B2D -->|all done| BUGSTEP3
+
+    style B1D fill:#fff3e0,stroke:#ef6c00
+    style B2C fill:#e8f5e9,stroke:#2e7d32
+    style B3C fill:#e8f5e9,stroke:#2e7d32
+    style B1E fill:#ffcdd2,stroke:#c62828
+    style B3D fill:#ffcdd2,stroke:#c62828
+    style B3F fill:#c8e6c9,stroke:#2e7d32
+    style B1B fill:#f3e5f5,stroke:#7b1fa2
+    style B2A fill:#f3e5f5,stroke:#7b1fa2
+    style B3A fill:#f3e5f5,stroke:#7b1fa2
+    style B1C fill:#fce4ec,stroke:#ad1457
+    style B2B fill:#fce4ec,stroke:#ad1457
+    style B3B fill:#fce4ec,stroke:#ad1457
