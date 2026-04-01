@@ -32,7 +32,7 @@ Create (or update) TASKS.md by applying the task-creation rules and template. Br
 
 ## GATE
 
-- Prerequisite: per {ruleRef}, required inputs must be satisfied (DESIGN approved). If not met: display a short message that TASKS cannot be created until DESIGN is approved; offer `[B] Back to Design (step 2)` | `[X] Exit`. On [B]: load and follow `./step-02-design.md`. On [X]: STOP.
+- Prerequisite: per {ruleRef}, required inputs must be satisfied (DESIGN approved). If not met: display a short message that TASKS cannot be created until DESIGN is approved; offer `[B] Back to Design (step 2)` | `[B2b] Back to UIX Spec (step 2b)` | `[X] Exit`. On [B]: load and follow `./step-02-design.md`. On [B2b]: load and follow `./step-02b-uix.md`. On [X]: STOP.
 
 ## SEQUENCE
 
@@ -41,6 +41,7 @@ Create (or update) TASKS.md by applying the task-creation rules and template. Br
 - Read {designFile} completely.
 - Read {specFile} (for acceptance criteria traceability).
 - Read {constitutionRef} (for coverage thresholds, patterns).
+- If `{spec_folder}/UIX-SPEC.md` exists: read it and use Figma mappings and layout JSON references as additional context for task creation (UI-related tasks should reference the relevant Figma segments).
 
 ### 2. Check if TASKS.md already exists
 
@@ -83,7 +84,9 @@ TASKS.md is APPROVED.
 
 [C] Continue — proceed to Implementation (Step 4 of 5)
 [V] View DESIGN.md — display for reference (read-only)
+[V2] View UIX-SPEC.md — display Figma mapping (read-only, if exists)
 [B] Back to Design — re-edit DESIGN.md (step 2)
+[B2b] Back to UIX Spec — re-edit UIX-SPEC.md (step 2b)
 [B2] Back to Spec — re-edit SPEC.md (step 1)
 [X] Exit — pause workflow; resume later with /flow
 ```
@@ -96,10 +99,19 @@ TASKS.md is APPROVED.
 - **IF [V] View DESIGN.md:**
   1. Read and display the full content of {designFile}.
   2. Redisplay this menu (no state changes).
+- **IF [V2] View UIX-SPEC.md:**
+  1. If `{spec_folder}/UIX-SPEC.md` exists: read and display it.
+  2. If not: display "No UIX-SPEC.md exists for this spec."
+  3. Redisplay this menu (no state changes).
 - **IF [B] Back to Design:**
   1. Trim `stepsCompleted` in `{stateFile}` to keep only entries up to `'step-01-spec'`.
   2. Clear `tasksCompleted` in `{stateFile}` (set to `[]`).
   3. Read fully and follow: `./step-02-design.md`.
+- **IF [B2b] Back to UIX Spec:**
+  1. Trim `stepsCompleted` in `{stateFile}` to keep only entries up to `'step-02-design'`.
+  2. Clear `tasksCompleted` in `{stateFile}` (set to `[]`).
+  3. Reset `uixSkipped` to `false` in `{stateFile}`.
+  4. Read fully and follow: `./step-02b-uix.md`.
 - **IF [B2] Back to Spec:**
   1. Set `stepsCompleted` in `{stateFile}` to `[]` (empty).
   2. Clear `tasksCompleted` in `{stateFile}` (set to `[]`).

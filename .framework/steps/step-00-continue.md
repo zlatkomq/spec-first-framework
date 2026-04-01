@@ -38,13 +38,18 @@ If `currentTask` is non-empty, the previous session was interrupted mid-task:
 The canonical step order is:
 
 ```
-step-01-spec, step-02-design, step-03-tasks, step-04-implement, step-05-review
+step-01-spec, step-02-design, [step-02b-uix], step-03-tasks, step-04-implement, step-05-review
 ```
 
+`step-02b-uix` is **optional** (shown in brackets). It may be present or absent between `step-02-design` and `step-03-tasks`.
+
 Verify that `stepsCompleted` is a valid contiguous prefix of this sequence:
-- The first N elements of `stepsCompleted` must match the first N entries of the canonical order, in order.
+- The first N elements of `stepsCompleted` must match the canonical order, in order.
+- `step-02b-uix` may be omitted (it is optional) — `step-02-design` followed by `step-03-tasks` is valid.
+- `step-02b-uix` may be present — `step-02-design` followed by `step-02b-uix` followed by `step-03-tasks` is valid.
+- `step-02b-uix` appearing in any other position (e.g. before `step-02-design` or after `step-03-tasks`) is invalid.
 - Any entry not in the canonical list is invalid.
-- Any gap (e.g. `step-01-spec` then `step-03-tasks`, skipping `step-02-design`) is invalid.
+- Any gap in the required steps (e.g. `step-01-spec` then `step-03-tasks`, skipping `step-02-design`) is invalid.
 - Any out-of-order entry is invalid.
 
 **If validation fails**, display a clear error with the specific problem:
@@ -56,7 +61,7 @@ Workflow state is corrupted: {specific problem, e.g. "step-02-design is missing 
 [X] Exit — pause workflow; fix .workflow-state.md manually
 ```
 
-On [R]: set `stepsCompleted` to `[]`, clear `tasksCompleted` (set to `[]`), reset `fixAttempts` to `0`, `previousIssueCount` to `0`, and `fixLoopActive` to `false` in `{stateFile}`. Then read fully and follow: `./step-01-spec.md`.
+On [R]: set `stepsCompleted` to `[]`, clear `tasksCompleted` (set to `[]`), reset `fixAttempts` to `0`, `previousIssueCount` to `0`, `fixLoopActive` to `false`, and `uixSkipped` to `false` in `{stateFile}`. Then read fully and follow: `./step-01-spec.md`.
 
 On [X]: STOP.
 
@@ -72,13 +77,13 @@ Display:
 Workflow is already complete for spec {specId}.
 
 All artifacts are in {specFolder}/:
-- SPEC.md, DESIGN.md, TASKS.md, REVIEW.md
+- SPEC.md, DESIGN.md, UIX-SPEC.md (if created), TASKS.md, REVIEW.md
 
 [B] Back to a step — re-do a specific step
 [X] Exit
 ```
 
-On [B]: ask "Which step? [1] Spec [2] Design [3] Tasks [4] Implement [5] Review" and load the corresponding step file. Trim `stepsCompleted` appropriately before loading. If going back to step 3 or earlier, also clear `tasksCompleted` (set to `[]`).
+On [B]: ask "Which step? [1] Spec [2] Design [2b] UIX Spec (Figma) [3] Tasks [4] Implement [5] Review" and load the corresponding step file. Trim `stepsCompleted` appropriately before loading. If going back to step 3 or earlier, also clear `tasksCompleted` (set to `[]`).
 
 On [X]: STOP.
 
@@ -122,7 +127,7 @@ Completed: {list of tasksCompleted, e.g. T1, T2, T3}
 
 ```
 [C] Continue — proceed to {next step description}
-[B] Back to a step — [1] Spec [2] Design [3] Tasks [4] Implement
+[B] Back to a step — [1] Spec [2] Design [2b] UIX Spec [3] Tasks [4] Implement
 [X] Exit
 ```
 
@@ -133,16 +138,17 @@ Completed: {list of tasksCompleted, e.g. T1, T2, T3}
   - Do NOT append anything to `stepsCompleted` here — the next step will do that when the user completes it.
 
 - **IF [B] Back to step N:**
-  - User chooses which step (1–4).
+  - User chooses which step (1, 2, 2b, 3, or 4).
   - Trim `stepsCompleted` to keep only entries before the chosen step:
     - Back to Spec (1): set `stepsCompleted` to `[]`.
     - Back to Design (2): keep only `['step-01-spec']`.
-    - Back to Tasks (3): keep up to `['step-01-spec', 'step-02-design']`.
-    - Back to Implement (4): keep up to `['step-01-spec', 'step-02-design', 'step-03-tasks']`.
+    - Back to UIX Spec (2b): keep up to `['step-01-spec', 'step-02-design']`. Reset `uixSkipped` to `false`.
+    - Back to Tasks (3): keep up to `['step-01-spec', 'step-02-design']` (plus `'step-02b-uix'` if it was previously completed).
+    - Back to Implement (4): keep up to `['step-01-spec', 'step-02-design']` (plus `'step-02b-uix'` if present) and `['step-03-tasks']`.
   - If going back to step 3 or earlier: also clear `tasksCompleted` (set to `[]`).
   - Reset `fixAttempts` to `0`, `previousIssueCount` to `0`, and `fixLoopActive` to `false` in `{stateFile}`.
   - Update `{stateFile}` with trimmed `stepsCompleted` (and `tasksCompleted` if cleared).
-  - Read fully and follow the corresponding step file (e.g. `step-02-design.md`).
+  - Read fully and follow the corresponding step file (e.g. `step-02-design.md`, `step-02b-uix.md`).
 
 - **IF [X] Exit:**
   - Display: "Workflow paused. Run `/flow {specId}` to resume."
