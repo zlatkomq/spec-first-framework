@@ -1,7 +1,7 @@
 ---
-name: 'step-04-implement'
+name: 'step-05-implement'
 description: 'Implement all tasks from TASKS.md'
-nextStepFile: './step-05-review.md'
+nextStepFile: './step-06-review.md'
 
 # References
 ruleRef: '@.cursor/rules/implementation.mdc'
@@ -10,13 +10,14 @@ dodChecklist: '@.framework/checklists/definition-of-done.md'
 stateFile: '{spec_folder}/.workflow-state.md'
 specFile: '{spec_folder}/SPEC.md'
 designFile: '{spec_folder}/DESIGN.md'
+uixUiFile: '{spec_folder}/UIX-UI.md'
 tasksFile: '{spec_folder}/TASKS.md'
 reviewFile: '{spec_folder}/REVIEW.md'
 ---
 
-# Step 4: Implementation
+# Step 5: Implementation
 
-**Progress: Step 4 of 5** — Next: Code Review
+**Progress: Step 5 of 6** — Next: Code Review
 
 ## STEP GOAL
 
@@ -26,13 +27,13 @@ Implement tasks from TASKS.md one at a time. After each task, present a menu so 
 
 - READ this entire step file before taking any action.
 - Apply {ruleRef} for all domain behavior, constraints, and output. Do not restate or override the rule.
-- Load {constitutionRef}, {designFile}, and {tasksFile}.
+- Load {constitutionRef}, {designFile}, {uixUiFile} (if it exists), and {tasksFile}.
 - HALT and WAIT for user input at every menu.
 - Do NOT load or look ahead to future step files.
 
 ## GATE
 
-- Prerequisite: per {ruleRef}, required inputs must be satisfied (TASKS approved). If not met: display a short message that implementation cannot start until TASKS is approved; offer `[B] Back to Tasks (step 3)` | `[X] Exit`. On [B]: load and follow `./step-03-tasks.md`. On [X]: STOP.
+- Prerequisite: per {ruleRef}, required inputs must be satisfied (TASKS approved). If not met: display a short message that implementation cannot start until TASKS is approved; offer `[B] Back to Tasks (step 4)` | `[X] Exit`. On [B]: load and follow `./step-04-tasks.md`. On [X]: STOP.
 
 ## SEQUENCE
 
@@ -40,6 +41,7 @@ Implement tasks from TASKS.md one at a time. After each task, present a menu so 
 
 - Read {tasksFile} completely. Extract the ordered list of tasks (T1, T2, T3, …).
 - Read {designFile} (for architecture and component details).
+- Read {uixUiFile} if it exists (for UI component specs, screen inventory, interaction patterns).
 - Read {constitutionRef} (for coding standards).
 - Read `{stateFile}` frontmatter. Extract `tasksCompleted` (array of completed task IDs, e.g. `['T1', 'T2']`).
 - **Reconcile state with TASKS.md checkboxes**: If `tasksCompleted` and {tasksFile} checkboxes disagree, `tasksCompleted` in {stateFile} is authoritative. Update {tasksFile} checkboxes to match:
@@ -134,19 +136,20 @@ Display:
 ```
 All {total} tasks implemented. Definition of Done: PASS.
 
-[C] Continue — proceed to Code Review (Step 5 of 5)
+[C] Continue — proceed to Code Review (Step 6 of 6)
 [V] View TASKS.md — display for reference (read-only)
 [R] Re-implement a specific task (e.g. "T3" — fix or redo)
-[B] Back to Tasks — re-edit TASKS.md (step 3)
-[B2] Back to Design — re-edit DESIGN.md (step 2)
+[B] Back to Tasks — re-edit TASKS.md (step 4)
+[B2] Back to UIX/UI — re-edit UIX-UI.md (step 3)
+[B3] Back to Design — re-edit DESIGN.md (step 2)
 [X] Exit — pause workflow; resume later with /flow
 ```
 
 ### Menu handling
 
 - **IF [C] Continue:**
-  1. Update `{stateFile}`: append `'step-04-implement'` to `stepsCompleted`.
-  2. Read fully and follow: `{nextStepFile}` (step-05-review.md).
+  1. Update `{stateFile}`: append `'step-05-implement'` to `stepsCompleted`.
+  2. Read fully and follow: `{nextStepFile}` (step-06-review.md).
 - **IF [V] View TASKS.md:**
   1. Read and display the full content of {tasksFile}.
   2. Redisplay this menu (no state changes).
@@ -154,15 +157,19 @@ All {total} tasks implemented. Definition of Done: PASS.
   - User specifies task. Re-apply {ruleRef} for that task.
   - After done, redisplay this menu (section 6).
 - **IF [B] Back to Tasks:**
+  1. Trim `stepsCompleted` in `{stateFile}` to keep entries up to `'step-03-uix-ui'`.
+  2. Clear `tasksCompleted` in `{stateFile}` (set to `[]`).
+  3. Read fully and follow: `./step-04-tasks.md`.
+- **IF [B2] Back to UIX/UI:**
   1. Trim `stepsCompleted` in `{stateFile}` to keep entries up to `'step-02-design'`.
   2. Clear `tasksCompleted` in `{stateFile}` (set to `[]`).
-  3. Read fully and follow: `./step-03-tasks.md`.
-- **IF [B2] Back to Design:**
+  3. Read fully and follow: `./step-03-uix-ui.md`.
+- **IF [B3] Back to Design:**
   1. Trim `stepsCompleted` in `{stateFile}` to keep entries up to `'step-01-spec'`.
   2. Clear `tasksCompleted` in `{stateFile}` (set to `[]`).
   3. Read fully and follow: `./step-02-design.md`.
 - **IF [X] Exit:**
-  - Update `{stateFile}`: append `'step-04-implement'` to `stepsCompleted` (since all tasks are done).
+  - Update `{stateFile}`: append `'step-05-implement'` to `stepsCompleted` (since all tasks are done).
   - Display: "Workflow paused. Run `/flow {spec_id}` to resume."
   - STOP.
 - **IF anything else:** Answer, then redisplay menu.

@@ -183,11 +183,12 @@ On approval, execute these steps in order:
   - REMOVED tasks → already deleted from TASKS.md above
   - New tasks from CR → `[ ]`
 - [ ] Update workflow state (if active): If `{spec_folder}/.workflow-state.md` exists and `stepsCompleted` is non-empty:
-  1. Determine the **latest** artifact modified by this CR in step order: SPEC.md → `step-01-spec`, DESIGN.md → `step-02-design`, TASKS.md → `step-03-tasks`.
+  1. Determine the **latest** artifact modified by this CR in step order: SPEC.md → `step-01-spec`, DESIGN.md → `step-02-design`, UIX-UI.md → `step-03-uix-ui`, TASKS.md → `step-04-tasks`.
   2. If `stepsCompleted` already extends beyond that step, trim it to keep only entries up to and including that step's entry. Examples:
      - CR modified SPEC.md only → set `stepsCompleted` to `['step-01-spec']`
      - CR modified SPEC.md + DESIGN.md → set `stepsCompleted` to `['step-01-spec', 'step-02-design']`
-     - CR modified TASKS.md (with or without earlier artifacts) → set `stepsCompleted` to `['step-01-spec', 'step-02-design', 'step-03-tasks']`
+     - CR modified UIX-UI.md → set `stepsCompleted` to `['step-01-spec', 'step-02-design', 'step-03-uix-ui']`
+     - CR modified TASKS.md (with or without earlier artifacts) → set `stepsCompleted` to `['step-01-spec', 'step-02-design', 'step-03-uix-ui', 'step-04-tasks']`
   3. Selectively update `tasksCompleted` using the per-task classification from Step 2:
      - Start with the current `tasksCompleted` array.
      - REMOVE task IDs classified as INVALIDATED or REMOVED.

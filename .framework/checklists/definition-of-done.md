@@ -1,6 +1,6 @@
 # Definition of Done Checklist
 
-Referenced by step-04-implement.md before allowing [C] Continue to code review.
+Referenced by step-05-implement.md before allowing [C] Continue to code review.
 All items must pass before implementation is considered complete.
 
 ---
@@ -31,6 +31,7 @@ All items must pass before implementation is considered complete.
 - [ ] **No prohibited patterns:** No TODOs, FIXMEs, empty catch blocks, placeholder stubs, debug prints, or commented-out code
 - [ ] **CONSTITUTION.md compliance:** Code follows project coding standards, naming, structure, and patterns
 - [ ] **DESIGN.md alignment:** Architecture, data models, and APIs match the design exactly
+- [ ] **UIX-UI.md alignment:** (if UIX-UI.md exists) UI components, screen inventory, interaction patterns, accessibility requirements, and design tokens match the UIX/UI specification
 - [ ] **Error handling:** Errors handled appropriately — no silent failures, meaningful error messages
 
 ## Final Status
@@ -51,4 +52,4 @@ Failed items: [list specific failures if any]
 ```
 
 **If FAIL:** List specific failures and required actions. Do NOT allow [C] Continue.
-**If PASS:** Implementation is ready for code review (Step 5).
+**If PASS:** Implementation is ready for code review (Step 6).

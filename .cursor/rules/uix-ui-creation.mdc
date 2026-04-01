@@ -1,0 +1,130 @@
+---
+description: Rules for creating UIX-UI.md files
+globs: specs/**/UIX-UI.md
+alwaysApply: false
+---
+
+# UIX/UI Creation Rules
+
+You are creating a UIX/UI specification document. Follow these rules strictly.
+
+## Required Inputs
+
+Before creating a UIX-UI.md, you must have:
+- Approved SPEC.md (@specs/XXX/SPEC.md) — for user stories and acceptance criteria
+- Approved DESIGN.md (@specs/XXX/DESIGN.md) — for API specs, data models, system architecture
+- Access to @.framework/CONSTITUTION.md for project standards (tech stack, component library, styling conventions, accessibility standards)
+
+If SPEC.md is not approved (Status != APPROVED), STOP and inform the user.
+If DESIGN.md is not approved (Status != APPROVED), STOP and inform the user.
+
+## Template
+
+Always use the template structure from @.framework/templates/UIX-UI.template.md
+
+## Figma MCP Integration
+
+When the developer provides Figma URLs, use Figma MCP tools to extract design data:
+
+- `get_design_context` — extract component structure, layout, and hierarchy from Figma frames
+- `get_variable_defs` — extract design tokens (colors, typography, spacing) defined as Figma variables
+- `get_screenshot` — capture visual reference of specific frames or components
+- `get_metadata` — retrieve file and frame metadata (names, IDs, last modified)
+- `search_design_system` — search for specific components or patterns in the Figma design system
+
+**Translation rule:** Figma output represents design intent. Translate it into the project's actual conventions per CONSTITUTION.md. For example:
+- Figma color variables → project design system tokens
+- Figma component names → project component library naming conventions
+- Figma layout → project's responsive/grid system
+- Figma typography → project's type scale
+
+Do NOT copy Figma values verbatim if they conflict with CONSTITUTION.md conventions. The constitution is authoritative for implementation details.
+
+**If no Figma URLs are provided:** Produce the UIX-UI artifact based on SPEC.md + DESIGN.md alone. Derive screen inventory from user stories, component hierarchy from the architecture, and data bindings from API endpoints. Note in the Overview: "No Figma designs provided — specifications derived from SPEC.md and DESIGN.md."
+
+## Field Rules
+
+### Metadata
+- **ID**: Must match the SPEC.md ID exactly
+- **Name**: Must match the SPEC.md Name exactly
+- Status is always DRAFT until approved
+- Author: developer name + "/ AI-assisted"
+- Reviewer: leave blank
+- Date: today's date
+
+### Overview
+- 1-2 paragraphs maximum
+- Describe the UI approach and how the feature presents itself to the user
+- Reference the tech stack and component library from CONSTITUTION.md
+- If Figma was used, note: "Based on Figma designs from [URL]."
+- If no Figma, note: "No Figma designs provided — specifications derived from SPEC.md and DESIGN.md."
+
+### Screen Inventory
+- Every user story from SPEC.md must map to at least one screen/view
+- Include route/path for each screen (derive from DESIGN.md API routes or CONSTITUTION.md routing conventions)
+- If a user story spans multiple screens, list each screen separately
+
+### Component Specifications
+- One section per screen from the Screen Inventory
+- Component hierarchy shown as ASCII tree
+- Every component must list: Props, State, and Data Binding (referencing DESIGN.md API endpoints)
+- Use the component library/framework from CONSTITUTION.md (do not hardcode React, Vue, Angular, etc.)
+- Component names must follow CONSTITUTION.md naming conventions
+
+### Design Token Mapping
+- If Figma tokens are available (via `get_variable_defs`), map each to the project's design system
+- If no Figma data, write: "No Figma tokens provided — using project design system defaults from CONSTITUTION.md."
+- Do NOT invent design tokens that aren't in Figma or CONSTITUTION.md
+
+### Interaction Patterns
+- **User Flows**: Primary flows through the screens, derived from SPEC.md user stories
+- **Transitions**: Only specify custom transitions if Figma or requirements call for them
+- **State Handling**: MUST include loading, empty, error, and success states for every screen that fetches data
+
+### Responsive / Adaptive Layout
+- Follow CONSTITUTION.md breakpoint conventions if defined
+- If CONSTITUTION.md doesn't specify, derive from the project's CSS framework/system
+- Write "Single layout — no responsive breakpoints required." only if the feature genuinely has no responsive needs
+
+### Accessibility Requirements
+- Apply CONSTITUTION.md accessibility standards to every component
+- At minimum: ARIA roles/labels, keyboard navigation, focus management, color contrast
+- If CONSTITUTION.md doesn't specify accessibility standards, apply WCAG 2.1 AA as the default
+
+### Asset Inventory
+- List all assets referenced in Figma (via `get_design_context` or `get_screenshot`)
+- Include type (icon, image, illustration, font) and source
+- If no external assets, write: "No external assets required."
+
+### Open Questions
+- Unresolved UI/UX decisions that need answers before task breakdown
+- Format as checklist: `- [ ] Question here?`
+- These must be resolved before moving to TASKS.md
+
+## Constraints
+
+- Every UI decision must align with CONSTITUTION.md (tech stack, component library, styling, accessibility)
+- Do NOT hardcode framework-specific assumptions (no React JSX, no Vue templates, etc.) — use framework-agnostic component descriptions; CONSTITUTION.md determines the framework
+- Do NOT include implementation code (belongs in actual code via tasks)
+- Do NOT include task breakdown (belongs in TASKS.md)
+- Do NOT contradict or expand scope beyond SPEC.md and DESIGN.md
+- All bracket placeholders from template must be removed from output; if info is missing, add an Open Question instead
+
+## Validation
+
+Before completing, verify:
+- [ ] Every user story from SPEC.md maps to at least one screen
+- [ ] Every screen has a component hierarchy with props, state, and data bindings
+- [ ] Data bindings reference actual API endpoints from DESIGN.md
+- [ ] Loading, empty, error, and success states defined for data-fetching screens
+- [ ] Accessibility requirements defined per component
+- [ ] Design tokens mapped (from Figma) or defaults noted (from CONSTITUTION.md)
+- [ ] No framework-specific code or markup in the document
+- [ ] All required sections filled (no placeholders)
+- [ ] Status set to DRAFT
+
+## Output
+
+Save the file to: `specs/XXX-{slug}/UIX-UI.md`
+
+Must be in the same folder as the corresponding SPEC.md and DESIGN.md.

@@ -185,7 +185,7 @@ If you run a command with no message, the AI will ask for the missing input:
 ## Flow Summary
 
 **Feature (standalone commands):**  
-`/constitute` (once) → `/specify` → `/design` → `/tasks` → `/implement` (per task) → `/review`
+`/constitute` (once) → `/specify` → `/design` → `/uixui` → `/tasks` → `/implement` (per task) → `/review`
 
 **Feature (guided workflow — recommended):**  
 `/constitute` (once) → `/flow 001-slug: requirements` → runs all steps with menus: [C] Continue, [B] Back, [X] Exit.  

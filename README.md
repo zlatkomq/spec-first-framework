@@ -42,9 +42,9 @@ spec-first update --branch <branch-name>
 
 1. Install the framework with `spec-first init` (or manually copy `.cursor/` and `.framework/` folders into your project)
 2. Create `CONSTITUTION.md` using: `/constitute` or `@constitution-creation.mdc` + your project description
-3. For each spec, follow the workflow: SPEC → DESIGN → TASKS → Implementation → Review
+3. For each spec, follow the workflow: SPEC → DESIGN → UIX/UI → TASKS → Implementation → Review
 
-**Commands** (in `.cursor/commands/`): `/constitute`, `/specify`, `/design`, `/tasks`, `/implement`, `/review`, `/flow`, `/bug`, `/bugfix`, `/bugreview`, `/change`, `/adversarial` — see [Commands & Workflow Example](docs/COMMANDS-WORKFLOW-EXAMPLE.md).
+**Commands** (in `.cursor/commands/`): `/constitute`, `/specify`, `/design`, `/uixui`, `/tasks`, `/implement`, `/review`, `/flow`, `/bug`, `/bugfix`, `/bugreview`, `/change`, `/adversarial` — see [Commands & Workflow Example](docs/COMMANDS-WORKFLOW-EXAMPLE.md).
 
 **Guided workflow (recommended):** Use **`/flow 001-slug: requirements`** to run the full feature workflow step by step (BMAD-style: state + step files + menus). Resume anytime with **`/flow 001`**. Go back with **[B]**, continue with **[C]**. See [Workflow return and continue](docs/WORKFLOW-RETURN-AND-CONTINUE.md).
 
@@ -110,6 +110,7 @@ All spec artifacts support traceability fields for billing and audit:
 
 | Command | Purpose |
 |---------|---------|
+| `/uixui {spec}` | Create UIX-UI.md from approved SPEC and DESIGN. Optionally uses Figma MCP to extract design data when Figma URLs are provided. |
 | `/change {spec}` | Handle scope changes. Produces a Change Proposal with impact analysis. On approval, updates artifacts and regenerates SPEC-CURRENT.md. |
 | `/adversarial` | Review any content (spec, design, doc) with extreme skepticism. Finds at least 10 issues. Use before approving a gate or to sanity-check a document. |
 
@@ -141,10 +142,11 @@ See [CHANGELOG.md](CHANGELOG.md) for the full list of changes in this release.
 ```
 your-project/
 ├── .cursor/
-│   ├── commands/              # Slash commands: /specify, /design, /tasks, etc.
+│   ├── commands/              # Slash commands: /specify, /design, /uixui, /tasks, etc.
 │   └── rules/
 │       ├── spec-creation.mdc
 │       ├── design-creation.mdc
+│       ├── uix-ui-creation.mdc
 │       ├── task-creation.mdc
 │       ├── implementation.mdc
 │       ├── code-review.mdc
@@ -159,12 +161,14 @@ your-project/
 │   │   ├── step-00-continue.md    #   Resume logic
 │   │   ├── step-01-spec.md        #   Create SPEC.md
 │   │   ├── step-02-design.md      #   Create DESIGN.md
-│   │   ├── step-03-tasks.md       #   Create TASKS.md
-│   │   ├── step-04-implement.md   #   Implement tasks
-│   │   └── step-05-review.md      #   Code review
+│   │   ├── step-03-uix-ui.md      #   Create UIX-UI.md
+│   │   ├── step-04-tasks.md       #   Create TASKS.md
+│   │   ├── step-05-implement.md   #   Implement tasks
+│   │   └── step-06-review.md      #   Code review
 │   ├── templates/
 │   │   ├── SPEC.template.md
 │   │   ├── DESIGN.template.md
+│   │   ├── UIX-UI.template.md
 │   │   ├── TASKS.template.md
 │   │   ├── REVIEW.template.md
 │   │   ├── BUG.template.md
@@ -174,7 +178,7 @@ your-project/
 │   │   ├── CHANGE-PROPOSAL.template.md   # For /change
 │   │   └── SPEC-CURRENT.template.md      # Compiled spec view
 │   ├── checklists/
-│   │   └── definition-of-done.md         # Step 4 DoD before review
+│   │   └── definition-of-done.md         # Step 5 DoD before review
 │   └── CONSTITUTION.md          ← You create this
 ├── specs/
 │   └── XXX-description/

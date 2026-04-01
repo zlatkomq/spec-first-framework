@@ -10,6 +10,7 @@ project/
 │   │   ├── constitute.md
 │   │   ├── specify.md
 │   │   ├── design.md
+│   │   ├── uixui.md
 │   │   ├── tasks.md
 │   │   ├── implement.md
 │   │   ├── review.md
@@ -22,6 +23,7 @@ project/
 │   └── rules/
 │       ├── spec-creation.mdc           # Rules for creating SPEC.md
 │       ├── design-creation.mdc         # Rules for creating DESIGN.md
+│       ├── uix-ui-creation.mdc        # Rules for creating UIX-UI.md
 │       ├── task-creation.mdc           # Rules for creating TASKS.md
 │       ├── implementation.mdc          # Rules for implementing code
 │       ├── code-review.mdc             # Rules for code review
@@ -39,12 +41,14 @@ project/
 │   │   ├── step-00-continue.md         # Resume logic
 │   │   ├── step-01-spec.md
 │   │   ├── step-02-design.md
-│   │   ├── step-03-tasks.md
-│   │   ├── step-04-implement.md
-│   │   └── step-05-review.md
+│   │   ├── step-03-uix-ui.md
+│   │   ├── step-04-tasks.md
+│   │   ├── step-05-implement.md
+│   │   └── step-06-review.md
 │   ├── templates/
 │   │   ├── SPEC.template.md            # Template structure for specifications
 │   │   ├── DESIGN.template.md          # Template structure for technical design
+│   │   ├── UIX-UI.template.md          # Template structure for UIX/UI specification
 │   │   ├── TASKS.template.md           # Template structure for task breakdown
 │   │   ├── CONSTITUTION.template.md    # Template structure for project constitution
 │   │   ├── BUG.template.md             # Template for bug reports
@@ -56,7 +60,7 @@ project/
 │   │   ├── CODEBASE-ANALYSIS.template.md   # Template for codebase analysis (legacy)
 │   │   └── LEGACY-ASSESSMENT.template.md   # Template for legacy assessment
 │   ├── checklists/
-│   │   └── definition-of-done.md      # Step 4 DoD before [C] Continue to review
+│   │   └── definition-of-done.md      # Step 5 DoD before [C] Continue to review
 │   └── CONSTITUTION.md                 # Project-level standards (THE source of truth)
 │
 ├── docs/

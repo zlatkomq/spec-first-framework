@@ -13,7 +13,7 @@ outputFile: '{spec_folder}/SPEC.md'
 
 # Step 1: Create Specification
 
-**Progress: Step 1 of 5** — Next: Technical Design
+**Progress: Step 1 of 6** — Next: Technical Design
 
 ## STEP GOAL
 
@@ -70,7 +70,7 @@ Display:
 ```
 SPEC.md is APPROVED.
 
-[C] Continue — proceed to Technical Design (Step 2 of 5)
+[C] Continue — proceed to Technical Design (Step 2 of 6)
 [B] Back to Spec — re-edit SPEC.md
 [X] Exit — pause workflow; resume later with /flow
 ```

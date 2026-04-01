@@ -274,7 +274,7 @@ Count Critical, Major, and Minor issues from all phases.
 |-----------|---------|
 | No Critical or Major issues, and total issues <= 10 | **APPROVED** |
 | No Critical or Major issues, but total issues > 10 (all Minor) | **CHANGES REQUESTED** — volume of minor issues suggests systemic style/quality gaps worth addressing |
-| Any Critical or Major issues, and (critical_count >= 3 OR total issues > 10) | **BLOCKED** — systemic problems; recommend going back to TASKS.md (step 3) rather than patching |
+| Any Critical or Major issues, and (critical_count >= 3 OR total issues > 10) | **BLOCKED** — systemic problems; recommend going back to TASKS.md (step 4) rather than patching |
 | Any Critical or Major issues (but below escalation thresholds) | **CHANGES REQUESTED** |
 
 **Step 4: Issue count quality pressure (applied after verdict)**
@@ -315,7 +315,7 @@ Cannot complete full review, OR systemic severity issues found. Reasons include:
 - Required files not accessible (>30% threshold)
 - Tests fail when executed
 
-Note: Always produce a full review document even when BLOCKED. List what is missing and what was reviewable. If BLOCKED due to systemic issues, recommend going back to TASKS.md (step 3) rather than patching.
+Note: Always produce a full review document even when BLOCKED. List what is missing and what was reviewable. If BLOCKED due to systemic issues, recommend going back to TASKS.md (step 4) rather than patching.
 
 ## Output Format
 

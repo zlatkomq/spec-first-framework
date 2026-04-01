@@ -70,30 +70,30 @@ specFolder: 'specs/001-user-registration'
 
 1. You stopped after Design (state: `stepsCompleted: ['step-01-spec', 'step-02-design']`).
 2. Later, run `/flow 001`.
-3. Continuation step shows: "Last completed: step-02-design. Next: Tasks. [C] Continue."
-4. Press **[C]** — step-03 runs (creates TASKS.md).
+3. Continuation step shows: "Last completed: step-02-design. Next: UIX/UI. [C] Continue."
+4. Press **[C]** — step-03 runs (creates UIX-UI.md).
 
 ### Resume mid-implementation
 
-1. You're implementing tasks. You complete T1, T2, T3, then exit (state: `stepsCompleted: ['step-01-spec', 'step-02-design', 'step-03-tasks']`, `tasksCompleted: ['T1', 'T2', 'T3']`).
+1. You're implementing tasks. You complete T1, T2, T3, then exit (state: `stepsCompleted: ['step-01-spec', 'step-02-design', 'step-03-uix-ui', 'step-04-tasks']`, `tasksCompleted: ['T1', 'T2', 'T3']`).
 2. Later, run `/flow 001`.
-3. Continuation step shows: "Last completed: step-03-tasks. Next: Implementation. Implementation progress: 3 of 7 tasks completed."
-4. Press **[C]** — step-04 loads, sees T1/T2/T3 are done, shows the task list with checkmarks, and offers to start T4.
+3. Continuation step shows: "Last completed: step-04-tasks. Next: Implementation. Implementation progress: 3 of 7 tasks completed."
+4. Press **[C]** — step-05 loads, sees T1/T2/T3 are done, shows the task list with checkmarks, and offers to start T4.
 
 ### Review fails — fix and re-review
 
-1. Review fails (step 5, verdict: CHANGES REQUESTED). Findings list specific issues.
-2. Menu shows: `[F] Fix` (back to implement), `[B] Back to Tasks`, `[B2] Back to Design`, `[B3] Back to Spec`.
-3. Choose **[F] Fix** — state is trimmed (step-04 removed from `stepsCompleted`), but `tasksCompleted` is kept. Step-04 loads.
-4. Step-04 detects REVIEW.md with CHANGES REQUESTED and displays the findings. All tasks show as completed. You use **[R]** to re-implement the specific tasks that had issues.
-5. Choose **[C]** — step-05 runs a **fresh review from scratch** (not a partial re-review). New REVIEW.md is written.
+1. Review fails (step 6, verdict: CHANGES REQUESTED). Findings list specific issues.
+2. Menu shows: `[F] Fix` (back to implement), `[B] Back to Tasks`, `[B2] Back to UIX/UI`, `[B3] Back to Design`, `[B4] Back to Spec`.
+3. Choose **[F] Fix** — state is trimmed (step-05 removed from `stepsCompleted`), but `tasksCompleted` is kept. Step-05 loads.
+4. Step-05 detects REVIEW.md with CHANGES REQUESTED and displays the findings. All tasks show as completed. You use **[R]** to re-implement the specific tasks that had issues.
+5. Choose **[C]** — step-06 runs a **fresh review from scratch** (not a partial re-review). New REVIEW.md is written.
 6. If review passes, choose **[C] Complete**. Done.
 
 ### Go back further (Design or Spec)
 
 1. Review fails and the issue is in the design, not just implementation.
-2. Choose **[B] Back to Design** — state is trimmed, `tasksCompleted` is cleared, step-02 runs.
-3. Fix DESIGN. **[C]** → step-03 (re-create Tasks). **[C]** → step-04 (re-implement from scratch). **[C]** → step-05 (review again).
+2. Choose **[B3] Back to Design** — state is trimmed, `tasksCompleted` is cleared, step-02 runs.
+3. Fix DESIGN. **[C]** → step-03 (UIX/UI). **[C]** → step-04 (re-create Tasks). **[C]** → step-05 (re-implement from scratch). **[C]** → step-06 (review again).
 
 ### Fix within a step (loop before continuing)
 
@@ -113,13 +113,15 @@ specFolder: 'specs/001-user-registration'
 │   ├── step-00-continue.md    # Resume logic
 │   ├── step-01-spec.md        # Create/update SPEC.md
 │   ├── step-02-design.md      # Create/update DESIGN.md
-│   ├── step-03-tasks.md       # Create/update TASKS.md
-│   ├── step-04-implement.md   # Implement all tasks
-│   └── step-05-review.md      # Generate REVIEW.md
+│   ├── step-03-uix-ui.md      # Create/update UIX-UI.md
+│   ├── step-04-tasks.md       # Create/update TASKS.md
+│   ├── step-05-implement.md   # Implement all tasks
+│   └── step-06-review.md      # Generate REVIEW.md
 └── templates/
     ├── workflow-state.template.md   # State file template
     ├── SPEC.template.md
     ├── DESIGN.template.md
+    ├── UIX-UI.template.md
     ├── TASKS.template.md
     └── REVIEW.template.md
 

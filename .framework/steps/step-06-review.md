@@ -1,5 +1,5 @@
 ---
-name: 'step-05-review'
+name: 'step-06-review'
 description: 'Generate adversarial code review (REVIEW.md) for this feature'
 
 # References
@@ -9,13 +9,14 @@ constitutionRef: '@.framework/CONSTITUTION.md'
 stateFile: '{spec_folder}/.workflow-state.md'
 specFile: '{spec_folder}/SPEC.md'
 designFile: '{spec_folder}/DESIGN.md'
+uixUiFile: '{spec_folder}/UIX-UI.md'
 tasksFile: '{spec_folder}/TASKS.md'
 outputFile: '{spec_folder}/REVIEW.md'
 ---
 
-# Step 5: Code Review
+# Step 6: Code Review
 
-**Progress: Step 5 of 5** — Final step
+**Progress: Step 6 of 6** — Final step
 
 ## STEP GOAL
 
@@ -26,7 +27,7 @@ Generate an adversarial REVIEW.md by applying the code-review rules. Inspect act
 - READ this entire step file before taking any action.
 - Apply {ruleRef} for all domain behavior, constraints, and output. Do not restate or override the rule.
 - Use the template from {templateRef}.
-- Load {constitutionRef}, {specFile}, {designFile}, and {tasksFile}.
+- Load {constitutionRef}, {specFile}, {designFile}, {uixUiFile} (if it exists), and {tasksFile}.
 - HALT and WAIT for user input at every menu.
 - **ALWAYS run the full review from scratch.** If this step is re-entered (e.g. after fixing issues from a previous review), do NOT resume a partial review — re-run all phases per {ruleRef} completely. Delete or overwrite the previous REVIEW.md.
 
@@ -34,7 +35,7 @@ Generate an adversarial REVIEW.md by applying the code-review rules. Inspect act
 
 - Implementation must be complete (all tasks in {tasksFile} done).
 - Check `tasksCompleted` in `{stateFile}` — all task IDs from {tasksFile} must be present.
-- If tasks are incomplete: display "Not all tasks are implemented. Complete implementation first." Offer: `[B] Back to Implement (step 4)` | `[X] Exit`. On [B]: load and follow `./step-04-implement.md`. On [X]: STOP.
+- If tasks are incomplete: display "Not all tasks are implemented. Complete implementation first." Offer: `[B] Back to Implement (step 5)` | `[X] Exit`. On [B]: load and follow `./step-05-implement.md`. On [X]: STOP.
 
 ## SEQUENCE
 
@@ -42,6 +43,7 @@ Generate an adversarial REVIEW.md by applying the code-review rules. Inspect act
 
 - Read {specFile} (acceptance criteria).
 - Read {designFile} (architecture, data model, API).
+- Read {uixUiFile} if it exists (UI component specs, screen inventory, interaction patterns).
 - Read {tasksFile} (task list, expected files).
 - Read {constitutionRef} (standards, coverage thresholds).
 
@@ -73,7 +75,7 @@ Display the verdict and a summary of findings.
 REVIEW: APPROVED
 
 [C] Complete — mark workflow as done
-[B] Back to Implement — re-do a task
+[B] Back to Implement — re-do a task (step 5)
 [X] Exit
 ```
 
@@ -90,10 +92,11 @@ Findings:
 {list of critical/major issues with affected tasks/files}
 
 [F] Fix automatically — AI fixes issues in code, then re-reviews (attempt {fixAttempts+1} of 3)
-[A] Create action items — add [AI-Review] tasks to TASKS.md, go back to Implementation (step 4)
-[B] Back to Tasks — re-edit TASKS.md (step 3)
-[B2] Back to Design — re-edit DESIGN.md (step 2)
-[B3] Back to Spec — re-edit SPEC.md (step 1)
+[A] Create action items — add [AI-Review] tasks to TASKS.md, go back to Implementation (step 5)
+[B] Back to Tasks — re-edit TASKS.md (step 4)
+[B2] Back to UIX/UI — re-edit UIX-UI.md (step 3)
+[B3] Back to Design — re-edit DESIGN.md (step 2)
+[B4] Back to Spec — re-edit SPEC.md (step 1)
 [X] Exit — pause workflow; resume later with /flow
 ```
 
@@ -111,10 +114,11 @@ Recommended: [B] Back to Tasks to rework the implementation plan.
 Findings:
 {list of critical/major issues with affected tasks/files}
 
-[A] Create action items — add [AI-Review] tasks to TASKS.md, go back to Implementation (step 4)
-[B] Back to Tasks — re-edit TASKS.md (step 3) [RECOMMENDED]
-[B2] Back to Design — re-edit DESIGN.md (step 2)
-[B3] Back to Spec — re-edit SPEC.md (step 1)
+[A] Create action items — add [AI-Review] tasks to TASKS.md, go back to Implementation (step 5)
+[B] Back to Tasks — re-edit TASKS.md (step 4) [RECOMMENDED]
+[B2] Back to UIX/UI — re-edit UIX-UI.md (step 3)
+[B3] Back to Design — re-edit DESIGN.md (step 2)
+[B4] Back to Spec — re-edit SPEC.md (step 1)
 [X] Exit — pause workflow; resume later with /flow
 ```
 
@@ -129,10 +133,11 @@ Recommended: [A] Create action items for targeted manual resolution.
 Findings:
 {list of critical/major issues with affected tasks/files}
 
-[A] Create action items — add [AI-Review] tasks to TASKS.md, go back to Implementation (step 4) [RECOMMENDED]
-[B] Back to Tasks — re-edit TASKS.md (step 3)
-[B2] Back to Design — re-edit DESIGN.md (step 2)
-[B3] Back to Spec — re-edit SPEC.md (step 1)
+[A] Create action items — add [AI-Review] tasks to TASKS.md, go back to Implementation (step 5) [RECOMMENDED]
+[B] Back to Tasks — re-edit TASKS.md (step 4)
+[B2] Back to UIX/UI — re-edit UIX-UI.md (step 3)
+[B3] Back to Design — re-edit DESIGN.md (step 2)
+[B4] Back to Spec — re-edit SPEC.md (step 1)
 [X] Exit — pause workflow; resume later with /flow
 ```
 
@@ -144,9 +149,10 @@ REVIEW: BLOCKED — {reason}
 {If >10 issues: "More than 10 issues found. The implementation needs fundamental rework."}
 {If missing work: list what is missing}
 
-[B] Back to Tasks — re-create TASKS.md (step 3) [RECOMMENDED for >10 issues]
-[B2] Back to Design — re-think design (step 2)
-[B3] Back to Spec — revisit requirements (step 1)
+[B] Back to Tasks — re-create TASKS.md (step 4) [RECOMMENDED for >10 issues]
+[B2] Back to UIX/UI — re-edit UIX-UI.md (step 3)
+[B3] Back to Design — re-think design (step 2)
+[B4] Back to Spec — revisit requirements (step 1)
 [X] Exit — pause workflow; resume later with /flow
 ```
 
@@ -155,17 +161,17 @@ REVIEW: BLOCKED — {reason}
 **APPROVED path:**
 
 - **IF [C] Complete:**
-  1. Update `{stateFile}`: append `'step-05-review'` to `stepsCompleted`.
-  2. Display: "Feature workflow complete for spec {spec_id}. All artifacts: SPEC.md, DESIGN.md, TASKS.md, REVIEW.md are in `{spec_folder}/`."
+  1. Update `{stateFile}`: append `'step-06-review'` to `stepsCompleted`.
+  2. Display: "Feature workflow complete for spec {spec_id}. All artifacts: SPEC.md, DESIGN.md, UIX-UI.md, TASKS.md, REVIEW.md are in `{spec_folder}/`."
   3. Display: "Human reviewer should make the final decision at Gate 4."
   4. STOP. Workflow is done.
 - **IF [B] Back to Implement:**
   1. Reset `fixAttempts` to `0`, `previousIssueCount` to `0`, and `fixLoopActive` to `false` in `{stateFile}`.
-  2. Trim `stepsCompleted` in `{stateFile}` to keep entries up to `'step-03-tasks'`.
-  3. Read fully and follow: `./step-04-implement.md`.
-  - (Step-04 will detect REVIEW.md with findings and display them.)
+  2. Trim `stepsCompleted` in `{stateFile}` to keep entries up to `'step-04-tasks'`.
+  3. Read fully and follow: `./step-05-implement.md`.
+  - (Step-05 will detect REVIEW.md with findings and display them.)
 - **IF [X] Exit:**
-  - Update `{stateFile}`: append `'step-05-review'` to `stepsCompleted`.
+  - Update `{stateFile}`: append `'step-06-review'` to `stepsCompleted`.
   - STOP.
 
 **CHANGES REQUESTED path:**
@@ -188,36 +194,42 @@ REVIEW: BLOCKED — {reason}
   2. For each Critical and Major issue, inject a task into the Tasks section of {tasksFile}. Assign T-numbers continuing from the last existing task (e.g., if T7 is the last task, AI-Review tasks become T8, T9, etc.):
      `- [ ] T{N}: [AI-Review][{Severity}] {Description} [{file:function}]`
   3. Add an "Action Items Created" section to REVIEW.md listing the injected tasks.
-  4. Trim `stepsCompleted` in `{stateFile}` to keep entries up to `'step-03-tasks'`.
+  4. Trim `stepsCompleted` in `{stateFile}` to keep entries up to `'step-04-tasks'`.
   5. Do NOT clear `tasksCompleted` — keep task progress.
-  6. Read fully and follow: `./step-04-implement.md`.
-  - (Step-04 will detect the [AI-Review] tasks and prioritize them.)
+  6. Read fully and follow: `./step-05-implement.md`.
+  - (Step-05 will detect the [AI-Review] tasks and prioritize them.)
 - **IF [F] or [A] not chosen — IF [B] Back to Tasks:**
+  1. Reset `fixAttempts` to `0`, `previousIssueCount` to `0`, and `fixLoopActive` to `false` in `{stateFile}`.
+  2. Trim `stepsCompleted` to keep entries up to `'step-03-uix-ui'`.
+  3. Clear `tasksCompleted` in `{stateFile}` (set to `[]`).
+  4. Read fully and follow: `./step-04-tasks.md`.
+- **IF [B2] Back to UIX/UI:**
   1. Reset `fixAttempts` to `0`, `previousIssueCount` to `0`, and `fixLoopActive` to `false` in `{stateFile}`.
   2. Trim `stepsCompleted` to keep entries up to `'step-02-design'`.
   3. Clear `tasksCompleted` in `{stateFile}` (set to `[]`).
-  4. Read fully and follow: `./step-03-tasks.md`.
-- **IF [B2] Back to Design:**
+  4. Read fully and follow: `./step-03-uix-ui.md`.
+- **IF [B3] Back to Design:**
   1. Reset `fixAttempts` to `0`, `previousIssueCount` to `0`, and `fixLoopActive` to `false` in `{stateFile}`.
   2. Trim `stepsCompleted` to keep entries up to `'step-01-spec'`.
   3. Clear `tasksCompleted` in `{stateFile}` (set to `[]`).
   4. Read fully and follow: `./step-02-design.md`.
-- **IF [B3] Back to Spec:**
+- **IF [B4] Back to Spec:**
   1. Reset `fixAttempts` to `0`, `previousIssueCount` to `0`, and `fixLoopActive` to `false` in `{stateFile}`.
   2. Set `stepsCompleted` to `[]`.
   3. Clear `tasksCompleted` in `{stateFile}` (set to `[]`).
   4. Read fully and follow: `./step-01-spec.md`.
 - **IF [X] Exit:**
   - Display: "Workflow paused with review findings. Run `/flow {spec_id}` to resume and address issues."
-  - Do NOT append `'step-05-review'` to `stepsCompleted` (review is not passed).
+  - Do NOT append `'step-06-review'` to `stepsCompleted` (review is not passed).
   - STOP.
 
 **BLOCKED path:**
 
 - [F] Fix and [A] Action Items are NOT offered for BLOCKED reviews — the implementation needs fundamental rework.
 - **IF [B] Back to Tasks:** (same as above)
-- **IF [B2] Back to Design:** (same as above)
-- **IF [B3] Back to Spec:** (same as above)
+- **IF [B2] Back to UIX/UI:** (same as above)
+- **IF [B3] Back to Design:** (same as above)
+- **IF [B4] Back to Spec:** (same as above)
 - **IF [X] Exit:** (same as above)
 
 - **IF anything else:** Answer, then redisplay menu.

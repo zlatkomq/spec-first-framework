@@ -1,7 +1,7 @@
 ---
 name: 'step-02-design'
 description: 'Create or update DESIGN.md for this feature'
-nextStepFile: './step-03-tasks.md'
+nextStepFile: './step-03-uix-ui.md'
 
 # References
 ruleRef: '@.cursor/rules/design-creation.mdc'
@@ -14,7 +14,7 @@ outputFile: '{spec_folder}/DESIGN.md'
 
 # Step 2: Create Technical Design
 
-**Progress: Step 2 of 5** — Next: Task Breakdown
+**Progress: Step 2 of 6** — Next: UIX/UI Specification
 
 ## STEP GOAL
 
@@ -69,7 +69,7 @@ Display:
 ```
 DESIGN.md is APPROVED.
 
-[C] Continue — proceed to Task Breakdown (Step 3 of 5)
+[C] Continue — proceed to UIX/UI Specification (Step 3 of 6)
 [V] View SPEC.md — display for reference (read-only)
 [B] Back to Spec — re-edit SPEC.md (step 1)
 [X] Exit — pause workflow; resume later with /flow
@@ -79,7 +79,7 @@ DESIGN.md is APPROVED.
 
 - **IF [C] Continue:**
   1. Update `{stateFile}`: append `'step-02-design'` to `stepsCompleted`.
-  2. Read fully and follow: `{nextStepFile}` (step-03-tasks.md).
+  2. Read fully and follow: `{nextStepFile}` (step-03-uix-ui.md).
 - **IF [V] View SPEC.md:**
   1. Read and display the full content of {specFile}.
   2. Redisplay this menu (no state changes).

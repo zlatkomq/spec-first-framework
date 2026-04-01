@@ -206,7 +206,7 @@ Minimum 3 issues expected. If fewer, see Issue Count Justification below.
 
 [Required only if fewer than 3 issues found. One sentence explaining what was re-examined and why this code genuinely has fewer issues.]
 
-<!-- IF more than 10 issues found: "BLOCKED — More than 10 issues found. The implementation needs fundamental rework, not incremental fixes. Recommend going back to TASKS.md (step 3)." -->
+<!-- IF more than 10 issues found: "BLOCKED — More than 10 issues found. The implementation needs fundamental rework, not incremental fixes. Recommend going back to TASKS.md (step 4)." -->
 
 ---
 

@@ -1,6 +1,6 @@
 # flow
 
-Run the full spec-first feature workflow for a given spec: create/update SPEC, DESIGN, TASKS, implement, and review — step by step with menus to continue, go back, or exit.
+Run the full spec-first feature workflow for a given spec: create/update SPEC, DESIGN, UIX/UI, TASKS, implement, and review — step by step with menus to continue, go back, or exit.
 
 If the user provides no message after `/flow`, ask which spec to work on.
 
@@ -85,8 +85,8 @@ When a step file says "Read fully and follow: {nextStepFile}":
 
 ## Reference
 
-- Step files: `.framework/steps/step-00-continue.md` through `step-05-review.md`
+- Step files: `.framework/steps/step-00-continue.md` through `step-06-review.md`
 - State template: `.framework/templates/workflow-state.template.md`
-- Rules: `.cursor/rules/spec-creation.mdc`, `design-creation.mdc`, `task-creation.mdc`, `implementation.mdc`, `code-review.mdc`
-- Templates: `.framework/templates/SPEC.template.md`, `DESIGN.template.md`, `TASKS.template.md`, `REVIEW.template.md`
+- Rules: `.cursor/rules/spec-creation.mdc`, `design-creation.mdc`, `uix-ui-creation.mdc`, `task-creation.mdc`, `implementation.mdc`, `code-review.mdc`
+- Templates: `.framework/templates/SPEC.template.md`, `DESIGN.template.md`, `UIX-UI.template.md`, `TASKS.template.md`, `REVIEW.template.md`
 - Project standards: `.framework/CONSTITUTION.md`

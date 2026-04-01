@@ -1,7 +1,7 @@
 ---
-name: 'step-03-tasks'
+name: 'step-04-tasks'
 description: 'Create or update TASKS.md for this feature'
-nextStepFile: './step-04-implement.md'
+nextStepFile: './step-05-implement.md'
 
 # References
 ruleRef: '@.cursor/rules/task-creation.mdc'
@@ -10,12 +10,13 @@ constitutionRef: '@.framework/CONSTITUTION.md'
 stateFile: '{spec_folder}/.workflow-state.md'
 specFile: '{spec_folder}/SPEC.md'
 designFile: '{spec_folder}/DESIGN.md'
+uixUiFile: '{spec_folder}/UIX-UI.md'
 outputFile: '{spec_folder}/TASKS.md'
 ---
 
-# Step 3: Create Task Breakdown
+# Step 4: Create Task Breakdown
 
-**Progress: Step 3 of 5** — Next: Implementation
+**Progress: Step 4 of 6** — Next: Implementation
 
 ## STEP GOAL
 
@@ -26,13 +27,13 @@ Create (or update) TASKS.md by applying the task-creation rules and template. Br
 - READ this entire step file before taking any action.
 - Apply {ruleRef} for all domain behavior, constraints, and output. Do not restate or override the rule.
 - Use the template from {templateRef}.
-- Load {constitutionRef}, {specFile}, and {designFile}.
+- Load {constitutionRef}, {specFile}, {designFile}, and {uixUiFile} (if it exists).
 - HALT and WAIT for user input at every menu.
 - Do NOT load or look ahead to future step files.
 
 ## GATE
 
-- Prerequisite: per {ruleRef}, required inputs must be satisfied (DESIGN approved). If not met: display a short message that TASKS cannot be created until DESIGN is approved; offer `[B] Back to Design (step 2)` | `[X] Exit`. On [B]: load and follow `./step-02-design.md`. On [X]: STOP.
+- Prerequisite: per {ruleRef}, required inputs must be satisfied (DESIGN approved). If not met: display a short message that TASKS cannot be created until DESIGN is approved; offer `[B] Back to UIX/UI (step 3)` | `[X] Exit`. On [B]: load and follow `./step-03-uix-ui.md`. On [X]: STOP.
 
 ## SEQUENCE
 
@@ -40,6 +41,7 @@ Create (or update) TASKS.md by applying the task-creation rules and template. Br
 
 - Read {designFile} completely.
 - Read {specFile} (for acceptance criteria traceability).
+- Read {uixUiFile} if it exists (for UI component specs, screen inventory, interaction patterns).
 - Read {constitutionRef} (for coverage thresholds, patterns).
 
 ### 2. Check if TASKS.md already exists
@@ -81,31 +83,40 @@ Display:
 ```
 TASKS.md is APPROVED.
 
-[C] Continue — proceed to Implementation (Step 4 of 5)
+[C] Continue — proceed to Implementation (Step 5 of 6)
 [V] View DESIGN.md — display for reference (read-only)
-[B] Back to Design — re-edit DESIGN.md (step 2)
-[B2] Back to Spec — re-edit SPEC.md (step 1)
+[V2] View UIX-UI.md — display for reference (read-only)
+[B] Back to UIX/UI — re-edit UIX-UI.md (step 3)
+[B2] Back to Design — re-edit DESIGN.md (step 2)
+[B3] Back to Spec — re-edit SPEC.md (step 1)
 [X] Exit — pause workflow; resume later with /flow
 ```
 
 ### Menu handling
 
 - **IF [C] Continue:**
-  1. Update `{stateFile}`: append `'step-03-tasks'` to `stepsCompleted`.
-  2. Read fully and follow: `{nextStepFile}` (step-04-implement.md).
+  1. Update `{stateFile}`: append `'step-04-tasks'` to `stepsCompleted`.
+  2. Read fully and follow: `{nextStepFile}` (step-05-implement.md).
 - **IF [V] View DESIGN.md:**
   1. Read and display the full content of {designFile}.
   2. Redisplay this menu (no state changes).
-- **IF [B] Back to Design:**
+- **IF [V2] View UIX-UI.md:**
+  1. Read and display the full content of {uixUiFile}.
+  2. Redisplay this menu (no state changes).
+- **IF [B] Back to UIX/UI:**
+  1. Trim `stepsCompleted` in `{stateFile}` to keep only entries up to `'step-02-design'`.
+  2. Clear `tasksCompleted` in `{stateFile}` (set to `[]`).
+  3. Read fully and follow: `./step-03-uix-ui.md`.
+- **IF [B2] Back to Design:**
   1. Trim `stepsCompleted` in `{stateFile}` to keep only entries up to `'step-01-spec'`.
   2. Clear `tasksCompleted` in `{stateFile}` (set to `[]`).
   3. Read fully and follow: `./step-02-design.md`.
-- **IF [B2] Back to Spec:**
+- **IF [B3] Back to Spec:**
   1. Set `stepsCompleted` in `{stateFile}` to `[]` (empty).
   2. Clear `tasksCompleted` in `{stateFile}` (set to `[]`).
   3. Read fully and follow: `./step-01-spec.md`.
 - **IF [X] Exit:**
-  - Update `{stateFile}`: append `'step-03-tasks'` to `stepsCompleted` (if TASKS is APPROVED).
+  - Update `{stateFile}`: append `'step-04-tasks'` to `stepsCompleted` (if TASKS is APPROVED).
   - Display: "Workflow paused. Run `/flow {spec_id}` to resume."
   - STOP.
 - **IF anything else:** Answer, then redisplay menu.

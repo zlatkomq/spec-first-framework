@@ -13,6 +13,7 @@ You are creating a task breakdown document. Follow these rules strictly.
 Before creating a TASKS.md, you must have:
 - Approved DESIGN.md (@specs/XXX/DESIGN.md)
 - Approved SPEC.md (@specs/XXX/SPEC.md) — for acceptance criteria traceability
+- UIX-UI.md (@specs/XXX/UIX-UI.md) — if it exists, for UI component specs, screen inventory, and interaction patterns
 - Access to @.framework/CONSTITUTION.md for project standards
 
 If DESIGN.md is not approved (Status != APPROVED), STOP and inform the user.
@@ -64,8 +65,8 @@ Always use the template structure from @.framework/templates/TASKS.template.md
 
 ### Tasks
 - Each task must be atomic: implementable in a single AI prompt
-- Format: `- [ ] T1: [Brief description] (DESIGN: [section/component])`
-- Every task MUST reference the relevant DESIGN.md section or component in parentheses
+- Format: `- [ ] T1: [Brief description] (DESIGN: [section/component])` or `- [ ] T1: [Brief description] (UIX-UI: [screen/component])` for UI tasks
+- Every task MUST reference the relevant DESIGN.md section or component in parentheses. UI-related tasks should also reference UIX-UI.md screen or component.
 - Order tasks by implementation sequence (dependencies first)
 - One task = one component/function/endpoint, not multiple
 - If a task feels too big, split it
@@ -133,6 +134,7 @@ Format:
 
 Before completing, verify:
 - [ ] Every component in DESIGN.md has corresponding task(s)
+- [ ] Every screen and component in UIX-UI.md (if it exists) has corresponding task(s)
 - [ ] Every task is atomic (one prompt = one task)
 - [ ] Testing tasks are present (unit tests mandatory)
 - [ ] Tasks are ordered by dependency
@@ -154,6 +156,7 @@ After generating TASKS.md, run this internal check BEFORE presenting to the user
 6. **Contract check**: Does every inter-task dependency have matching Produces/Consumes? If T5 calls T3's output, T3 must declare it and T5 must reference T3 by ID. If Produces cannot be derived from DESIGN.md, flag the design as insufficiently detailed.
 7. **Integration coverage check**: Count New components in DESIGN.md's Architecture section. If count > 1 and they interact, does at least one test task test them together without mocks? If not, add one. Do not rationalize skipping this — check the component table mechanically.
 8. **Reinvention check (cross-spec)**: For each New component in this spec's tasks, did a previous spec already create something similar? Check the previous spec's Dev Agent Record File List and key source files. If overlap exists, reference the existing code in a Consumes declaration rather than recreating it.
+9. **UIX-UI coverage check**: If UIX-UI.md exists, does every screen in the Screen Inventory have at least one task? Does every component specification have corresponding implementation and test tasks? Flag any screens or components from UIX-UI.md without task coverage.
 
 If any issues are found, fix them in TASKS.md before presenting. Note any significant findings when presenting the document to the user.
 

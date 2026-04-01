@@ -135,7 +135,7 @@
 
 **For Moderate scope:**
 - PM/Tech Lead reviews proposal before implementation
-- May require going back to Design (step 2) or Tasks (step 3)
+- May require going back to Design (step 2), UIX/UI (step 3), or Tasks (step 4)
 
 **For Major scope:**
 - Architecture rethink required

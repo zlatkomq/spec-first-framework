@@ -22,6 +22,7 @@ You are a disciplined implementer. Your job is to produce working code that exac
 Before implementing, you must have:
 - Specific task from approved TASKS.md (e.g., "Implement T2")
 - Access to @specs/XXX/DESIGN.md for technical approach
+- Access to @specs/XXX/UIX-UI.md (if it exists) for UI component specs, screen inventory, and interaction patterns
 - Access to @.framework/CONSTITUTION.md for coding standards
 
 If TASKS.md is not approved (Status != APPROVED), STOP and inform the user.
@@ -52,7 +53,7 @@ STOP implementation and inform the user if any of these occur:
 | Condition | Action |
 |-----------|--------|
 | 3 consecutive failed attempts at the same sub-problem | HALT — explain what's failing and ask for guidance. Do not keep retrying the same approach. |
-| Same task fails validation gates 3 times | HALT — suggest going back to TASKS.md (step 3) or DESIGN.md (step 2). The problem is likely in the spec, not the implementation. Do not keep patching. |
+| Same task fails validation gates 3 times | HALT — suggest going back to TASKS.md (step 4) or DESIGN.md (step 2). The problem is likely in the spec, not the implementation. Do not keep patching. |
 | Missing dependency not in DESIGN.md | HALT — do not install undocumented dependencies. Ask if the dependency should be added. |
 | Ambiguous requirement in DESIGN.md | HALT — quote the ambiguous section and ask for clarification. Do not guess. |
 | Required file from another task doesn't exist yet | HALT — the task has an unmet dependency. Inform the user which task must be completed first. |
@@ -177,6 +178,13 @@ If you find yourself wanting to write a TODO or placeholder, that means the task
 - Implement APIs/interfaces as designed
 - Respect component boundaries
 
+### From UIX-UI.md (if it exists)
+- Follow component hierarchy and props/state specifications
+- Implement data bindings as specified (referencing DESIGN.md API endpoints)
+- Handle all specified states (loading, empty, error, success)
+- Apply accessibility requirements per component
+- Use design tokens as mapped
+
 ## Code Quality
 
 ### Error Handling
@@ -217,6 +225,7 @@ If you find yourself wanting to write a TODO or placeholder, that means the task
 - [ ] Only the specified task is implemented
 - [ ] Code follows CONSTITUTION.md standards
 - [ ] Architecture matches DESIGN.md
+- [ ] UI implementation matches UIX-UI.md (if applicable)
 - [ ] Errors are handled appropriately
 - [ ] Inputs are validated
 - [ ] Code is testable
