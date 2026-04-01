@@ -15,6 +15,7 @@ project/
 │   │   ├── review.md
 │   │   ├── flow.md                     # Guided BMAD-style workflow (steps + menus)
 │   │   ├── bug.md
+│   │   ├── uix.md                      # Create UIX-SPEC.md (Figma mapping)
 │   │   ├── bugfix.md
 │   │   ├── bugreview.md
 │   │   ├── change.md                   # Change request (scope change) workflow
@@ -31,6 +32,7 @@ project/
 │       ├── codebase-analysis.mdc       # Rules for analyzing legacy codebase
 │       ├── legacy-assessment.mdc       # Rules for assessing tech debt/risks
 │       ├── constitution-creation.mdc   # Rules for creating CONSTITUTION.md
+│       ├── uix-creation.mdc            # Rules for creating UIX-SPEC.md (Figma mapping)
 │       ├── change-request.mdc          # Rules for change requests (impact, proposal, Amendment History)
 │       └── adversarial-review.mdc      # Rules for adversarial doc review (≥10 issues)
 │
@@ -39,6 +41,7 @@ project/
 │   │   ├── step-00-continue.md         # Resume logic
 │   │   ├── step-01-spec.md
 │   │   ├── step-02-design.md
+│   │   ├── step-02b-uix.md               # Optional: Figma mapping (UIX-SPEC.md)
 │   │   ├── step-03-tasks.md
 │   │   ├── step-04-implement.md
 │   │   └── step-05-review.md
@@ -51,6 +54,7 @@ project/
 │   │   ├── REVIEW.template.md          # Template for code review (incl. Dev Agent Record, Auto-Fix, Action Items)
 │   │   ├── BUG-REVIEW.template.md      # Template for bug review
 │   │   ├── workflow-state.template.md  # State file template for /flow (jiraTicket, sowRef)
+│   │   ├── UIX-SPEC.template.md        # Template for Figma mapping (UIX spec)
 │   │   ├── CHANGE-PROPOSAL.template.md # Template for change proposals (classification, impact)
 │   │   ├── SPEC-CURRENT.template.md    # Template for compiled spec (SPEC + bugs + CRs)
 │   │   ├── CODEBASE-ANALYSIS.template.md   # Template for codebase analysis (legacy)
@@ -69,6 +73,8 @@ project/
 │   │   ├── .workflow-state.md          # Workflow progress (created by /flow, committed to git)
 │   │   ├── SPEC.md                     # What to build
 │   │   ├── DESIGN.md                   # How to build it
+│   │   ├── UIX-SPEC.md                 # Optional: Figma mapping (created by /uix or step 2b)
+│   │   ├── figma_*.json                # Optional: layout JSON fetched from Figma MCP
 │   │   ├── TASKS.md                    # Implementation breakdown
 │   │   └── REVIEW.md                   # Code review results
 │   │
@@ -83,6 +89,8 @@ project/
 │       ├── .workflow-state.md          # Tracks stepsCompleted + tasksCompleted
 │       ├── SPEC.md
 │       ├── DESIGN.md
+│       ├── UIX-SPEC.md                 # Optional: Figma mapping
+│       ├── figma_*.json                # Optional: layout JSON from Figma MCP
 │       ├── TASKS.md
 │       └── REVIEW.md
 │
@@ -126,6 +134,7 @@ project/
 |------|---------|---------|
 | `spec-creation.mdc` | Step 1 | How AI creates SPEC.md |
 | `design-creation.mdc` | Step 2 | How AI creates DESIGN.md |
+| `uix-creation.mdc` | Step 2b | How AI creates UIX-SPEC.md (Figma mapping) |
 | `task-creation.mdc` | Step 3 | How AI creates TASKS.md |
 | `implementation.mdc` | Step 4 | How AI writes code |
 | `code-review.mdc` | Step 5 | How AI reviews code |
@@ -144,6 +153,7 @@ project/
 |------|---------|---------|
 | `SPEC.template.md` | Step 1 | Structure for specifications |
 | `DESIGN.template.md` | Step 2 | Structure for technical design |
+| `UIX-SPEC.template.md` | Step 2b | Structure for Figma mapping (UIX spec) |
 | `TASKS.template.md` | Step 3 | Structure for task breakdown |
 | `REVIEW.template.md` | Step 5 | Structure for code reviews (Dev Agent Record, Auto-Fix, Action Items) |
 | `BUG.template.md` | Bugfix Step 1 | Structure for bug reports |
@@ -164,6 +174,7 @@ project/
 | `LEGACY-ASSESSMENT.md` | Developer + AI | Tech Lead | Tech debt inventory |
 | `SPEC.md` | PO/BA + AI | PO/Client | What to build |
 | `DESIGN.md` | Developer + AI | Tech Lead | How to build it |
+| `UIX-SPEC.md` | Developer + AI | Tech Lead | Figma-to-design mapping + layout JSON refs |
 | `TASKS.md` | Developer + AI | Tech Lead | Implementation steps |
 | `BUG.md` | Developer + AI | Tech Lead | Bug report and fix plan |
 | `REVIEW.md` (features) | Developer + AI | Reviewer | Adversarial code review |
@@ -268,6 +279,7 @@ project/
 | Understand legacy code | `docs/legacy-analysis/` |
 | Find requirements | `specs/XXX/SPEC.md` |
 | Find technical approach | `specs/XXX/DESIGN.md` |
+| Find Figma mapping / layout JSON | `specs/XXX/UIX-SPEC.md`, `specs/XXX/figma_*.json` |
 | Find implementation tasks | `specs/XXX/TASKS.md` |
 | Find bug reports | `bugs/BUG-XXX/BUG.md` |
 | Find bug fix reviews | `bugs/BUG-XXX/REVIEW.md` |
