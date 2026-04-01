@@ -42,28 +42,30 @@ spec-first update --branch <branch-name>
 
 1. Install the framework with `spec-first init` (or manually copy `.cursor/` and `.framework/` folders into your project)
 2. Create `CONSTITUTION.md` using: `/constitute` or `@constitution-creation.mdc` + your project description
-3. For each spec, follow the workflow: SPEC → DESIGN → TASKS → Implementation → Review
+3. For each spec, follow the workflow: SPEC → DESIGN → UIX (optional Figma) → TASKS → Implementation → Review
 
-**Commands** (in `.cursor/commands/`): `/constitute`, `/specify`, `/design`, `/tasks`, `/implement`, `/review`, `/flow`, `/bug`, `/bugfix`, `/bugreview`, `/change`, `/adversarial` — see [Commands & Workflow Example](docs/COMMANDS-WORKFLOW-EXAMPLE.md).
+**Commands** (in `.cursor/commands/`): `/constitute`, `/specify`, `/design`, `/uix`, `/tasks`, `/implement`, `/review`, `/flow`, `/bug`, `/bugfix`, `/bugreview`, `/change`, `/adversarial` — see [Commands & Workflow Example](docs/COMMANDS-WORKFLOW-EXAMPLE.md).
 
-**Guided workflow (recommended):** Use **`/flow 001-slug: requirements`** to run the full feature workflow step by step (BMAD-style: state + step files + menus). Resume anytime with **`/flow 001`**. Go back with **[B]**, continue with **[C]**. See [Workflow return and continue](docs/WORKFLOW-RETURN-AND-CONTINUE.md).
+**Guided workflow (recommended):** Use **`/flow 001-slug: requirements`** to run the full feature workflow step by step (BMAD-style: state + step files + menus). The flow includes an optional Figma mapping step (UIX) between Design and Tasks. Resume anytime with **`/flow 001`**. Go back with **[B]**, continue with **[C]**. See [Workflow return and continue](docs/WORKFLOW-RETURN-AND-CONTINUE.md).
 
 ## Workflow
 
 ### Feature Workflow
 
 ```
-STEP 0: CONSTITUTION.md (once per project)
-         ↓
-STEP 1: SPEC.md → Gate 1 (PO approves)
-         ↓
-STEP 2: DESIGN.md → Gate 2 (Tech Lead approves)
-         ↓
-STEP 3: TASKS.md → Gate 3 (Tech Lead approves)
-         ↓
-STEP 4: Implementation (per task)
-         ↓
-STEP 5: Code Review → Gate 4 (Reviewer approves) → Done
+STEP 0:  CONSTITUTION.md (once per project)
+          ↓
+STEP 1:  SPEC.md → Gate 1 (PO approves)
+          ↓
+STEP 2:  DESIGN.md → Gate 2 (Tech Lead approves)
+          ↓
+STEP 2b: UIX-SPEC.md (optional) → Figma mapping + layout JSON
+          ↓
+STEP 3:  TASKS.md → Gate 3 (Tech Lead approves)
+          ↓
+STEP 4:  Implementation (per task)
+          ↓
+STEP 5:  Code Review → Gate 4 (Reviewer approves) → Done
 ```
 
 ### Bugfix Workflow
@@ -106,10 +108,20 @@ All spec artifacts support traceability fields for billing and audit:
 - **Workflow state:** `jiraTicket` and `sowRef` in `.workflow-state.md` for Jira/SOW linking
 - **Bug History** and **Amendment History** in SPEC.md — updated automatically when bugs are fixed or change requests are implemented
 
+### Figma Integration (UIX Spec)
+
+Step 2b introduces an optional **UIX-SPEC.md** artifact that bridges design and implementation for specs with Figma designs:
+
+- **Design-to-Figma mapping:** Every component/screen from DESIGN.md is mapped to a Figma file and node ID, producing deep links for implementers and reviewers.
+- **Layout JSON via MCP:** When the local MCP server `figma-to-code` is available (with `FIGMA_ACCESS_TOKEN` configured), the framework calls `get_figma_design` to fetch Figma layout data and saves it as `figma_*.json` artifacts under the spec folder. These JSON files serve as structured layout references during implementation (step 4).
+- **Skippable:** If a spec has no Figma designs, step 2b can be skipped cleanly — the workflow continues to Task Breakdown.
+- **Standalone command:** Use `/uix 001` outside of `/flow` to create or update a UIX-SPEC for any spec with approved SPEC.md and DESIGN.md.
+
 ### New Commands
 
 | Command | Purpose |
 |---------|---------|
+| `/uix {spec}` | Create UIX-SPEC.md — map DESIGN.md segments to Figma files/nodes and fetch layout JSON via MCP. |
 | `/change {spec}` | Handle scope changes. Produces a Change Proposal with impact analysis. On approval, updates artifacts and regenerates SPEC-CURRENT.md. |
 | `/adversarial` | Review any content (spec, design, doc) with extreme skepticism. Finds at least 10 issues. Use before approving a gate or to sanity-check a document. |
 
@@ -141,10 +153,11 @@ See [CHANGELOG.md](CHANGELOG.md) for the full list of changes in this release.
 ```
 your-project/
 ├── .cursor/
-│   ├── commands/              # Slash commands: /specify, /design, /tasks, etc.
+│   ├── commands/              # Slash commands: /specify, /design, /uix, /tasks, etc.
 │   └── rules/
 │       ├── spec-creation.mdc
 │       ├── design-creation.mdc
+│       ├── uix-creation.mdc          # Rules for creating UIX-SPEC.md (Figma mapping)
 │       ├── task-creation.mdc
 │       ├── implementation.mdc
 │       ├── code-review.mdc
@@ -159,12 +172,14 @@ your-project/
 │   │   ├── step-00-continue.md    #   Resume logic
 │   │   ├── step-01-spec.md        #   Create SPEC.md
 │   │   ├── step-02-design.md      #   Create DESIGN.md
+│   │   ├── step-02b-uix.md        #   Create UIX-SPEC.md (optional Figma mapping)
 │   │   ├── step-03-tasks.md       #   Create TASKS.md
 │   │   ├── step-04-implement.md   #   Implement tasks
 │   │   └── step-05-review.md      #   Code review
 │   ├── templates/
 │   │   ├── SPEC.template.md
 │   │   ├── DESIGN.template.md
+│   │   ├── UIX-SPEC.template.md          # Figma mapping structure
 │   │   ├── TASKS.template.md
 │   │   ├── REVIEW.template.md
 │   │   ├── BUG.template.md
@@ -181,6 +196,8 @@ your-project/
 │       ├── .workflow-state.md   ← Created by /flow (tracks progress)
 │       ├── SPEC.md
 │       ├── DESIGN.md
+│       ├── UIX-SPEC.md          ← Optional (Figma mapping, created by /uix or step 2b)
+│       ├── figma_*.json         ← Optional (layout JSON fetched from Figma MCP)
 │       ├── TASKS.md
 │       └── REVIEW.md
 ├── bugs/
@@ -211,6 +228,14 @@ All steps can be run via the slash commands below. You can also invoke the rules
 ```
 /design 001
 ```
+
+### Step 2b: Create UIX Spec — Figma Mapping (optional)
+
+```
+/uix 001
+```
+
+Maps DESIGN.md components/screens to Figma files and node IDs. When the MCP server `figma-to-code` is available, fetches Figma layout JSON and saves it as `figma_*.json` artifacts under the spec folder for use during implementation. Skip this step if the spec has no Figma designs.
 
 ### Step 3: Create Task Breakdown
 
