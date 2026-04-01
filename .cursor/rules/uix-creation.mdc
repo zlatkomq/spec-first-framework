@@ -1,0 +1,94 @@
+---
+description: Rules for creating UIX-SPEC.md (Figma mapping) files
+globs: specs/**/UIX-SPEC.md
+alwaysApply: false
+---
+
+# UIX Spec Creation Rules
+
+You are creating a UIX specification that maps DESIGN.md segments to Figma designs. Follow these rules strictly.
+
+## Required Inputs
+
+Before creating a UIX-SPEC.md, you must have:
+- Approved SPEC.md (@specs/XXX/SPEC.md)
+- Approved DESIGN.md (@specs/XXX/DESIGN.md)
+
+If SPEC.md or DESIGN.md is not approved (Status != APPROVED), STOP and inform the user.
+
+## Template
+
+Always use the template structure from @.framework/templates/UIX-SPEC.template.md
+
+## Field Rules
+
+### Metadata
+- **ID**: Must match the SPEC.md and DESIGN.md ID exactly
+- **Name**: Must match the SPEC.md Name exactly
+- Status is always DRAFT until user approves
+- Author: developer name + "/ AI-assisted"
+- Reviewer: leave blank (user fills this)
+- Date: today's date
+
+### Overview
+- 1–2 sentences maximum
+- State that this spec's UI is defined in Figma
+- Reference DESIGN.md as the source of component/screen segments
+
+### Figma Files
+- One row per Figma file used for this spec
+- Include the full Figma URL
+- Provide a short description of what the file covers
+
+### Design Segment → Figma Mapping
+- Map each component or screen from DESIGN.md Architecture to a Figma link
+- **Design Segment**: Component or screen name from DESIGN.md
+- **Figma File**: Short name or key from the Figma Files table
+- **Node ID**: Figma node-id for deep link (e.g. `123:456` or `123-456`); leave empty if linking to file only
+- **Figma Link**: Full URL (with `?node-id=...` when Node ID is set)
+- **Notes**: Optional context (e.g. "Mobile variant", "Desktop only", "No Figma yet")
+
+### Layout JSON Artifacts
+- Populated when MCP `figma-to-code` server is available
+- Each row references a saved `figma_*.json` file under the spec folder
+- Files are named `figma_<NODE_URL_FORM>.json` (colon → hyphen, e.g. `0:1` → `figma_0-1.json`)
+- Full-file pulls with no node use `figma_full.json`
+
+### Open Questions
+- Format as checklist: `- [ ] Question here?`
+- Include any segments without Figma coverage
+
+## Figma Layout JSON (MCP `figma-to-code`)
+
+When the MCP server `figma-to-code` is available and the user provides Figma URLs:
+
+1. **Tool**: `get_figma_design`
+   - **`fileKey`**: parse from the user's Figma URL (segment after `/design/` or `/file/`)
+   - **`nodeId`**: optional; pass API form with **colon** (e.g. `0:1`). Prefer a single root frame / page node per artifact. Omit only if deliberately requesting full file output.
+2. **Save**: Write the tool's JSON result to `{spec_folder}/figma_<NODE_URL_FORM>.json`
+3. **Reference**: Add each saved file to the Layout JSON Artifacts table in UIX-SPEC.md
+
+If MCP is unavailable, note in Open Questions that layout JSON is pending. Do NOT fabricate file contents.
+
+## Constraints
+
+- Do NOT invent Figma URLs or node-ids — only use what the user provides
+- Do NOT create layout JSON files without actually calling the MCP tool
+- Do NOT modify SPEC.md or DESIGN.md during this step
+- Every design segment from DESIGN.md should be accounted for (mapped to Figma or marked "No Figma yet" in Notes)
+- All bracket placeholders from template must be removed from output; if info is missing, add an Open Question
+
+## Validation
+
+Before completing, verify:
+- [ ] All DESIGN.md architecture segments are mapped or noted
+- [ ] Figma URLs are real (provided by user, not fabricated)
+- [ ] Node IDs match the URL format the user provided
+- [ ] Layout JSON files (if any) are saved with correct naming convention
+- [ ] Status set to DRAFT
+
+## Output
+
+Save the file to: `specs/XXX-{slug}/UIX-SPEC.md`
+
+Must be in the same folder as the corresponding SPEC.md and DESIGN.md.

@@ -41,6 +41,7 @@ Implement tasks from TASKS.md one at a time. After each task, present a menu so 
 - Read {tasksFile} completely. Extract the ordered list of tasks (T1, T2, T3, …).
 - Read {designFile} (for architecture and component details).
 - Read {constitutionRef} (for coding standards).
+- If `{spec_folder}/UIX-SPEC.md` exists: read it for Figma mapping context. For UI-related tasks, reference the corresponding Figma segment and load any `figma_*.json` layout files listed in UIX-SPEC.md as layout reference for implementation.
 - Read `{stateFile}` frontmatter. Extract `tasksCompleted` (array of completed task IDs, e.g. `['T1', 'T2']`).
 - **Reconcile state with TASKS.md checkboxes**: If `tasksCompleted` and {tasksFile} checkboxes disagree, `tasksCompleted` in {stateFile} is authoritative. Update {tasksFile} checkboxes to match:
   - Task ID in `tasksCompleted` but checkbox is `[ ]` or `[~]` → set to `[x]`
@@ -154,7 +155,7 @@ All {total} tasks implemented. Definition of Done: PASS.
   - User specifies task. Re-apply {ruleRef} for that task.
   - After done, redisplay this menu (section 6).
 - **IF [B] Back to Tasks:**
-  1. Trim `stepsCompleted` in `{stateFile}` to keep entries up to `'step-02-design'`.
+  1. Trim `stepsCompleted` in `{stateFile}` to keep entries up to `'step-02-design'` (plus `'step-02b-uix'` if it was previously in the list — preserve the optional step's completion record).
   2. Clear `tasksCompleted` in `{stateFile}` (set to `[]`).
   3. Read fully and follow: `./step-03-tasks.md`.
 - **IF [B2] Back to Design:**
