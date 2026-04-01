@@ -11,6 +11,7 @@ How to use the Cursor commands to run the full spec-first workflow. Each command
 | `/constitute` | Create/update `.framework/CONSTITUTION.md` | Project description (tech stack, standards) |
 | `/specify` | Create `specs/XXX-slug/SPEC.md` | Spec ID + requirement (or just requirement; ID asked if missing) |
 | `/design` | Create `specs/XXX-slug/DESIGN.md` | Spec reference (e.g. 006 or path) |
+| `/uix` | Create `specs/XXX-slug/UIX-SPEC.md` (Figma mapping + design context via official Figma MCP) | Spec reference (e.g. 006 or path) |
 | `/tasks` | Create `specs/XXX-slug/TASKS.md` | Spec/design reference (e.g. 006 or path) |
 | `/implement` | Implement one task from TASKS.md | Task reference (e.g. T3 from 006) |
 | `/review` | Generate `specs/XXX-slug/REVIEW.md` | Spec reference (e.g. 006 or path) |
@@ -53,6 +54,15 @@ or
 /design @specs/006-chatbot/SPEC.md
 ```
 → Creates `specs/006-chatbot/DESIGN.md`. Human (Tech Lead) approves.
+
+---
+
+**Step 2b – UIX Spec / Figma Mapping (optional)**
+
+```
+/uix 006
+```
+→ Maps DESIGN.md segments to Figma files/nodes. If the official Figma MCP is connected, fetches design context via `get_design_context` and saves `figma_context_*.md` artifacts. Creates `specs/006-chatbot/UIX-SPEC.md`. Skip if no Figma designs.
 
 ---
 
@@ -171,6 +181,7 @@ If you run a command with no message, the AI will ask for the missing input:
 | `/constitute` | (nothing) | Project description (tech stack, standards) |
 | `/specify` | (nothing) | Spec ID and/or requirement |
 | `/design` | (nothing) | Which spec to design (e.g. 006) |
+| `/uix` | (nothing) | Which spec to create Figma mapping for (e.g. 006) |
 | `/tasks` | (nothing) | Which design to break down (e.g. 006) |
 | `/implement` | (nothing) | Which task (e.g. T3 from 006) |
 | `/review` | (nothing) | Which spec to review (e.g. 006) |
@@ -185,7 +196,7 @@ If you run a command with no message, the AI will ask for the missing input:
 ## Flow Summary
 
 **Feature (standalone commands):**  
-`/constitute` (once) → `/specify` → `/design` → `/tasks` → `/implement` (per task) → `/review`
+`/constitute` (once) → `/specify` → `/design` → `/uix` (optional) → `/tasks` → `/implement` (per task) → `/review`
 
 **Feature (guided workflow — recommended):**  
 `/constitute` (once) → `/flow 001-slug: requirements` → runs all steps with menus: [C] Continue, [B] Back, [X] Exit.  
@@ -215,9 +226,10 @@ Each standalone command runs one subflow (rule + template). `/flow` runs the ful
 1. Runner creates `specs/002-chatbot/` and `.workflow-state.md`, then loads step-01-spec.
 2. Step 1: AI asks clarifying questions, creates SPEC.md (DRAFT). You review and approve. Menu: [C] Continue.
 3. Press **[C]** → Step 2: AI creates DESIGN.md. You approve. [C] Continue.
-4. Press **[C]** → Step 3: AI creates TASKS.md. You approve. [C] Continue.
-5. Press **[C]** → Step 4: AI implements tasks. You confirm all done. [C] Continue.
-6. Press **[C]** → Step 5: AI generates REVIEW.md. If approved: [C] Complete. If issues: [F] Fix or [B] Back.
+4. Press **[C]** → Step 2b (optional): AI asks for Figma URLs, creates UIX-SPEC.md with design context. [C] Continue or [S] Skip.
+5. Press **[C]** → Step 3: AI creates TASKS.md. You approve. [C] Continue.
+6. Press **[C]** → Step 4: AI implements tasks. You confirm all done. [C] Continue.
+7. Press **[C]** → Step 5: AI generates REVIEW.md. If approved: [C] Complete. If issues: [F] Fix or [B] Back.
 
 **Resume after a break:**
 

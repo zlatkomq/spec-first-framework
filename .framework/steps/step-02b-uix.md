@@ -10,7 +10,8 @@ stateFile: '{spec_folder}/.workflow-state.md'
 specFile: '{spec_folder}/SPEC.md'
 designFile: '{spec_folder}/DESIGN.md'
 outputFile: '{spec_folder}/UIX-SPEC.md'
-uixLayoutJsonPattern: '{spec_folder}/figma_*.json'
+uixContextPattern: '{spec_folder}/figma_context_*.md'
+uixScreenshotPattern: '{spec_folder}/figma_screenshot_*.png'
 ---
 
 # Step 2b: Create UIX Spec (Figma) — Optional
@@ -19,7 +20,7 @@ uixLayoutJsonPattern: '{spec_folder}/figma_*.json'
 
 ## STEP GOAL
 
-Create (or update) UIX-SPEC.md by applying the uix-creation rules and template. Map DESIGN.md segments to Figma files and node IDs. When Figma is in scope, **fetch layout JSON** via the local MCP server **`figma-to-code`** (tool **`get_figma_design`**) and save artifacts under the spec folder for **step 04 (implementation)** to use as layout reference. This step is optional: if this spec has no Figma, choose [S] Skip to continue to Task Breakdown.
+Create (or update) UIX-SPEC.md by applying the uix-creation rules and template. Map DESIGN.md segments to Figma files and node IDs. When Figma is in scope, **fetch design context** via the official Figma MCP server **`figma`** (tool **`get_design_context`**) and save artifacts under the spec folder for **step 04 (implementation)** to use as layout reference. This step is optional: if this spec has no Figma, choose [S] Skip to continue to Task Breakdown.
 
 ## RULES
 
@@ -51,22 +52,25 @@ Do NOT invent Figma URLs or node-ids — only use what the user provides.
 
 - Ask the user: "Do you have Figma file(s) for this spec? If yes, provide the file URL(s) and, for each DESIGN segment, the Figma link and optional node-id. If no Figma for this spec, say 'skip' or 'no' to skip this step."
 
-### 2a. Fetch layout JSON via MCP `figma-to-code` (when Figma is provided)
+### 2a. Fetch design context via official Figma MCP (when Figma is provided)
 
-Apply **{ruleRef} → "Figma Layout JSON (MCP `figma-to-code`)"** in full. Summary:
+Apply **{ruleRef} → "Figma Design Context (Official Figma MCP)"** in full. Summary:
 
-1. **Prerequisite:** Local MCP server **`figma-to-code`** is available (e.g. Cursor MCP or `npm run mcp` in the project that hosts the server) with **`FIGMA_ACCESS_TOKEN`** configured on that server.
-2. **Tool:** **`get_figma_design`**
-   - **`fileKey`**: parse from the user's Figma URL (segment after `/design/` or `/file/`).
-   - **`nodeId`**: optional; pass API form with **colon** (e.g. `0:1`). Prefer a **single root frame / page node** per artifact to keep JSON bounded. Omit only if deliberately requesting **full file** output.
-3. **Save:** Write the tool's JSON result to `{spec_folder}/figma_<NODE_URL_FORM>.json` where `<NODE_URL_FORM>` uses **hyphens** like Figma URLs (`0:1` → `figma_0-1.json`). For a **full-file** pull with no node, use **`figma_full.json`**.
-4. **UIX-SPEC.md:** Reference each saved file (relative path, e.g. `./figma_0-1.json`) in the Layout JSON Artifacts table so **step 04** can locate layout references without guessing.
+1. **Prerequisite:** Official Figma MCP server **`figma`** is connected (remote at `https://mcp.figma.com/mcp`). User must have authenticated via OAuth through their MCP client (e.g. Cursor). No local server or API token env var required.
+2. **Tool:** **`get_design_context`**
+   - Pass the user's Figma URL directly; the tool extracts `fileKey` and `node-id` automatically.
+   - Prefer a **single root frame or component** per call to keep context bounded.
+   - Returns a structured design representation (React + Tailwind by default; customizable via prompt).
+3. **Tool (optional):** **`get_screenshot`** — capture a visual reference for each key frame/component.
+4. **Tool (optional):** **`get_variable_defs`** — extract design tokens (colors, spacing, typography) when needed.
+5. **Save:** Write the `get_design_context` result to `{spec_folder}/figma_context_<NODE_URL_FORM>.md` where `<NODE_URL_FORM>` uses **hyphens** (`0:1` → `figma_context_0-1.md`). For a **full-frame** pull with no specific node, use **`figma_context_full.md`**. Save screenshots (if any) as `{spec_folder}/figma_screenshot_<NODE_URL_FORM>.png`.
+6. **UIX-SPEC.md:** Reference each saved file (relative path, e.g. `./figma_context_0-1.md`) in the Design Context Artifacts table so **step 04** can locate layout references without guessing.
 
-If MCP is unavailable, skip 2a and note in UIX-SPEC **Open Questions** that layout JSON is pending; do **not** fabricate file contents.
+If MCP is unavailable (or user hasn't authenticated), skip 2a and note in UIX-SPEC **Open Questions** that design context is pending; do **not** fabricate file contents.
 
 ### 3. Create or skip
 
-- **If user provides Figma data (or wants a skeleton):** Apply {ruleRef} using {templateRef}. Save to `{outputFile}` with Status: DRAFT. If section 2a ran, ensure layout artifacts match `{uixLayoutJsonPattern}` naming and are linked from UIX-SPEC. Go to section 4.
+- **If user provides Figma data (or wants a skeleton):** Apply {ruleRef} using {templateRef}. Save to `{outputFile}` with Status: DRAFT. If section 2a ran, ensure design context artifacts match `{uixContextPattern}` naming (and screenshots match `{uixScreenshotPattern}`) and are linked from UIX-SPEC. Go to section 4.
 - **If user skips (no Figma):** Update `{stateFile}`: append `'step-02b-uix'` to `stepsCompleted`. Set `uixSkipped: true` in frontmatter. Offer to commit: "Commit workflow state? [Y/n]" — if yes: `git add {stateFile}` and commit with message `"spec({spec_id}): skip UIX spec (no Figma)"`. Auto-continue: load and follow `{nextStepFile}`. STOP (do not present approval menu).
 
 ### 4. Approval gate
@@ -94,7 +98,7 @@ UIX-SPEC.md is APPROVED.
   1. Update Status → APPROVED.
   2. Update `{stateFile}`: append `'step-02b-uix'` to `stepsCompleted`.
   3. Set `uixSkipped: false` in `{stateFile}` frontmatter.
-  4. Offer to commit: "Commit UIX-SPEC.md (and any `figma_*.json` layout files) to the current branch? [Y/n]" — if yes: `git add {outputFile} {spec_folder}/figma_*.json {stateFile}` (shell glob as appropriate) and commit with message `"spec({spec_id}): create UIX spec (Figma)"`.
+  4. Offer to commit: "Commit UIX-SPEC.md (and any `figma_context_*.md` / `figma_screenshot_*.png` files) to the current branch? [Y/n]" — if yes: `git add {outputFile} {spec_folder}/figma_context_*.md {spec_folder}/figma_screenshot_*.png {stateFile}` (shell glob as appropriate) and commit with message `"spec({spec_id}): create UIX spec (Figma)"`.
   5. Present menu (section 5).
 - **IF [C] Continue:**
   1. Read fully and follow: `{nextStepFile}` (step-03-tasks.md).
@@ -125,7 +129,7 @@ ONLY when `{nextStepFile}` is loaded via an explicit user action — [C] Continu
 
 - All domain and quality criteria per {ruleRef} are satisfied.
 - UIX-SPEC.md created with correct Figma mappings, or step skipped cleanly.
-- Layout JSON artifacts (if any) saved with correct naming and referenced in UIX-SPEC.md.
+- Design context artifacts (if any) saved with correct naming and referenced in UIX-SPEC.md.
 - Status APPROVED before continuing (unless skipping).
 - State updated before loading next step (`uixSkipped` set correctly).
 
@@ -135,4 +139,4 @@ ONLY when `{nextStepFile}` is loaded via an explicit user action — [C] Continu
 - Inventing Figma URLs or node-ids not provided by the user.
 - Not updating state before loading next step.
 - Loading next step before user selects [C] or [S].
-- Fabricating layout JSON file contents without calling the MCP tool.
+- Fabricating design context file contents without calling the MCP tool.
