@@ -74,7 +74,8 @@ project/
 │   │   ├── SPEC.md                     # What to build
 │   │   ├── DESIGN.md                   # How to build it
 │   │   ├── UIX-SPEC.md                 # Optional: Figma mapping (created by /uix or step 2b)
-│   │   ├── figma_*.json                # Optional: layout JSON fetched from Figma MCP
+│   │   ├── figma_context_*.md          # Optional: design context from official Figma MCP
+│   │   ├── figma_screenshot_*.png      # Optional: screenshots from Figma MCP
 │   │   ├── TASKS.md                    # Implementation breakdown
 │   │   └── REVIEW.md                   # Code review results
 │   │
@@ -90,7 +91,8 @@ project/
 │       ├── SPEC.md
 │       ├── DESIGN.md
 │       ├── UIX-SPEC.md                 # Optional: Figma mapping
-│       ├── figma_*.json                # Optional: layout JSON from Figma MCP
+│       ├── figma_context_*.md          # Optional: design context from official Figma MCP
+│       ├── figma_screenshot_*.png      # Optional: screenshots from Figma MCP
 │       ├── TASKS.md
 │       └── REVIEW.md
 │
@@ -279,7 +281,7 @@ project/
 | Understand legacy code | `docs/legacy-analysis/` |
 | Find requirements | `specs/XXX/SPEC.md` |
 | Find technical approach | `specs/XXX/DESIGN.md` |
-| Find Figma mapping / layout JSON | `specs/XXX/UIX-SPEC.md`, `specs/XXX/figma_*.json` |
+| Find Figma mapping / design context | `specs/XXX/UIX-SPEC.md`, `specs/XXX/figma_context_*.md` |
 | Find implementation tasks | `specs/XXX/TASKS.md` |
 | Find bug reports | `bugs/BUG-XXX/BUG.md` |
 | Find bug fix reviews | `bugs/BUG-XXX/REVIEW.md` |

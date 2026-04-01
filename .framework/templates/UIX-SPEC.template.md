@@ -49,13 +49,13 @@
 
 ---
 
-## Layout JSON Artifacts
+## Design Context Artifacts
 
-[List of fetched Figma layout JSON files for implementation reference. Populated by step-02b-uix when MCP `figma-to-code` is available.]
+[Design context and screenshots fetched via the official Figma MCP server (`figma`). Populated by step-02b-uix when the MCP is connected.]
 
-| Artifact File | Node ID | Description |
-|---------------|---------|-------------|
-| | | |
+| Artifact File | Type | Node ID | Description |
+|---------------|------|---------|-------------|
+| | context / screenshot | | |
 
 ---
 

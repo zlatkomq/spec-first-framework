@@ -110,10 +110,11 @@ All spec artifacts support traceability fields for billing and audit:
 
 ### Figma Integration (UIX Spec)
 
-Step 2b introduces an optional **UIX-SPEC.md** artifact that bridges design and implementation for specs with Figma designs:
+Step 2b introduces an optional **UIX-SPEC.md** artifact that bridges design and implementation for specs with Figma designs. Uses the [official Figma MCP server](https://github.com/figma/mcp-server-guide) (remote at `https://mcp.figma.com/mcp`):
 
 - **Design-to-Figma mapping:** Every component/screen from DESIGN.md is mapped to a Figma file and node ID, producing deep links for implementers and reviewers.
-- **Layout JSON via MCP:** When the local MCP server `figma-to-code` is available (with `FIGMA_ACCESS_TOKEN` configured), the framework calls `get_figma_design` to fetch Figma layout data and saves it as `figma_*.json` artifacts under the spec folder. These JSON files serve as structured layout references during implementation (step 4).
+- **Design context via official Figma MCP:** When the `figma` MCP server is connected (user authenticates via OAuth — no API token env var needed), the framework calls `get_design_context` to fetch structured design representations and saves them as `figma_context_*.md` artifacts. Optional `get_screenshot` calls save visual references as `figma_screenshot_*.png`. These artifacts serve as layout references during implementation (step 4).
+- **Design tokens:** `get_variable_defs` can extract colors, spacing, and typography variables from Figma selections when the spec needs design tokens.
 - **Skippable:** If a spec has no Figma designs, step 2b can be skipped cleanly — the workflow continues to Task Breakdown.
 - **Standalone command:** Use `/uix 001` outside of `/flow` to create or update a UIX-SPEC for any spec with approved SPEC.md and DESIGN.md.
 
@@ -121,7 +122,7 @@ Step 2b introduces an optional **UIX-SPEC.md** artifact that bridges design and 
 
 | Command | Purpose |
 |---------|---------|
-| `/uix {spec}` | Create UIX-SPEC.md — map DESIGN.md segments to Figma files/nodes and fetch layout JSON via MCP. |
+| `/uix {spec}` | Create UIX-SPEC.md — map DESIGN.md segments to Figma files/nodes and fetch design context via official Figma MCP. |
 | `/change {spec}` | Handle scope changes. Produces a Change Proposal with impact analysis. On approval, updates artifacts and regenerates SPEC-CURRENT.md. |
 | `/adversarial` | Review any content (spec, design, doc) with extreme skepticism. Finds at least 10 issues. Use before approving a gate or to sanity-check a document. |
 
@@ -197,7 +198,8 @@ your-project/
 │       ├── SPEC.md
 │       ├── DESIGN.md
 │       ├── UIX-SPEC.md          ← Optional (Figma mapping, created by /uix or step 2b)
-│       ├── figma_*.json         ← Optional (layout JSON fetched from Figma MCP)
+│       ├── figma_context_*.md   ← Optional (design context from official Figma MCP)
+│       ├── figma_screenshot_*.png ← Optional (screenshots from Figma MCP)
 │       ├── TASKS.md
 │       └── REVIEW.md
 ├── bugs/
@@ -235,7 +237,7 @@ All steps can be run via the slash commands below. You can also invoke the rules
 /uix 001
 ```
 
-Maps DESIGN.md components/screens to Figma files and node IDs. When the MCP server `figma-to-code` is available, fetches Figma layout JSON and saves it as `figma_*.json` artifacts under the spec folder for use during implementation. Skip this step if the spec has no Figma designs.
+Maps DESIGN.md components/screens to Figma files and node IDs. When the official Figma MCP server is connected, fetches design context via `get_design_context` and saves it as `figma_context_*.md` artifacts under the spec folder for use during implementation. Skip this step if the spec has no Figma designs.
 
 ### Step 3: Create Task Breakdown
 
