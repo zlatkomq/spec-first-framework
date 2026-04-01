@@ -7,6 +7,7 @@ specSlug: ''
 specFolder: ''
 jiraTicket: ''
 sowRef: ''
+uixSkipped: false
 fixAttempts: 0
 previousIssueCount: 0
 fixLoopActive: false
@@ -19,6 +20,7 @@ Workflow state for this spec. Managed by `/flow` — do not edit manually.
 - **currentTask**: The task ID currently being implemented (e.g. `'T3'`). Set when a task starts, cleared when it completes or is marked `[~]`. If set on resume, indicates the previous session was interrupted mid-task.
 - **jiraTicket**: Jira ticket ID linked to this spec (e.g. `PROJ-123`). Set when starting `/flow` or manually.
 - **sowRef**: Statement of Work deliverable reference (optional). Links this spec to a contractual deliverable.
+- **uixSkipped**: Whether UIX Spec (step 2b) was skipped because there is no Figma for this spec. Set to `true` when user skips, `false` when UIX-SPEC.md is created.
 - **fixAttempts**: Number of times [F] Fix automatically has been used in the current step 5 session. Resets to 0 on fresh entry or any [B] exit. Capped at 3.
 - **previousIssueCount**: Total issue count from the last review run. Used to detect whether auto-fixes are converging (count decreasing) or diverging (count increasing). Resets alongside fixAttempts.
 - **fixLoopActive**: Set to `true` by the [F] handler before re-running the review. Section 2 of step 5 checks this flag: if `false`, resets fixAttempts and previousIssueCount (fresh entry). If `true`, preserves them (loop iteration).

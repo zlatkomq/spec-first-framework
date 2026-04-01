@@ -42,6 +42,7 @@ Generate an adversarial REVIEW.md by applying the code-review rules. Inspect act
 
 - Read {specFile} (acceptance criteria).
 - Read {designFile} (architecture, data model, API).
+- If `{spec_folder}/UIX-SPEC.md` exists: read it. Verify that UI implementation matches Figma mapping; flag discrepancies as review findings.
 - Read {tasksFile} (task list, expected files).
 - Read {constitutionRef} (standards, coverage thresholds).
 
@@ -161,7 +162,7 @@ REVIEW: BLOCKED — {reason}
   4. STOP. Workflow is done.
 - **IF [B] Back to Implement:**
   1. Reset `fixAttempts` to `0`, `previousIssueCount` to `0`, and `fixLoopActive` to `false` in `{stateFile}`.
-  2. Trim `stepsCompleted` in `{stateFile}` to keep entries up to `'step-03-tasks'`.
+  2. Trim `stepsCompleted` in `{stateFile}` to keep entries up to `'step-03-tasks'` (plus `'step-02b-uix'` if it was previously in the list — preserve the optional step's completion record).
   3. Read fully and follow: `./step-04-implement.md`.
   - (Step-04 will detect REVIEW.md with findings and display them.)
 - **IF [X] Exit:**
@@ -188,13 +189,13 @@ REVIEW: BLOCKED — {reason}
   2. For each Critical and Major issue, inject a task into the Tasks section of {tasksFile}. Assign T-numbers continuing from the last existing task (e.g., if T7 is the last task, AI-Review tasks become T8, T9, etc.):
      `- [ ] T{N}: [AI-Review][{Severity}] {Description} [{file:function}]`
   3. Add an "Action Items Created" section to REVIEW.md listing the injected tasks.
-  4. Trim `stepsCompleted` in `{stateFile}` to keep entries up to `'step-03-tasks'`.
+  4. Trim `stepsCompleted` in `{stateFile}` to keep entries up to `'step-03-tasks'` (plus `'step-02b-uix'` if it was previously in the list — preserve the optional step's completion record).
   5. Do NOT clear `tasksCompleted` — keep task progress.
   6. Read fully and follow: `./step-04-implement.md`.
   - (Step-04 will detect the [AI-Review] tasks and prioritize them.)
 - **IF [F] or [A] not chosen — IF [B] Back to Tasks:**
   1. Reset `fixAttempts` to `0`, `previousIssueCount` to `0`, and `fixLoopActive` to `false` in `{stateFile}`.
-  2. Trim `stepsCompleted` to keep entries up to `'step-02-design'`.
+  2. Trim `stepsCompleted` to keep entries up to `'step-02-design'` (plus `'step-02b-uix'` if it was previously in the list — preserve the optional step's completion record).
   3. Clear `tasksCompleted` in `{stateFile}` (set to `[]`).
   4. Read fully and follow: `./step-03-tasks.md`.
 - **IF [B2] Back to Design:**
