@@ -41,7 +41,9 @@ Implement tasks from TASKS.md one at a time. After each task, present a menu so 
 - Read {tasksFile} completely. Extract the ordered list of tasks (T1, T2, T3, …).
 - Read {designFile} (for architecture and component details).
 - Read {constitutionRef} (for coding standards).
-- If `{spec_folder}/UIX-SPEC.md` exists: read it for Figma mapping context. For UI-related tasks, reference the corresponding Figma segment and load any `figma_context_*.md` design context files listed in UIX-SPEC.md as layout reference for implementation.
+- If `{spec_folder}/UIX-SPEC.md` exists: read it for Figma mapping context. For UI-related tasks, load all design context files from `{spec_folder}/figma/` listed in UIX-SPEC.md (`tokens.css`, per-node `<node-id>.md`, optional `<node-id>.png`, `assets/*`) as layout reference for implementation. Tokens in `figma/tokens.css` are the **only** allowed source of hex colors and font names — do not invent values.
+- **No MCP calls from step-04, ever.** This step does NOT call `figma-to-code` MCP tools — not `get_figma_node_spec`, not `get_figma_design_tokens`, not `get_figma_frame_with_image`, not `export_figma_assets`, not even to "verify" or "freshen" cached files. The cached snapshot under `{spec_folder}/figma/` is authoritative. If the snapshot is stale, exit and run `/uix-refresh {spec_id}` — never re-fetch from inside step-04.
+- **No fidelity loop, no compare-fix iteration.** Implement each UI task in a single pass against the cached snapshot. If you notice visible drift between your implementation and the cached `figma/<node-id>.md`, write it to `{spec_folder}/figma/drift-T<n>.md` (one file per task, written once) per the format defined in `.framework/steps/step-02b-uix.md` § 2b. Do NOT re-implement, do NOT re-fetch, do NOT iterate. Step-05 (review) reads the drift file and decides whether to inject `[AI-Review]` follow-up tasks or to recommend `/uix-refresh`.
 - Read `{stateFile}` frontmatter. Extract `tasksCompleted` (array of completed task IDs, e.g. `['T1', 'T2']`).
 - **Reconcile state with TASKS.md checkboxes**: If `tasksCompleted` and {tasksFile} checkboxes disagree, `tasksCompleted` in {stateFile} is authoritative. Update {tasksFile} checkboxes to match:
   - Task ID in `tasksCompleted` but checkbox is `[ ]` or `[~]` → set to `[x]`
@@ -188,3 +190,5 @@ ONLY when [C] is selected and state is updated will you load and execute `{nextS
 - Not updating `tasksCompleted` after each task.
 - Not presenting menu after each task completion.
 - Not updating state before loading next step.
+- Calling any `figma-to-code` MCP tool from inside step-04 (cached snapshot in `figma/` is authoritative; refresh is `/uix-refresh` only).
+- Implementing the same UI task more than once in a "compare-fix" loop (single-pass only; drift goes to `figma/drift-T<n>.md` and is handled by step-05).

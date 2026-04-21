@@ -74,8 +74,13 @@ project/
 │   │   ├── SPEC.md                     # What to build
 │   │   ├── DESIGN.md                   # How to build it
 │   │   ├── UIX-SPEC.md                 # Optional: Figma mapping (created by /uix or step 2b)
-│   │   ├── figma_context_*.md          # Optional: design context from official Figma MCP
-│   │   ├── figma_screenshot_*.png      # Optional: screenshots from Figma MCP
+│   │   ├── figma/                      # Optional: frozen snapshot (local figma-to-code MCP)
+│   │   │   ├── tokens.css              #   CSS :root block (single source of truth)
+│   │   │   ├── <node-id>.md            #   Per-node JSX + geometry table
+│   │   │   ├── <node-id>.png           #   Optional reference image
+│   │   │   ├── drift-T<n>.md           #   Per-task one-shot drift record (write-once in step-04)
+│   │   │   └── assets/                 #   Exported SVG/PNG icons and images
+│   │   │   # Fetched once in step-02b. Step-04/05 read only. Refresh: /uix-refresh.
 │   │   ├── TASKS.md                    # Implementation breakdown
 │   │   └── REVIEW.md                   # Code review results
 │   │
@@ -91,8 +96,12 @@ project/
 │       ├── SPEC.md
 │       ├── DESIGN.md
 │       ├── UIX-SPEC.md                 # Optional: Figma mapping
-│       ├── figma_context_*.md          # Optional: design context from official Figma MCP
-│       ├── figma_screenshot_*.png      # Optional: screenshots from Figma MCP
+│       ├── figma/                      # Optional: all Figma artifacts (local figma-to-code MCP)
+│       │   ├── tokens.css
+│       │   ├── <node-id>.md
+│       │   ├── <node-id>.png
+│       │   ├── drift-T<n>.md
+│       │   └── assets/
 │       ├── TASKS.md
 │       └── REVIEW.md
 │
@@ -281,7 +290,7 @@ project/
 | Understand legacy code | `docs/legacy-analysis/` |
 | Find requirements | `specs/XXX/SPEC.md` |
 | Find technical approach | `specs/XXX/DESIGN.md` |
-| Find Figma mapping / design context | `specs/XXX/UIX-SPEC.md`, `specs/XXX/figma_context_*.md` |
+| Find Figma mapping / design context | `specs/XXX/UIX-SPEC.md`, `specs/XXX/figma/` (all artifacts) |
 | Find implementation tasks | `specs/XXX/TASKS.md` |
 | Find bug reports | `bugs/BUG-XXX/BUG.md` |
 | Find bug fix reviews | `bugs/BUG-XXX/REVIEW.md` |

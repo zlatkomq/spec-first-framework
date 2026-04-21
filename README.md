@@ -110,11 +110,13 @@ All spec artifacts support traceability fields for billing and audit:
 
 ### Figma Integration (UIX Spec)
 
-Step 2b introduces an optional **UIX-SPEC.md** artifact that bridges design and implementation for specs with Figma designs. Uses the [official Figma MCP server](https://github.com/figma/mcp-server-guide) (remote at `https://mcp.figma.com/mcp`):
+Step 2b introduces an optional **UIX-SPEC.md** artifact that bridges design and implementation for specs with Figma designs. Uses the local **`figma-to-code`** MCP server (v2.0.0+, OS-model optimised — `figma-to-code-mcp-os`):
 
 - **Design-to-Figma mapping:** Every component/screen from DESIGN.md is mapped to a Figma file and node ID, producing deep links for implementers and reviewers.
-- **Design context via official Figma MCP:** When the `figma` MCP server is connected (user authenticates via OAuth — no API token env var needed), the framework calls `get_design_context` to fetch structured design representations and saves them as `figma_context_*.md` artifacts. Optional `get_screenshot` calls save visual references as `figma_screenshot_*.png`. These artifacts serve as layout references during implementation (step 4).
-- **Design tokens:** `get_variable_defs` can extract colors, spacing, and typography variables from Figma selections when the spec needs design tokens.
+- **Cached snapshot model — fetch once, never re-fetch.** During step-02b, the framework calls `get_figma_file_structure` → `get_figma_design_tokens` → `get_figma_node_spec` (and optionally `get_figma_frame_with_image`, `export_figma_assets`) once and saves all artifacts under `specs/XXX/figma/` (`tokens.css`, per-node `<node-id>.md`, optional `<node-id>.png`, `assets/*`). Step-04 implementation and step-05 review then read **only** from `specs/XXX/figma/` — neither calls the MCP. The cached snapshot is authoritative.
+- **Design tokens:** `get_figma_design_tokens` returns a CSS `:root` block saved to `figma/tokens.css` — the only allowed source of hex codes and font names for generated code.
+- **No fidelity loop, no automatic re-fetch.** Implementation is a single pass against the cached snapshot. If step-04 notices drift, it writes a single `figma/drift-T<n>.md` per affected task (no iteration, no re-call) and step-05 reads those drift files when computing the review verdict.
+- **Refresh on explicit user request only.** Run `/uix-refresh {spec}` (or pick `[F] Force refresh Figma artifacts` in step-02b's menu) to delete cached files and re-fetch via MCP. This is the only path that re-calls the MCP after the initial fetch.
 - **Skippable:** If a spec has no Figma designs, step 2b can be skipped cleanly — the workflow continues to Task Breakdown.
 - **Standalone command:** Use `/uix 001` outside of `/flow` to create or update a UIX-SPEC for any spec with approved SPEC.md and DESIGN.md.
 
@@ -122,7 +124,8 @@ Step 2b introduces an optional **UIX-SPEC.md** artifact that bridges design and 
 
 | Command | Purpose |
 |---------|---------|
-| `/uix {spec}` | Create UIX-SPEC.md — map DESIGN.md segments to Figma files/nodes and fetch design context via official Figma MCP. |
+| `/uix {spec}` | Create UIX-SPEC.md — map DESIGN.md segments to Figma files/nodes and fetch design context **once** via the local `figma-to-code` MCP server (saved under `specs/XXX/figma/`). |
+| `/uix-refresh {spec}` | Force-refresh the cached Figma snapshot for a spec. Deletes files listed in UIX-SPEC's Design Context Artifacts table and re-fetches via MCP. **The only path that re-calls the MCP after the initial fetch.** |
 | `/change {spec}` | Handle scope changes. Produces a Change Proposal with impact analysis. On approval, updates artifacts and regenerates SPEC-CURRENT.md. |
 | `/adversarial` | Review any content (spec, design, doc) with extreme skepticism. Finds at least 10 issues. Use before approving a gate or to sanity-check a document. |
 
@@ -198,8 +201,13 @@ your-project/
 │       ├── SPEC.md
 │       ├── DESIGN.md
 │       ├── UIX-SPEC.md          ← Optional (Figma mapping, created by /uix or step 2b)
-│       ├── figma_context_*.md   ← Optional (design context from official Figma MCP)
-│       ├── figma_screenshot_*.png ← Optional (screenshots from Figma MCP)
+│       ├── figma/               ← Optional (frozen snapshot from local figma-to-code MCP)
+│       │   ├── tokens.css       ←   CSS :root block (single source of truth for colors/fonts)
+│       │   ├── <node-id>.md     ←   Per-node JSX tree + geometry table + code rules
+│       │   ├── <node-id>.png    ←   Optional reference image (visual parity check)
+│       │   ├── drift-T<n>.md    ←   Per-task one-shot drift record (written by step-04, read by step-05)
+│       │   └── assets/          ←   Exported SVG/PNG icons and images
+│       │   ↑ Fetched once in step-02b. Step-04 and step-05 read only. Refresh via /uix-refresh.
 │       ├── TASKS.md
 │       └── REVIEW.md
 ├── bugs/
@@ -237,7 +245,7 @@ All steps can be run via the slash commands below. You can also invoke the rules
 /uix 001
 ```
 
-Maps DESIGN.md components/screens to Figma files and node IDs. When the official Figma MCP server is connected, fetches design context via `get_design_context` and saves it as `figma_context_*.md` artifacts under the spec folder for use during implementation. Skip this step if the spec has no Figma designs.
+Maps DESIGN.md components/screens to Figma files and node IDs. When the local `figma-to-code` MCP server is connected, fetches design tokens, per-node JSX specs, and (optionally) reference PNGs and SVG/PNG assets — all saved **once** under `specs/XXX/figma/` for use during implementation. Step-04 and step-05 read those files only; they never call the MCP. To refresh after a Figma update, run `/uix-refresh XXX`. Skip this step entirely if the spec has no Figma designs.
 
 ### Step 3: Create Task Breakdown
 
