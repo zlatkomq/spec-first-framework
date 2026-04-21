@@ -20,8 +20,8 @@
 
 [1–2 sentences: This spec's UI is defined in Figma. This document maps DESIGN.md segments to Figma files and nodes for implementation and review.]
 
-[When Figma is in scope, append the section 2b handoff sentence, e.g.:
-"Implementation of UI tasks must follow step-02b-uix § 2b: minimum 2 / maximum 5 Figma compare-fix iterations with automatic MCP re-fetch (`get_figma_node_spec`) and a structured drift file `./figma/drift-T<n>.md` per pass. All Figma artifacts are in `./figma/`. Tokens are in `./figma/tokens.css` — use the `--color-N` variables, do not invent hex codes. See `.framework/steps/step-02b-uix.md` § 2b for the full loop procedure."]
+[When Figma is in scope, append the cached-snapshot handoff sentence, e.g.:
+"Figma artifacts in `./figma/` are a frozen snapshot fetched once via the local `figma-to-code` MCP. Step-04 implementation and step-05 review read them as-is and never re-fetch. Tokens in `./figma/tokens.css` are the only allowed source of hex codes and font names. To refresh after a Figma update, run `/uix-refresh XXX`. Drift noticed during implementation is recorded once-per-task in `./figma/drift-T<n>.md` and handled by step-05."]
 
 ---
 

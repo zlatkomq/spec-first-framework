@@ -113,10 +113,10 @@ All spec artifacts support traceability fields for billing and audit:
 Step 2b introduces an optional **UIX-SPEC.md** artifact that bridges design and implementation for specs with Figma designs. Uses the local **`figma-to-code`** MCP server (v2.0.0+, OS-model optimised — `figma-to-code-mcp-os`):
 
 - **Design-to-Figma mapping:** Every component/screen from DESIGN.md is mapped to a Figma file and node ID, producing deep links for implementers and reviewers.
-- **Design context via local Figma MCP:** When the `figma-to-code` MCP server is connected (requires `FIGMA_ACCESS_TOKEN` Personal Access Token), step 2b calls `get_figma_file_structure` → `get_figma_design_tokens` → `get_figma_node_spec` and saves all artifacts under `specs/XXX/figma/` (`tokens.css`, per-node `<node-id>.md`, optional `<node-id>.png` from `get_figma_frame_with_image`, and `assets/*` from `export_figma_assets`). These artifacts are the layout reference during implementation (step 4).
-- **Design tokens:** `get_figma_design_tokens` returns a CSS `:root` block (`--color-N` vars + font families) saved to `figma/tokens.css` — the only allowed source of hex codes and font names for generated code.
-- **Cache policy:** Saved artifacts are read from disk on subsequent runs; calling MCP for an already-saved artifact is a failure condition. The exception is the § 2b fidelity loop (step 4), which invalidates and re-fetches.
-- **Fidelity loop:** Step 04 implementation must run a min 2 / max 5 compare-fix loop per UI task with a structured `figma/drift-T<n>.md` file per task — see step-02b-uix § 2b.
+- **Cached snapshot model — fetch once, never re-fetch.** During step-02b, the framework calls `get_figma_file_structure` → `get_figma_design_tokens` → `get_figma_node_spec` (and optionally `get_figma_frame_with_image`, `export_figma_assets`) once and saves all artifacts under `specs/XXX/figma/` (`tokens.css`, per-node `<node-id>.md`, optional `<node-id>.png`, `assets/*`). Step-04 implementation and step-05 review then read **only** from `specs/XXX/figma/` — neither calls the MCP. The cached snapshot is authoritative.
+- **Design tokens:** `get_figma_design_tokens` returns a CSS `:root` block saved to `figma/tokens.css` — the only allowed source of hex codes and font names for generated code.
+- **No fidelity loop, no automatic re-fetch.** Implementation is a single pass against the cached snapshot. If step-04 notices drift, it writes a single `figma/drift-T<n>.md` per affected task (no iteration, no re-call) and step-05 reads those drift files when computing the review verdict.
+- **Refresh on explicit user request only.** Run `/uix-refresh {spec}` (or pick `[F] Force refresh Figma artifacts` in step-02b's menu) to delete cached files and re-fetch via MCP. This is the only path that re-calls the MCP after the initial fetch.
 - **Skippable:** If a spec has no Figma designs, step 2b can be skipped cleanly — the workflow continues to Task Breakdown.
 - **Standalone command:** Use `/uix 001` outside of `/flow` to create or update a UIX-SPEC for any spec with approved SPEC.md and DESIGN.md.
 
@@ -124,7 +124,8 @@ Step 2b introduces an optional **UIX-SPEC.md** artifact that bridges design and 
 
 | Command | Purpose |
 |---------|---------|
-| `/uix {spec}` | Create UIX-SPEC.md — map DESIGN.md segments to Figma files/nodes and fetch design context via the local `figma-to-code` MCP server (saved under `specs/XXX/figma/`). |
+| `/uix {spec}` | Create UIX-SPEC.md — map DESIGN.md segments to Figma files/nodes and fetch design context **once** via the local `figma-to-code` MCP server (saved under `specs/XXX/figma/`). |
+| `/uix-refresh {spec}` | Force-refresh the cached Figma snapshot for a spec. Deletes files listed in UIX-SPEC's Design Context Artifacts table and re-fetches via MCP. **The only path that re-calls the MCP after the initial fetch.** |
 | `/change {spec}` | Handle scope changes. Produces a Change Proposal with impact analysis. On approval, updates artifacts and regenerates SPEC-CURRENT.md. |
 | `/adversarial` | Review any content (spec, design, doc) with extreme skepticism. Finds at least 10 issues. Use before approving a gate or to sanity-check a document. |
 
@@ -200,12 +201,13 @@ your-project/
 │       ├── SPEC.md
 │       ├── DESIGN.md
 │       ├── UIX-SPEC.md          ← Optional (Figma mapping, created by /uix or step 2b)
-│       ├── figma/               ← Optional (all Figma artifacts from local figma-to-code MCP)
+│       ├── figma/               ← Optional (frozen snapshot from local figma-to-code MCP)
 │       │   ├── tokens.css       ←   CSS :root block (single source of truth for colors/fonts)
 │       │   ├── <node-id>.md     ←   Per-node JSX tree + geometry table + code rules
 │       │   ├── <node-id>.png    ←   Optional reference image (visual parity check)
-│       │   ├── drift-T<n>.md    ←   Per-task drift list from § 2b fidelity loop
+│       │   ├── drift-T<n>.md    ←   Per-task one-shot drift record (written by step-04, read by step-05)
 │       │   └── assets/          ←   Exported SVG/PNG icons and images
+│       │   ↑ Fetched once in step-02b. Step-04 and step-05 read only. Refresh via /uix-refresh.
 │       ├── TASKS.md
 │       └── REVIEW.md
 ├── bugs/
@@ -243,7 +245,7 @@ All steps can be run via the slash commands below. You can also invoke the rules
 /uix 001
 ```
 
-Maps DESIGN.md components/screens to Figma files and node IDs. When the local `figma-to-code` MCP server is connected, fetches design tokens, per-node JSX specs, and (optionally) reference PNGs and SVG/PNG assets — all saved under `specs/XXX/figma/` for use during implementation. Skip this step if the spec has no Figma designs.
+Maps DESIGN.md components/screens to Figma files and node IDs. When the local `figma-to-code` MCP server is connected, fetches design tokens, per-node JSX specs, and (optionally) reference PNGs and SVG/PNG assets — all saved **once** under `specs/XXX/figma/` for use during implementation. Step-04 and step-05 read those files only; they never call the MCP. To refresh after a Figma update, run `/uix-refresh XXX`. Skip this step entirely if the spec has no Figma designs.
 
 ### Step 3: Create Task Breakdown
 

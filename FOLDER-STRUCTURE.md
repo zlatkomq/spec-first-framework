@@ -74,12 +74,13 @@ project/
 │   │   ├── SPEC.md                     # What to build
 │   │   ├── DESIGN.md                   # How to build it
 │   │   ├── UIX-SPEC.md                 # Optional: Figma mapping (created by /uix or step 2b)
-│   │   ├── figma/                      # Optional: all Figma artifacts (local figma-to-code MCP)
+│   │   ├── figma/                      # Optional: frozen snapshot (local figma-to-code MCP)
 │   │   │   ├── tokens.css              #   CSS :root block (single source of truth)
 │   │   │   ├── <node-id>.md            #   Per-node JSX + geometry table
 │   │   │   ├── <node-id>.png           #   Optional reference image
-│   │   │   ├── drift-T<n>.md           #   Per-task drift list (§ 2b loop)
+│   │   │   ├── drift-T<n>.md           #   Per-task one-shot drift record (write-once in step-04)
 │   │   │   └── assets/                 #   Exported SVG/PNG icons and images
+│   │   │   # Fetched once in step-02b. Step-04/05 read only. Refresh: /uix-refresh.
 │   │   ├── TASKS.md                    # Implementation breakdown
 │   │   └── REVIEW.md                   # Code review results
 │   │

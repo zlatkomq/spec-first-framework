@@ -83,18 +83,24 @@ Each saved artifact row in UIX-SPEC.md uses relative path `./figma/<filename>`.
 
 When the local MCP server `figma-to-code` is available and the user provides Figma URLs:
 
-### CACHE POLICY — check disk before calling MCP
+### CACHE POLICY — fetch once, never re-fetch (no exceptions, no loops)
 
-**Before calling any Figma MCP tool**, check whether the artifact already exists in `specs/XXX-{slug}/figma/`. If it does, **read the file from disk and skip the tool call**. MCP tools are called at most once per artifact — subsequent reads use the cached file.
+The MCP server is treated as a **last-resort fetcher**. Local files in `specs/XXX-{slug}/figma/` are the **single source of truth** for all subsequent reads, including by step-04 implementation and step-05 review.
 
-| Artifact | MCP Tool | Rule |
-|----------|----------|------|
-| `figma/tokens.css` | `get_figma_design_tokens` | File exists → skip call, read file |
-| `figma/<node-id>.md` | `get_figma_node_spec` | File exists → skip call, read file |
-| `figma/<node-id>.png` | `get_figma_frame_with_image` | File exists → skip call, read file |
-| `figma/assets/<name>.<ext>` | `export_figma_assets` | File exists → skip call, read file |
+**Three rules. No exceptions.**
 
-Calling the MCP for an artifact already saved on disk is a **FAILURE CONDITION**.
+1. **Fetch once → save to disk.** Every successful MCP tool response MUST be saved as a file under `specs/XXX-{slug}/figma/`. The save is part of the call — never call without saving.
+2. **File on disk → never re-fetch.** Before any MCP tool call, check whether the target file already exists. If it does, **read from disk and DO NOT call the MCP**. Cached files are read for coding/review purposes; they are never invalidated by an agent.
+3. **Re-fetch only on explicit user request.** The only path that may delete + re-fetch a cached artifact is the `/uix-refresh` command (or the `[F] Force refresh` menu option in step-02b). No automatic re-fetch, no re-looping logic, ever.
+
+| Artifact | MCP Tool | Cache rule |
+|----------|----------|------------|
+| `figma/tokens.css` | `get_figma_design_tokens` | File exists → read it. Never re-fetch except via `/uix-refresh`. |
+| `figma/<node-id>.md` | `get_figma_node_spec` | File exists → read it. Never re-fetch except via `/uix-refresh`. |
+| `figma/<node-id>.png` | `get_figma_frame_with_image` | File exists → read it. Never re-fetch except via `/uix-refresh`. |
+| `figma/assets/<name>.<ext>` | `export_figma_assets` | File exists → read it. Never re-fetch except via `/uix-refresh`. |
+
+Calling the MCP for an artifact already saved on disk — outside of an explicit `/uix-refresh` invocation — is a **FAILURE CONDITION** reported in REVIEW.md.
 
 ### Tool call sequence
 
@@ -142,6 +148,8 @@ If MCP is unavailable, note in Open Questions that design context is pending. Do
 - Do NOT invent Figma URLs or node-ids — only use what the user provides
 - Do NOT create design context files without actually calling the MCP tool
 - Do NOT call the MCP tool for any artifact already saved on disk in `figma/` — read from cache
+- Do NOT re-fetch, re-call, or re-loop any MCP tool automatically. Re-fetch is permitted only via the explicit `/uix-refresh` command.
+- Do NOT implement any "compare and re-fetch" or "fidelity loop" behavior — there is no automatic Figma re-fetch in any step
 - Do NOT modify SPEC.md or DESIGN.md during this step
 - Every design segment from DESIGN.md should be accounted for (mapped to Figma or marked "No Figma yet" in Notes)
 - All bracket placeholders from template must be removed from output; if info is missing, add an Open Question

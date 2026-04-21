@@ -42,7 +42,8 @@ Generate an adversarial REVIEW.md by applying the code-review rules. Inspect act
 
 - Read {specFile} (acceptance criteria).
 - Read {designFile} (architecture, data model, API).
-- If `{spec_folder}/UIX-SPEC.md` exists: read it. Verify that UI implementation matches Figma mapping; flag discrepancies as review findings.
+- If `{spec_folder}/UIX-SPEC.md` exists: read it. Verify that UI implementation matches the cached Figma snapshot in `{spec_folder}/figma/` (read `tokens.css` and the per-node `<node-id>.md` files referenced in the Design Context Artifacts table). Flag discrepancies as review findings. **Do NOT call any `figma-to-code` MCP tool from this step** — read from disk only. If the snapshot looks stale or wrong, surface that as a finding and recommend the user run `/uix-refresh {spec_id}`; do not refresh from inside review.
+- If any `{spec_folder}/figma/drift-T*.md` files exist: read them. Each unchecked `[ ]` drift item is a candidate review finding. For each open drift item, classify severity (Major for visible spacing/typography/color mismatches, Minor for subtle cases) and include it in the findings list. Drift items that the user explicitly acknowledged (frontmatter `status: acknowledged`) may be downgraded or skipped. If many drift items exist across multiple tasks and they look snapshot-related (cached `figma/` looks outdated), recommend `/uix-refresh {spec_id}` in the review summary.
 - Read {tasksFile} (task list, expected files).
 - Read {constitutionRef} (standards, coverage thresholds).
 

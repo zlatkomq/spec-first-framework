@@ -23,12 +23,11 @@ uixAssetsDir: '{spec_folder}/figma/assets/'
 
 ## STEP GOAL
 
-Create (or update) UIX-SPEC.md by applying the uix-creation rules and template. Map DESIGN.md segments to Figma files and node IDs. When Figma is in scope, **fetch design context** via the local MCP server **`figma-to-code`** (v2.0.0+) and save all artifacts under `{spec_folder}/figma/` for **step 04 (implementation)** to use as layout reference. **Downstream implementation must follow § 2b** (iterative Figma compare-fix loop — min 2 / max 5 passes with drift list) so UI output is pixel-accurate, not a single-pass approximation. This step is optional: if this spec has no Figma, choose [S] Skip to continue to Task Breakdown.
+Create (or update) UIX-SPEC.md by applying the uix-creation rules and template. Map DESIGN.md segments to Figma files and node IDs. When Figma is in scope, **fetch design context once** via the local MCP server **`figma-to-code`** (v2.0.0+) and save all artifacts under `{spec_folder}/figma/`. Those saved files are then the **only** source of design context for step-04 (implementation) and step-05 (review) — no automatic re-fetch, no fidelity loop. To refresh stale artifacts, the user explicitly runs `/uix-refresh {spec}` (or picks `[F] Force refresh` in this step's menu). This step is optional: if this spec has no Figma, choose [S] Skip to continue to Task Breakdown.
 
 ## RULES
 
 - READ this entire step file before taking any action.
-- When Figma is in scope for this spec, **§ 2b** defines a **mandatory iterative** Figma fidelity loop for UI implementation (min 2 / max 5 automatic re-fetch + compare-fix passes with a drift list). Implementation agents must follow § 2b in addition to UIX-SPEC artifacts.
 - When this step says "Apply {ref}", read the referenced file completely and follow ALL its sections in order.
 - Apply {ruleRef} for all domain behavior, constraints, and output. Do not restate or override the rule.
 - Use the template from {templateRef}.
@@ -61,7 +60,7 @@ Do NOT invent Figma URLs or node-ids — only use what the user provides.
 Apply **{ruleRef} -> "Figma Design Context (figma-to-code-mcp-os v2.0.0)"** in full. Summary:
 
 1. **Prerequisite:** Local MCP server **`figma-to-code`** (v2.0.0+) is connected. Server requires `FIGMA_ACCESS_TOKEN` (Personal Access Token) and is reachable at the URL configured in the user's MCP client. If the server is missing or returns tool-not-found for `get_figma_node_spec`, HALT and report version mismatch.
-2. **Cache check:** Before any tool call, check whether the target file already exists under `{spec_folder}/figma/`. If yes, **read from disk and skip the MCP call** — calling MCP for an already-saved artifact is a FAILURE CONDITION (the only exception is the § 2b fidelity loop in step 04, which is allowed to invalidate and re-fetch).
+2. **Cache check:** Before any tool call, check whether the target file already exists under `{spec_folder}/figma/`. If yes, **read from disk and skip the MCP call** — calling MCP for an already-saved artifact is a FAILURE CONDITION. The only path that may delete + re-fetch is `/uix-refresh` (or `[F] Force refresh` in this step's menu). No agent is permitted to re-fetch automatically.
 3. **Tool:** **`get_figma_file_structure(fileKey)`** -- always call first. Returns pages and top-level frames with `id` values; pick the `nodeId` for each DESIGN segment. (Not saved to disk; used only to resolve nodeIds.)
 4. **Tool:** **`get_figma_design_tokens(fileKey, nodeId?)`** -- call once per file (or per top-level node). Save the response **as-is** to `{spec_folder}/figma/tokens.css`. This CSS `:root` block is the **only** allowed source of hex colors and font names for generated code.
 5. **Tool:** **`get_figma_node_spec(fileKey, nodeId, maxDepth?)`** -- call per design segment. Returns token constraints header + canonical JSX tree (full prop set: `x y w h constraint-h/v layout sizing-h/v grow gap padding align-main/cross min/max bg radius border stroke-w opacity effects`) + flat geometry table + code-generation rules footer. Save **as-is** to `{spec_folder}/figma/<node-id>.md` where `<node-id>` uses **hyphens** (`123:456` -> `123-456.md`). Use `maxDepth` (default 12; reduce to 6–8 for small OS models on large frames).
@@ -71,80 +70,44 @@ Apply **{ruleRef} -> "Figma Design Context (figma-to-code-mcp-os v2.0.0)"** in f
 
 If MCP is unavailable (or `FIGMA_ACCESS_TOKEN` missing), skip 2a and note in UIX-SPEC **Open Questions** that design context is pending; do **not** fabricate file contents.
 
-### 2b. Figma -> code fidelity loop (normative for step 04)
+### 2b. Cached snapshot policy (normative for step 04 and step 05)
 
-This section is **normative** for any agent or developer that implements UI from this spec's Figma mapping. The first implementation pass is always a **draft** -- never treat it as pixel-perfect. Do **not** wait for the user to say "check Figma again"; iterative re-checking is the default workflow.
+This section is **normative** for every agent or developer that consumes UIX-SPEC artifacts.
 
-> **Iteration bounds: minimum 2, maximum 5** compare-fix passes after the initial UI build.
+> **One fetch per artifact, ever, until an explicit `/uix-refresh`.** No automatic re-fetch, no compare-fix loop, no iteration.
 
-#### Loop procedure (execute once per pass)
+#### Rules
 
-For each iteration **i** (where i = 1 ... 5):
+1. **Step-02b owns all MCP calls.** The only place an agent may call `figma-to-code` MCP tools is during section 2a of this step (initial fetch) or during a `/uix-refresh` invocation. Step-04 and step-05 never call the MCP — they read from `{spec_folder}/figma/` only.
+2. **File on disk is authoritative.** If `{spec_folder}/figma/<node-id>.md` or `tokens.css` exists, downstream agents treat it as the current truth. Mismatches between the saved snapshot and live Figma are the user's responsibility to resolve via `/uix-refresh`.
+3. **No re-fetch from any agent.** If an agent sees drift while implementing or reviewing, it does **not** call MCP. It records the drift in `{spec_folder}/figma/drift-T<n>.md` (see "Drift artifact" below) and continues the single pass. Re-fetch is a human decision.
+4. **Refresh path.** The user runs `/uix-refresh {spec}` (or selects `[F] Force refresh Figma artifacts` in this step's menu). That command deletes the cached files listed in UIX-SPEC's Design Context Artifacts table and re-fetches them via the section 2a tool sequence. Nothing else may delete cached files.
 
-**Step A -- Re-fetch Figma (cache invalidation allowed here).**
-For every node listed in UIX-SPEC's Design Context Artifacts table:
-1. Delete the cached `{spec_folder}/figma/<node-id>.md` (and `.png` if present) — the loop is the one place where re-fetch is mandatory.
-2. Call **`get_figma_node_spec(fileKey, nodeId, maxDepth?)`** and re-save to `{spec_folder}/figma/<node-id>.md`.
-3. Optionally call **`get_figma_frame_with_image`** and re-save the PNG to `{spec_folder}/figma/<node-id>.png` for visual parity.
-4. If tokens may have changed, also re-fetch **`get_figma_design_tokens`** and overwrite `{spec_folder}/figma/tokens.css`.
+#### Drift artifact (one-shot, write-only, no loop)
 
-This gives the agent a fresh structural + token view of the target design -- the same as a developer re-opening Figma to compare.
-
-**Step B -- Build / update the drift list.**
-Compare the current implementation against the re-fetched Figma data. Write (or update) a concrete **drift list** at `{spec_folder}/figma/drift-T<n>.md` (one file per UI task, e.g. `drift-T3.md`) with this structure:
+When step-04 implements a UI task and notices visible mismatches against the cached `figma/<node-id>.md`, the agent writes a single drift file at `{spec_folder}/figma/drift-T<n>.md`:
 
 ```
 ---
 task: T3
-pass: 2
-maxPasses: 5
-status: open   # open | resolved | hard-stop
+generatedAt: 2026-04-21T13:42:00Z
+nodeIds: ["12:34", "12:36"]
+status: noted   # noted | acknowledged | refresh-requested
 ---
 
-## Pass 2 drift
+## Drift noted during implementation
 
-- [ ] Card body padding: implemented `16px`, Figma `24px` (node 12:34, prop `padding`)
-- [x] Title font-weight: was 600, fixed to 700 in pass 1
-- ...
+- [ ] Card body padding: implemented `16px`, cached Figma snapshot shows `24px` (node 12:34, prop `padding`)
+- [ ] Title font-weight: implemented `600`, cached snapshot shows `700` (node 12:35)
 ```
 
-Resolved items stay in the file (checked off) so reviewers can see what was fixed across passes. Categories to check (all of them, every pass):
-
-- Spacing: padding, margin, gap (e.g. "card body padding is 16px, Figma shows 24px")
-- Typography: font-family, size, weight, line-height, letter-spacing
-- Colors: fills, strokes, opacity, gradients
-- Corner radii, shadows, borders
-- Alignment, flex direction, order
-- Component / frame sizing and constraints (width, height, min/max)
-
-**Step C -- Exit check.**
-If all items in the drift file are checked `[x]` (zero open) **and** i >= 2, set frontmatter `status: resolved` and end the loop -- fidelity is achieved. Skip remaining passes. If i < 2, continue to Step D even if no open items remain (a second Figma re-fetch often catches things the first comparison missed).
-
-**Step D -- Fix.**
-Address every open item in `drift-T<n>.md`, largest visual impact first. After fixing each item, **check it off `[x]`** in place (do not delete) so the file shows the full history of fixes across passes.
-
-**Step E -- Hard stop guard.**
-If i = 5 and `drift-T<n>.md` still has unchecked items, **stop iterating**. Set frontmatter `status: hard-stop`. Append the remaining open drift items to UIX-SPEC **Open Questions** (or a `## Remaining Drift` section) so the reviewer or user can see what was not fully resolved. Do not silently drop unresolved items.
-
-After Step D (or Step E on the final pass), increment i and return to Step A for the next pass.
-
-#### Key rules
-
-- The loop MUST run **at least 2** full passes. Even if pass 1 shows zero drift, pass 2 re-fetches Figma and re-checks -- this catches missed details.
-- The loop MUST NOT exceed **5** passes. This prevents infinite refinement while still allowing enough iterations to reach pixel-level accuracy.
-- The drift list is the agent's **explicit awareness** of what remains wrong. Without it, passes are vague "make it closer" attempts. Every pass must produce or update the drift list before fixing.
-
-#### Where this loop runs
-
-This loop executes inside **step 04 (Implementation)** during the implementation of any UI-related task that has Figma mapping in UIX-SPEC. Step 04 must read this section (section 2b) and follow the loop procedure above for each such task.
+This file is **write-once per task**. The agent does NOT loop, does NOT call MCP to re-verify, does NOT auto-fix items in repeated passes. Drift items are surfaced to step-05 (review), which decides whether they become `[AI-Review]` action-item tasks or trigger a `/uix-refresh` recommendation.
 
 #### Handoff into UIX-SPEC
 
-When saving `{outputFile}` with Figma in scope (section 3), add the following to the **Overview** paragraph (or as a bullet under **Open Questions**):
+When saving `{outputFile}` with Figma in scope (section 3), add the following to the **Overview** paragraph:
 
-> "Implementation of UI tasks must follow step-02b-uix section 2b: minimum 2 / maximum 5 Figma compare-fix iterations with automatic MCP re-fetch and a drift list per pass. See `.framework/steps/step-02b-uix.md` section 2b for the full loop procedure."
-
-This ensures that any agent reading only UIX-SPEC knows the iterative bar and where to find the full instructions.
+> "Figma artifacts in `./figma/` are a frozen snapshot fetched once. Implementation reads them as-is; reviewers compare against them. To refresh after a Figma update, run `/uix-refresh {spec_id}`."
 
 ### 3. Create or skip
 
@@ -165,6 +128,7 @@ UIX-SPEC.md is APPROVED.
 
 [C] Continue -- proceed to Task Breakdown (Step 3 of 5)
 [V] View DESIGN.md -- display for reference (read-only)
+[F] Force refresh Figma artifacts -- delete cached files in figma/ and re-fetch via MCP (only path that re-calls MCP)
 [B] Back to Design -- re-edit DESIGN.md (step 2)
 [S] Skip UIX -- remove Figma mapping, continue without it
 [X] Exit -- pause workflow; resume later with /flow
@@ -182,6 +146,11 @@ UIX-SPEC.md is APPROVED.
   1. Read fully and follow: `{nextStepFile}` (step-03-tasks.md).
 - **IF [V] View DESIGN.md:**
   1. Read and display {designFile}. Redisplay menu.
+- **IF [F] Force refresh Figma artifacts:**
+  1. Confirm: "This will delete every file under {figmaDir} that is listed in UIX-SPEC's Design Context Artifacts table and re-fetch each via MCP. Proceed? [Y/n]"
+  2. On Y: for every artifact row in UIX-SPEC.md, delete the corresponding file (`tokens.css`, `<node-id>.md`, `<node-id>.png`, `assets/<name>.<ext>`). Then re-run section 2a tool sequence to re-fetch and save them.
+  3. Do NOT touch `figma/drift-T<n>.md` files — drift is per-implementation-pass and is not a Figma artifact.
+  4. Redisplay this menu.
 - **IF [B] Back to Design:**
   1. Trim `stepsCompleted` in `{stateFile}` to keep only entries up to and including `'step-01-spec'` (remove `'step-02-design'` and `'step-02b-uix'` if present).
   2. Clear `tasksCompleted` in `{stateFile}` (set to `[]`).
@@ -208,7 +177,7 @@ ONLY when `{nextStepFile}` is loaded via an explicit user action -- [C] Continue
 - All domain and quality criteria per {ruleRef} are satisfied.
 - UIX-SPEC.md created with correct Figma mappings, or step skipped cleanly.
 - Design context artifacts (if any) saved with correct naming and referenced in UIX-SPEC.md.
-- If Figma is in scope: **section 2b** fidelity loop (min 2 / max 5 passes, drift list, automatic Figma re-fetch) is **handed off** in UIX-SPEC (Overview or Open Questions) so implementation agents execute the loop without user prompting.
+- If Figma is in scope: section 2b cached snapshot policy is handed off in UIX-SPEC's Overview, naming `/uix-refresh` as the only refresh path.
 - Status APPROVED before continuing (unless skipping).
 - State updated before loading next step (`uixSkipped` set correctly).
 
@@ -219,4 +188,5 @@ ONLY when `{nextStepFile}` is loaded via an explicit user action -- [C] Continue
 - Not updating state before loading next step.
 - Loading next step before user selects [C] or [S].
 - Fabricating design context file contents without calling the MCP tool.
-- Implementation agent skipping the section 2b fidelity loop or running fewer than 2 Figma compare-fix passes for UI tasks with Figma mapping.
+- Calling any `figma-to-code` MCP tool from outside section 2a or `/uix-refresh` (no automatic re-fetch, no fidelity loop, no compare-and-re-call from any agent).
+- Re-fetching a cached file in `figma/` without an explicit user-initiated `/uix-refresh` or `[F] Force refresh`.
