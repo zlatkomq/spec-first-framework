@@ -11,7 +11,7 @@ How to use the Cursor commands to run the full spec-first workflow. Each command
 | `/constitute` | Create/update `.framework/CONSTITUTION.md` | Project description (tech stack, standards) |
 | `/specify` | Create `specs/XXX-slug/SPEC.md` | Spec ID + requirement (or just requirement; ID asked if missing) |
 | `/design` | Create `specs/XXX-slug/DESIGN.md` | Spec reference (e.g. 006 or path) |
-| `/uix` | Create `specs/XXX-slug/UIX-SPEC.md` (Figma mapping + design context via official Figma MCP) | Spec reference (e.g. 006 or path) |
+| `/uix` | Create `specs/XXX-slug/UIX-SPEC.md` (Figma mapping + design context via local `figma-to-code` MCP, saved under `specs/XXX/figma/`) | Spec reference (e.g. 006 or path) |
 | `/tasks` | Create `specs/XXX-slug/TASKS.md` | Spec/design reference (e.g. 006 or path) |
 | `/implement` | Implement one task from TASKS.md | Task reference (e.g. T3 from 006) |
 | `/review` | Generate `specs/XXX-slug/REVIEW.md` | Spec reference (e.g. 006 or path) |
@@ -62,7 +62,7 @@ or
 ```
 /uix 006
 ```
-→ Maps DESIGN.md segments to Figma files/nodes. If the official Figma MCP is connected, fetches design context via `get_design_context` and saves `figma_context_*.md` artifacts. Creates `specs/006-chatbot/UIX-SPEC.md`. Skip if no Figma designs.
+→ Maps DESIGN.md segments to Figma files/nodes. If the local `figma-to-code` MCP is connected, fetches `tokens.css` (`get_figma_design_tokens`) and per-node JSX specs (`get_figma_node_spec`), optionally PNGs (`get_figma_frame_with_image`) and SVG/PNG assets (`export_figma_assets`) — all saved under `specs/006-chatbot/figma/`. Creates `specs/006-chatbot/UIX-SPEC.md`. Skip if no Figma designs.
 
 ---
 

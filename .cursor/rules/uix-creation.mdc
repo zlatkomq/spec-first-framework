@@ -48,41 +48,104 @@ Always use the template structure from @.framework/templates/UIX-SPEC.template.m
 - **Figma Link**: Full URL (with `?node-id=...` when Node ID is set)
 - **Notes**: Optional context (e.g. "Mobile variant", "Desktop only", "No Figma yet")
 
-### Design Context Artifacts
-- Populated when the official Figma MCP server (`figma`) is available
-- Each row references a saved `figma_context_*.md` file under the spec folder
-- Files are named `figma_context_<NODE_URL_FORM>.md` (colon → hyphen, e.g. `0:1` → `figma_context_0-1.md`)
-- Full-frame pulls with no specific node use `figma_context_full.md`
-- Optional screenshot files are named `figma_screenshot_<NODE_URL_FORM>.png`
+### Design Context Artifacts — Figma asset directory
+
+**All** Figma artifacts for a spec live in one dedicated directory:
+
+```
+specs/XXX-{slug}/figma/
+```
+
+This keeps every design artifact in one place so implementation agents (step-04) can find them without guessing.
+
+File naming inside `figma/`:
+
+| File | Contents |
+|------|----------|
+| `figma/tokens.css` | CSS `:root` block from `get_figma_design_tokens` — the single source of truth for colors and fonts |
+| `figma/<node-id>.md` | Full spec dump from `get_figma_node_spec` for that node (`123-456.md`) |
+| `figma/<node-id>.png` | Reference PNG from `get_figma_frame_with_image` for that node |
+| `figma/<node-id>-geometry.md` | Flat geometry table (if saved separately) |
+| `figma/assets/<name>.svg` | Exported SVG assets from `export_figma_assets` |
+| `figma/assets/<name>.png` | Exported PNG assets from `export_figma_assets` |
+
+Node IDs use **hyphens** (`123:456` → `123-456`). Never store figma files at the spec folder root.
+
+Each saved artifact row in UIX-SPEC.md uses relative path `./figma/<filename>`.
 
 ### Open Questions
 - Format as checklist: `- [ ] Question here?`
 - Include any segments without Figma coverage
 
-## Figma Design Context (Official Figma MCP)
+---
 
-When the official Figma MCP server (`figma` — remote at `https://mcp.figma.com/mcp`) is available and the user provides Figma URLs:
+## Figma Design Context (figma-to-code-mcp-os v2.0.0)
 
-1. **Tool**: `get_design_context`
-   - Pass the Figma URL directly; the tool extracts `fileKey` and `node-id` from the URL automatically.
-   - Prefer selecting a **single root frame or component** per call to keep context bounded.
-   - The tool returns a structured design representation (React + Tailwind by default). The framework or styling system can be customized via prompt.
-2. **Tool** (optional): `get_screenshot`
-   - Call for each key frame/component to capture a visual reference image.
-3. **Tool** (optional): `get_variable_defs`
-   - Call when the spec needs design tokens (colors, spacing, typography variables) from the Figma selection.
-4. **Save**: Write the `get_design_context` result to `{spec_folder}/figma_context_<NODE_URL_FORM>.md`. Save screenshots (if any) as `{spec_folder}/figma_screenshot_<NODE_URL_FORM>.png`.
-5. **Reference**: Add each saved file to the Design Context Artifacts table in UIX-SPEC.md.
+When the local MCP server `figma-to-code` is available and the user provides Figma URLs:
 
-If MCP is unavailable (or user hasn't authenticated), note in Open Questions that design context is pending. Do NOT fabricate file contents.
+### CACHE POLICY — check disk before calling MCP
+
+**Before calling any Figma MCP tool**, check whether the artifact already exists in `specs/XXX-{slug}/figma/`. If it does, **read the file from disk and skip the tool call**. MCP tools are called at most once per artifact — subsequent reads use the cached file.
+
+| Artifact | MCP Tool | Rule |
+|----------|----------|------|
+| `figma/tokens.css` | `get_figma_design_tokens` | File exists → skip call, read file |
+| `figma/<node-id>.md` | `get_figma_node_spec` | File exists → skip call, read file |
+| `figma/<node-id>.png` | `get_figma_frame_with_image` | File exists → skip call, read file |
+| `figma/assets/<name>.<ext>` | `export_figma_assets` | File exists → skip call, read file |
+
+Calling the MCP for an artifact already saved on disk is a **FAILURE CONDITION**.
+
+### Tool call sequence
+
+**Step 1 — Explore file structure**
+Call `get_figma_file_structure(fileKey)`.
+- Extract `fileKey` from the Figma URL path (segment after `/file/` or `/design/`).
+- This returns all pages and top-level frames with their `id` values.
+- Pick the `nodeId` for each DESIGN.md segment.
+
+**Step 2 — Fetch design tokens (once per file)**
+Call `get_figma_design_tokens(fileKey)`.
+- Save response **as-is** to `specs/XXX-{slug}/figma/tokens.css`.
+- This is the only allowed source of hex colors and font names for generated code.
+
+**Step 3 — Fetch full spec for each node**
+Call `get_figma_node_spec(fileKey, nodeId, maxDepth?)`.
+- Response contains: token constraints header, canonical JSX tree with ALL layout props (x, y, w, h, constraint-h/v, layout, sizing-h/v, grow, gap, padding, align-main/cross, min/max, bg, radius, border, stroke-w, opacity, effects), flat geometry table, and code-generation rules footer.
+- Save response **as-is** to `specs/XXX-{slug}/figma/<node-id>.md`.
+- Use `maxDepth` (default 12) to limit depth for very large frames and stay within model context.
+
+**Step 4 — Fetch reference image (when visual parity check is needed)**
+Call `get_figma_frame_with_image(fileKey, nodeId, scale?)`.
+- Returns the same JSX spec AND a PNG download URL.
+- Download the PNG and save it to `specs/XXX-{slug}/figma/<node-id>.png`.
+- The PNG is a **visual reference only** — the JSX numbers are the source of truth for all CSS values.
+
+**Step 5 — Export icon / image assets**
+Call `export_figma_assets(fileKey, nodeIds[], format)` for SVG/PNG assets.
+- Save downloaded files to `specs/XXX-{slug}/figma/assets/`.
+- Reference asset paths in UIX-SPEC.md Design Context Artifacts table.
+
+### Saving and referencing
+
+- Create the `figma/` directory at the spec folder root before saving any files.
+- Add each saved file to the **Design Context Artifacts** table in UIX-SPEC.md with its relative path (`./figma/<filename>`).
+- Do NOT save figma artifacts outside of `specs/XXX-{slug}/figma/`.
+- Do NOT fabricate file contents — only save actual MCP tool responses.
+
+If MCP is unavailable, note in Open Questions that design context is pending. Do NOT fabricate file contents.
+
+---
 
 ## Constraints
 
 - Do NOT invent Figma URLs or node-ids — only use what the user provides
 - Do NOT create design context files without actually calling the MCP tool
+- Do NOT call the MCP tool for any artifact already saved on disk in `figma/` — read from cache
 - Do NOT modify SPEC.md or DESIGN.md during this step
 - Every design segment from DESIGN.md should be accounted for (mapped to Figma or marked "No Figma yet" in Notes)
 - All bracket placeholders from template must be removed from output; if info is missing, add an Open Question
+- All figma artifacts MUST live under `specs/XXX-{slug}/figma/` — never at the spec folder root
 
 ## Validation
 
@@ -90,7 +153,9 @@ Before completing, verify:
 - [ ] All DESIGN.md architecture segments are mapped or noted
 - [ ] Figma URLs are real (provided by user, not fabricated)
 - [ ] Node IDs match the URL format the user provided
-- [ ] Design context files (if any) are saved with correct naming convention
+- [ ] `figma/` directory created; all artifacts saved there with correct naming
+- [ ] `figma/tokens.css` saved (design tokens)
+- [ ] Each artifact referenced in UIX-SPEC.md Design Context Artifacts table with relative path `./figma/<filename>`
 - [ ] Status set to DRAFT
 
 ## Output

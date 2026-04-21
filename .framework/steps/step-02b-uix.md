@@ -10,8 +10,11 @@ stateFile: '{spec_folder}/.workflow-state.md'
 specFile: '{spec_folder}/SPEC.md'
 designFile: '{spec_folder}/DESIGN.md'
 outputFile: '{spec_folder}/UIX-SPEC.md'
-uixContextPattern: '{spec_folder}/figma_context_*.md'
-uixScreenshotPattern: '{spec_folder}/figma_screenshot_*.png'
+figmaDir: '{spec_folder}/figma/'
+uixTokensFile: '{spec_folder}/figma/tokens.css'
+uixContextPattern: '{spec_folder}/figma/*.md'
+uixScreenshotPattern: '{spec_folder}/figma/*.png'
+uixAssetsDir: '{spec_folder}/figma/assets/'
 ---
 
 # Step 2b: Create UIX Spec (Figma) — Optional
@@ -20,7 +23,7 @@ uixScreenshotPattern: '{spec_folder}/figma_screenshot_*.png'
 
 ## STEP GOAL
 
-Create (or update) UIX-SPEC.md by applying the uix-creation rules and template. Map DESIGN.md segments to Figma files and node IDs. When Figma is in scope, **fetch design context** via the official Figma MCP server **`figma`** (tool **`get_design_context`**) and save artifacts under the spec folder for **step 04 (implementation)** to use as layout reference. **Downstream implementation must follow § 2b** (iterative Figma compare-fix loop — min 2 / max 5 passes with drift list) so UI output is pixel-accurate, not a single-pass approximation. This step is optional: if this spec has no Figma, choose [S] Skip to continue to Task Breakdown.
+Create (or update) UIX-SPEC.md by applying the uix-creation rules and template. Map DESIGN.md segments to Figma files and node IDs. When Figma is in scope, **fetch design context** via the local MCP server **`figma-to-code`** (v2.0.0+) and save all artifacts under `{spec_folder}/figma/` for **step 04 (implementation)** to use as layout reference. **Downstream implementation must follow § 2b** (iterative Figma compare-fix loop — min 2 / max 5 passes with drift list) so UI output is pixel-accurate, not a single-pass approximation. This step is optional: if this spec has no Figma, choose [S] Skip to continue to Task Breakdown.
 
 ## RULES
 
@@ -53,21 +56,20 @@ Do NOT invent Figma URLs or node-ids — only use what the user provides.
 
 - Ask the user: "Do you have Figma file(s) for this spec? If yes, provide the file URL(s) and, for each DESIGN segment, the Figma link and optional node-id. If no Figma for this spec, say 'skip' or 'no' to skip this step."
 
-### 2a. Fetch design context via official Figma MCP (when Figma is provided)
+### 2a. Fetch design context via local Figma MCP (when Figma is provided)
 
-Apply **{ruleRef} -> "Figma Design Context (Official Figma MCP)"** in full. Summary:
+Apply **{ruleRef} -> "Figma Design Context (figma-to-code-mcp-os v2.0.0)"** in full. Summary:
 
-1. **Prerequisite:** Official Figma MCP server **`figma`** is connected (remote at `https://mcp.figma.com/mcp`). User must have authenticated via OAuth through their MCP client (e.g. Cursor). No local server or API token env var required.
-2. **Tool:** **`get_design_context`**
-   - Pass the user's Figma URL directly; the tool extracts `fileKey` and `node-id` automatically.
-   - Prefer a **single root frame or component** per call to keep context bounded.
-   - Returns a structured design representation (React + Tailwind by default; customizable via prompt).
-3. **Tool (optional):** **`get_screenshot`** -- capture a visual reference for each key frame/component.
-4. **Tool (optional):** **`get_variable_defs`** -- extract design tokens (colors, spacing, typography) when needed.
-5. **Save:** Write the `get_design_context` result to `{spec_folder}/figma_context_<NODE_URL_FORM>.md` where `<NODE_URL_FORM>` uses **hyphens** (`0:1` -> `figma_context_0-1.md`). For a **full-frame** pull with no specific node, use **`figma_context_full.md`**. Save screenshots (if any) as `{spec_folder}/figma_screenshot_<NODE_URL_FORM>.png`.
-6. **UIX-SPEC.md:** Reference each saved file (relative path, e.g. `./figma_context_0-1.md`) in the Design Context Artifacts table so **step 04** can locate layout references without guessing.
+1. **Prerequisite:** Local MCP server **`figma-to-code`** (v2.0.0+) is connected. Server requires `FIGMA_ACCESS_TOKEN` (Personal Access Token) and is reachable at the URL configured in the user's MCP client. If the server is missing or returns tool-not-found for `get_figma_node_spec`, HALT and report version mismatch.
+2. **Cache check:** Before any tool call, check whether the target file already exists under `{spec_folder}/figma/`. If yes, **read from disk and skip the MCP call** — calling MCP for an already-saved artifact is a FAILURE CONDITION (the only exception is the § 2b fidelity loop in step 04, which is allowed to invalidate and re-fetch).
+3. **Tool:** **`get_figma_file_structure(fileKey)`** -- always call first. Returns pages and top-level frames with `id` values; pick the `nodeId` for each DESIGN segment. (Not saved to disk; used only to resolve nodeIds.)
+4. **Tool:** **`get_figma_design_tokens(fileKey, nodeId?)`** -- call once per file (or per top-level node). Save the response **as-is** to `{spec_folder}/figma/tokens.css`. This CSS `:root` block is the **only** allowed source of hex colors and font names for generated code.
+5. **Tool:** **`get_figma_node_spec(fileKey, nodeId, maxDepth?)`** -- call per design segment. Returns token constraints header + canonical JSX tree (full prop set: `x y w h constraint-h/v layout sizing-h/v grow gap padding align-main/cross min/max bg radius border stroke-w opacity effects`) + flat geometry table + code-generation rules footer. Save **as-is** to `{spec_folder}/figma/<node-id>.md` where `<node-id>` uses **hyphens** (`123:456` -> `123-456.md`). Use `maxDepth` (default 12; reduce to 6–8 for small OS models on large frames).
+6. **Tool (optional, multimodal/visual parity):** **`get_figma_frame_with_image(fileKey, nodeId, scale?)`** -- returns the same JSX spec plus a PNG download URL. Download the PNG and save to `{spec_folder}/figma/<node-id>.png`. The PNG is a **visual reference only**; the JSX numbers in the `.md` are the source of truth for all CSS values.
+7. **Tool (optional, assets):** **`export_figma_assets(fileKey, nodeIds[], format)`** -- export icon/image assets (`"svg"` default, or `"png"`). Save downloaded files to `{spec_folder}/figma/assets/`.
+8. **UIX-SPEC.md:** Reference every saved file (relative path, e.g. `./figma/123-456.md`, `./figma/tokens.css`, `./figma/assets/icon-foo.svg`) in the Design Context Artifacts table so **step 04** can locate layout references without guessing.
 
-If MCP is unavailable (or user hasn't authenticated), skip 2a and note in UIX-SPEC **Open Questions** that design context is pending; do **not** fabricate file contents.
+If MCP is unavailable (or `FIGMA_ACCESS_TOKEN` missing), skip 2a and note in UIX-SPEC **Open Questions** that design context is pending; do **not** fabricate file contents.
 
 ### 2b. Figma -> code fidelity loop (normative for step 04)
 
@@ -79,11 +81,34 @@ This section is **normative** for any agent or developer that implements UI from
 
 For each iteration **i** (where i = 1 ... 5):
 
-**Step A -- Re-fetch Figma.**
-Call **`get_design_context`** (and optionally **`get_screenshot`**) via the Figma MCP for every node listed in UIX-SPEC's Design Context Artifacts table. This gives the agent a fresh structural + token view of the target design -- the same as a developer re-opening Figma to compare.
+**Step A -- Re-fetch Figma (cache invalidation allowed here).**
+For every node listed in UIX-SPEC's Design Context Artifacts table:
+1. Delete the cached `{spec_folder}/figma/<node-id>.md` (and `.png` if present) — the loop is the one place where re-fetch is mandatory.
+2. Call **`get_figma_node_spec(fileKey, nodeId, maxDepth?)`** and re-save to `{spec_folder}/figma/<node-id>.md`.
+3. Optionally call **`get_figma_frame_with_image`** and re-save the PNG to `{spec_folder}/figma/<node-id>.png` for visual parity.
+4. If tokens may have changed, also re-fetch **`get_figma_design_tokens`** and overwrite `{spec_folder}/figma/tokens.css`.
+
+This gives the agent a fresh structural + token view of the target design -- the same as a developer re-opening Figma to compare.
 
 **Step B -- Build / update the drift list.**
-Compare the current implementation against the re-fetched Figma data. Write (or update) a concrete **drift list** -- a bullet list of every visible mismatch, with measured values on both sides. Categories to check (all of them, every pass):
+Compare the current implementation against the re-fetched Figma data. Write (or update) a concrete **drift list** at `{spec_folder}/figma/drift-T<n>.md` (one file per UI task, e.g. `drift-T3.md`) with this structure:
+
+```
+---
+task: T3
+pass: 2
+maxPasses: 5
+status: open   # open | resolved | hard-stop
+---
+
+## Pass 2 drift
+
+- [ ] Card body padding: implemented `16px`, Figma `24px` (node 12:34, prop `padding`)
+- [x] Title font-weight: was 600, fixed to 700 in pass 1
+- ...
+```
+
+Resolved items stay in the file (checked off) so reviewers can see what was fixed across passes. Categories to check (all of them, every pass):
 
 - Spacing: padding, margin, gap (e.g. "card body padding is 16px, Figma shows 24px")
 - Typography: font-family, size, weight, line-height, letter-spacing
@@ -93,13 +118,13 @@ Compare the current implementation against the re-fetched Figma data. Write (or 
 - Component / frame sizing and constraints (width, height, min/max)
 
 **Step C -- Exit check.**
-If the drift list is **empty** (zero items) **and** i >= 2, the loop ends -- fidelity is achieved. Skip remaining passes. If i < 2, continue to Step D even if the drift list is empty (a second Figma re-fetch often catches things the first comparison missed).
+If all items in the drift file are checked `[x]` (zero open) **and** i >= 2, set frontmatter `status: resolved` and end the loop -- fidelity is achieved. Skip remaining passes. If i < 2, continue to Step D even if no open items remain (a second Figma re-fetch often catches things the first comparison missed).
 
 **Step D -- Fix.**
-Address every item on the drift list, largest visual impact first. After fixing each item, **strike through or remove** the resolved bullet so the list reflects only remaining gaps.
+Address every open item in `drift-T<n>.md`, largest visual impact first. After fixing each item, **check it off `[x]`** in place (do not delete) so the file shows the full history of fixes across passes.
 
 **Step E -- Hard stop guard.**
-If i = 5 and the drift list still has unresolved items, **stop iterating**. Append the remaining drift items to UIX-SPEC **Open Questions** (or a `## Remaining Drift` section) so the reviewer or user can see what was not fully resolved. Do not silently drop unresolved items.
+If i = 5 and `drift-T<n>.md` still has unchecked items, **stop iterating**. Set frontmatter `status: hard-stop`. Append the remaining open drift items to UIX-SPEC **Open Questions** (or a `## Remaining Drift` section) so the reviewer or user can see what was not fully resolved. Do not silently drop unresolved items.
 
 After Step D (or Step E on the final pass), increment i and return to Step A for the next pass.
 
@@ -123,7 +148,7 @@ This ensures that any agent reading only UIX-SPEC knows the iterative bar and wh
 
 ### 3. Create or skip
 
-- **If user provides Figma data (or wants a skeleton):** Apply {ruleRef} using {templateRef}. Save to `{outputFile}` with Status: DRAFT. If section 2a ran, ensure design context artifacts match `{uixContextPattern}` naming (and screenshots match `{uixScreenshotPattern}`) and are linked from UIX-SPEC. Apply the **section 2b handoff** sentence (Overview or Open Questions). Go to section 4.
+- **If user provides Figma data (or wants a skeleton):** Apply {ruleRef} using {templateRef}. Save to `{outputFile}` with Status: DRAFT. If section 2a ran, ensure all design context artifacts live under `{figmaDir}` (`tokens.css`, per-node `.md`/`.png` files, `assets/*`) and that every saved file is linked from UIX-SPEC's Design Context Artifacts table with relative path `./figma/<filename>`. Apply the **section 2b handoff** sentence (Overview or Open Questions). Go to section 4.
 - **If user skips (no Figma):** Update `{stateFile}`: append `'step-02b-uix'` to `stepsCompleted`. Set `uixSkipped: true` in frontmatter. Offer to commit: "Commit workflow state? [Y/n]" -- if yes: `git add {stateFile}` and commit with message `"spec({spec_id}): skip UIX spec (no Figma)"`. Auto-continue: load and follow `{nextStepFile}`. STOP (do not present approval menu).
 
 ### 4. Approval gate
@@ -151,7 +176,7 @@ UIX-SPEC.md is APPROVED.
   1. Update Status -> APPROVED.
   2. Update `{stateFile}`: append `'step-02b-uix'` to `stepsCompleted`.
   3. Set `uixSkipped: false` in `{stateFile}` frontmatter.
-  4. Offer to commit: "Commit UIX-SPEC.md (and any `figma_context_*.md` / `figma_screenshot_*.png` files) to the current branch? [Y/n]" -- if yes: `git add {outputFile} {spec_folder}/figma_context_*.md {spec_folder}/figma_screenshot_*.png {stateFile}` (shell glob as appropriate) and commit with message `"spec({spec_id}): create UIX spec (Figma)"`.
+  4. Offer to commit: "Commit UIX-SPEC.md (and the entire `{spec_folder}/figma/` directory) to the current branch? [Y/n]" -- if yes: `git add {outputFile} {spec_folder}/figma/ {stateFile}` and commit with message `"spec({spec_id}): create UIX spec (Figma)"`.
   5. Present menu (section 5).
 - **IF [C] Continue:**
   1. Read fully and follow: `{nextStepFile}` (step-03-tasks.md).
