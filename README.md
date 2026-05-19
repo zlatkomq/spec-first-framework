@@ -76,9 +76,9 @@ spec-first update
 spec-first update --branch <branch-name>
 ```
 
-#### Install Cursor Metrics Hook (optional)
+#### Install Cursor Reporting Hook (optional)
 
-Installs the [cursor-metrics](https://github.com/zlatkomq/cursor-metrics) hook into `~/.cursor/` so every agent session automatically reports usage metrics.
+Installs the [Cursor Reporting](https://github.com/zlatkomq/cursor_reporting) hook into `~/.cursor/` so every agent session automatically reports usage metrics to your team's reporting backend (token counts, model, cost, command/skill usage, timing). See [docs/CLIENT-HANDOFF.md](docs/CLIENT-HANDOFF.md) for what the reporting deliverable provides.
 
 ```bash
 spec-first install-hook
@@ -89,9 +89,11 @@ The command downloads `send-metrics.py` into `~/.cursor/hooks/` and creates (or 
 | Option | Description |
 |--------|-------------|
 | `--url <script-url>` | Override the download URL for `send-metrics.py` |
-| `CURSOR_METRICS_URL` | Environment variable — sets the ingest endpoint (default: `http://localhost:8000`) |
+| `CURSOR_METRICS_URL` | Environment variable — sets the ingest endpoint URL (e.g. `https://reporting.your-team.example.com`). Default: `http://localhost:8000`. Set this BEFORE running `install-hook`, or set it in your shell profile (`~/.bashrc` / `~/.zshrc`) — the hook reads it at runtime |
 
 After installation, restart Cursor to activate. Debug logs are written to `~/.cursor/hooks-logs/stop-events.jsonl`.
+
+**Prerequisite:** a Cursor Reporting backend must be reachable at the URL you point `CURSOR_METRICS_URL` at. See the [Cursor Reporting README](https://github.com/zlatkomq/cursor_reporting) for backend deployment (Docker Compose, one command).
 
 #### CLI Commands
 
@@ -100,7 +102,7 @@ After installation, restart Cursor to activate. Debug logs are written to `~/.cu
 | `spec-first init` | Install framework files into current project (run once per project after Step 1) |
 | `spec-first update` | Pull latest rules/templates (preserves specs, bugs, constitution) |
 | `spec-first update --branch <name>` | Switch to a different framework branch |
-| `spec-first install-hook` | Install cursor-metrics hook for the current user |
+| `spec-first install-hook` | Install [Cursor Reporting](https://github.com/zlatkomq/cursor_reporting) telemetry hook for the current user |
 | `spec-first version` | Show installed framework version |
 
 ## Quick Start
@@ -531,6 +533,7 @@ Use `/bug` instead if the fix needs investigation, touches many files, or carrie
 - [BMAD Fusion — Change Request Summary](docs/BMAD-FUSION-CHANGES.md) — Full list of BMAD fusion changes (templates, rules, steps)
 - [UIX / Figma Injection Overview](docs/UIX-FIGMA-INJECTION-OVERVIEW.md) — Technical analysis of the UIX integration approach
 - [Figma Designer Guide](docs/FIGMA-DESIGNER-GUIDE.md) — **For designers.** Naming, layout, components, and asset rules so the `figma-to-code` MCP extracts pixel-accurate specs. Send this to your designers before they build the first Figma file for a Spec-First project.
+- [Cursor Reporting](https://github.com/zlatkomq/cursor_reporting) — **Optional companion product.** FastAPI + MariaDB telemetry backend + web dashboard for team usage metrics (tokens, cost, model, `/command` and skill usage, timing). Hooked into Cursor via `spec-first install-hook`.
 - [PHILOSOPHY.md](PHILOSOPHY.md) — Framework principles and design rationale
 
 ## Testing

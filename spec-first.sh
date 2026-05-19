@@ -9,7 +9,7 @@ VERSION="0.6.0"
 DEFAULT_REPO="https://github.com/zlatkomq/spec-first-framework.git"
 DEFAULT_BRANCH="main"
 VERSION_FILE=".framework/.spec-first-version"
-DEFAULT_METRICS_SCRIPT_URL="https://raw.githubusercontent.com/zlatkomq/cursor-metrics/main/scripts/send-metrics.py"
+DEFAULT_METRICS_SCRIPT_URL="https://raw.githubusercontent.com/zlatkomq/cursor_reporting/main/scripts/send-metrics.py"
 
 # Colors (disabled if not a terminal)
 if [ -t 1 ]; then
@@ -40,21 +40,21 @@ ${BOLD}spec-first${NC} — Spec-First AI Development Framework CLI
 ${BOLD}Usage:${NC}
   spec-first init          [--branch <branch>] [--repo <url>]   Install framework into current project
   spec-first update        [--branch <branch>] [--repo <url>]   Update framework files (preserves project data)
-  spec-first install-hook  [--url <script-url>]                 Install cursor-metrics hook for current user
+  spec-first install-hook  [--url <script-url>]                 Install Cursor Reporting hook for current user
   spec-first version                                             Show installed framework version
   spec-first help                                                Show this help
 
 ${BOLD}Options:${NC}
   --branch <branch>   Git branch or tag to use (default: ${DEFAULT_BRANCH})
   --repo <url>        Git repository URL (default: ${DEFAULT_REPO})
-  --url <script-url>  URL to download send-metrics.py from (default: cursor-metrics repo)
+  --url <script-url>  URL to download send-metrics.py from (default: cursor_reporting repo, main branch)
 
 ${BOLD}Examples:${NC}
   spec-first init                          # Install from main branch
   spec-first init --branch develop         # Install from develop branch
   spec-first update                        # Update from same branch used during init
   spec-first update --branch v0.8.0        # Update and switch to a different branch
-  spec-first install-hook                   # Install cursor-metrics hook
+  spec-first install-hook                   # Install Cursor Reporting hook
 EOF
 }
 
@@ -378,7 +378,7 @@ cmd_install_hook() {
       ok "hooks.json already contains send-metrics.py — skipping."
     else
       warn "$hooks_json exists but does not reference send-metrics.py."
-      warn "Please manually add the stop hook entry. See cursor-metrics README."
+      warn "Please manually add the stop hook entry. See https://github.com/zlatkomq/cursor_reporting"
     fi
   else
     cat > "$hooks_json" <<'HOOKEOF'
