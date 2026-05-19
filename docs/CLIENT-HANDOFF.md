@@ -101,9 +101,9 @@ Future major versions of the MCP server will be flagged in the Designer Guide's 
 
 ---
 
-## Roadmap (planned after this signoff)
+## Proposed roadmap
 
-Investment continues. These are the next blocks of work — no fixed delivery dates yet, but each is scoped and prioritised.
+Investment continues.
 
 ### 1. Automated QA test generation from spec artifacts
 
