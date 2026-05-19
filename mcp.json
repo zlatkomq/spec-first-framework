@@ -1,7 +1,7 @@
 {
   "mcpServers": {
     "figma-to-code": {
-      "url": "http://192.168.20.70:3000/mcp"
+      "url": "http://127.0.0.1:3000/mcp"
     }
   }
 }

@@ -178,12 +178,68 @@ Reduces billing disputes and keeps bug vs scope-change work clearly separated.
 
 ### Figma and UIX flow (layout handoff)
 
-When the feature has UI in **Figma**, the `/flow` guided path runs **step 2b** after an approved DESIGN (see `.framework/steps/step-02b-uix.md` and `skills/uix-creation/SKILL.md`).
+When the feature has UI in **Figma**, the `/flow` guided path runs **step 2b** after an approved DESIGN (see `.framework/steps/step-02b-uix.md` and `skills/uix-creation/SKILL.md`). Designers, the agent, and developers all share one source of truth: a fetched-once snapshot of the Figma file living on disk in the spec folder.
+
+#### Architecture
+
+```
+┌──────────────────┐       ┌───────────────────────┐       ┌──────────────────────┐
+│  Designer        │       │  figma-to-code MCP    │       │  Spec-First /uix     │
+│  (Figma file)    │──────▶│  (separate server,    │──────▶│  (this framework,    │
+│                  │  read │   open source)        │ tools │   /flow step 2b)     │
+│  follows         │       │                       │       │                      │
+│  FIGMA-DESIGNER- │       │  github.com/zlatkomq/ │       │  caches results to   │
+│  GUIDE.md        │       │  figma-mcp            │       │  specs/XXX/figma/    │
+└──────────────────┘       └───────────────────────┘       └──────────────────────┘
+```
+
+Two pieces, deployed independently:
+
+1. **`figma-to-code` MCP server** — open-source Node/Docker service that translates Figma REST API responses into deterministic, code-ready JSX + tokens. Lives in its own repo: **[github.com/zlatkomq/figma-mcp](https://github.com/zlatkomq/figma-mcp)**.
+2. **Spec-First Framework (this repo)** — the `/uix` step that calls the MCP, caches the result, and treats the on-disk cache as the single source of truth for the rest of the workflow.
+
+#### Setup
+
+##### For designers
+
+Send your design team [**docs/FIGMA-DESIGNER-GUIDE.md**](docs/FIGMA-DESIGNER-GUIDE.md). It documents the naming, layout, frames vs groups, components, text, colors, icons (`svg_ex_` prefix), and grid conventions that make extraction deterministic. Following this guide is the difference between pixel-accurate generated code and approximations.
+
+##### For developers (one-time per machine)
+
+1. **Deploy the `figma-to-code` MCP server.** Follow the [Installation section in the figma-mcp README](https://github.com/zlatkomq/figma-mcp#installation) — three options: local Node, Docker, or stdio. You'll need a Figma Personal Access Token; the token is configured on the **server** (in `.env`), not on developer machines.
+
+2. **Configure your editor to attach to the MCP.** Pick the section for your editor in the [figma-mcp README's MCP client configuration](https://github.com/zlatkomq/figma-mcp#mcp-client-configuration) — Cursor, Claude Code, or OpenCode are all covered. Minimal Cursor example (replace `127.0.0.1` with the server's reachable address):
+
+   ```json
+   {
+     "mcpServers": {
+       "figma-to-code": {
+         "url": "http://127.0.0.1:3000/mcp"
+       }
+     }
+   }
+   ```
+
+   The repo includes a root [`mcp.json`](mcp.json) as a reference snippet you can copy from. **Restart your editor** after editing the config.
+
+3. **Trust the MCP server in your editor.** Cursor shows a *"Trust and run MCP server figma-to-code?"* dialog the first time — click **Trust**. (Equivalent prompts in Claude Code / OpenCode.)
+
+   ![Cursor: Trust and run MCP server figma-to-code — choose Trust](docs/img/accept.png)
+
+4. **Verify the install.** Follow the [Verification section](https://github.com/zlatkomq/figma-mcp#verification) in the figma-mcp README. Quick check: in your editor, ask the agent *"List MCP tools available from figma-to-code"* — you should see five tools (`get_figma_file_structure`, `get_figma_design_tokens`, `get_figma_node_spec`, `get_figma_frame_with_image`, `export_figma_assets`).
+
+5. **Install the Spec-First plugin** if you haven't already (see the [Installation section](#installation) above) — this provides the `/uix` and `/uix-refresh` slash commands and the `skills/uix-creation/` skill.
+
+##### Q Agency internal deployment
+
+Q Agency runs the `figma-to-code` stack on the internal RACK (under `/home/DOCKER_MCP_DATA/`) on a VPN-only address. Internal developers replace `127.0.0.1` in the Cursor/Claude Code/OpenCode config with the internal URL and must be on the VPN. External users and clients should run their own instance using the [figma-mcp repo](https://github.com/zlatkomq/figma-mcp).
+
+#### What happens at step 2b
 
 | Phase | What happens |
 |--------|----------------|
 | **UIX spec** | You create **`specs/<id-slug>/UIX-SPEC.md`**: maps DESIGN.md segments to Figma file URLs and `node-id` deep links (template: `.framework/templates/UIX-SPEC.template.md`). |
-| **Cached design context (fetch once)** | With the **team MCP server `figma-to-code` v2.0.0+** reachable from your editor (you on **VPN**, `~/.cursor/mcp.json` pointing at the server — the Figma access token is configured **server-side** on the rack, not on your machine), the agent calls a granular tool sequence: `get_figma_file_structure` → `get_figma_design_tokens` → `get_figma_node_spec` per design segment, optionally `get_figma_frame_with_image` and `export_figma_assets`. Every response is saved under **`specs/<id-slug>/figma/`** (`tokens.css`, `<node-id>.md`, optional `<node-id>.png`, `assets/`). |
+| **Cached design context (fetch once)** | The agent calls the granular tool sequence on `figma-to-code` v2.0.0+: `get_figma_file_structure` → `get_figma_design_tokens` → `get_figma_node_spec` per design segment, optionally `get_figma_frame_with_image` and `export_figma_assets`. Every response is saved under **`specs/<id-slug>/figma/`** (`tokens.css`, `<node-id>.md`, optional `<node-id>.png`, `assets/`). |
 | **Single source of truth** | The files in `figma/` are the **definitive design context** for the rest of the workflow. UIX-SPEC.md's **Design Context Artifacts** table lists every cached file with its relative path. |
 | **Implementation (step 4)** | `.framework/steps/step-04-implement.md` reads `UIX-SPEC.md` and **all files under `figma/`** as the design context. **Step 4 never calls the MCP** — it reads from disk only. Single-pass implementation per task; observed visual mismatches are recorded once in `figma/drift-T<n>.md` and surfaced to step 5. |
 | **Review (step 5)** | `.framework/steps/step-05-review.md` reads the same cached `figma/` files plus `drift-T*.md`. Unchecked drift items become Major findings. **Step 5 never calls the MCP.** |
@@ -191,46 +247,17 @@ When the feature has UI in **Figma**, the `/flow` guided path runs **step 2b** a
 
 **No fidelity loop, no automatic re-fetch.** Once design context is cached in `figma/`, agents must read from disk. Calling the MCP for a file that already exists on disk — outside of `/uix-refresh` — is a failure condition reported by step 5.
 
-**Cursor MCP — user config (`~/.cursor/mcp.json`):** For Cursor to connect to the team server, each developer must have **`~/.cursor/mcp.json`** in their **home directory** (global Cursor MCP config). Without this file, MCP tooling will not attach. **Restart Cursor** after creating or editing the file.
+#### `svg_ex_` node convention — automatic SVG export
 
-The repository includes a root [`mcp.json`](mcp.json) with the same shape as a reference; copy its contents into `~/.cursor/mcp.json` or merge the `figma-to-code` entry into your existing config. Adjust the **`url`** if your rack/VPN endpoint differs.
+Any Figma node whose name starts with **`svg_ex_`** is treated as a standalone SVG asset. The `figma-to-code` MCP server identifies these nodes automatically. When such a node is encountered the agent **must** call `export_figma_assets` for it (format `"svg"`) and save the result to **`specs/<id-slug>/figma/assets/<node-name>.svg`**. That cached `.svg` file is then the **only** allowed source for the graphic in generated code and specs — it must be referenced by its relative path (e.g. `./figma/assets/svg_ex_logo.svg`) and must never be inlined or substituted with a placeholder. The standard cache policy applies: if the file already exists on disk, read from disk and do not call the MCP again.
 
-```json
-{
-  "mcpServers": {
-    "figma-to-code": {
-      "url": "http://192.168.20.70:3000/mcp"
-    }
-  }
-}
-```
+#### No Figma for this spec?
 
-The tools exposed to the agent (server v2.0.0+) are **`get_figma_file_structure`**, **`get_figma_design_tokens`**, **`get_figma_node_spec`**, **`get_figma_frame_with_image`**, and **`export_figma_assets`**. (Project-level `.cursor/mcp.json` may also be used per workspace, but team practice is **`~/.cursor/mcp.json`** so Figma MCP works in every project while on VPN.)
+Step 2b is optional. If a spec has no UI work (backend-only, infrastructure, refactor), pick `[S] Skip UIX` in the step's menu. `.workflow-state.md` records `uixSkipped: true` and the workflow auto-continues to Task Breakdown.
 
-**`svg_ex_` node convention — automatic SVG export:** Any Figma node whose name starts with **`svg_ex_`** is treated as a standalone SVG asset. The `figma-to-code` MCP server identifies these nodes automatically. When such a node is encountered the agent **must** call `export_figma_assets` for it (format `"svg"`) and save the result to **`specs/<id-slug>/figma/assets/<node-name>.svg`**. That cached `.svg` file is then the **only** allowed source for the graphic in generated code and specs — it must be referenced by its relative path (e.g. `./figma/assets/svg_ex_logo.svg`) and must never be inlined or substituted with a placeholder. The standard cache policy applies: if the file already exists on disk, read from disk and do not call the MCP again.
+#### CLI alternative
 
-**Cursor trust dialog:** After you add or change MCP config, Cursor may show a security prompt such as **"Trust and run MCP server figma-to-code?"** You must click **Trust** so the server is allowed to run; if you choose **Do not trust**, the Figma tools will not work in chat. The same kind of prompt can appear again when the server URL or definition changes.
-
-![Cursor: Trust and run MCP server figma-to-code — choose Trust](docs/img/accept.png)
-
-**Self-hosted `figma-to-code` on RACK (Docker):** The team MCP stack lives on our **RACK** in **`home/DOCKER_MCP_DATA/`** (resolve to the full host path your rack uses, e.g. under `/home/...`). Layout:
-
-```
-home/DOCKER_MCP_DATA/
-├── Dockerfile
-├── app/
-├── docker-compose.yml
-├── index.js
-└── package.json
-```
-
-- **Figma token:** Stored as an environment variable in **`docker-compose.yml`** (injected into the container; do not commit real tokens to git).
-- **Network:** You must be on the **VPN** so your machine (and Cursor) can reach the host/port where the stack exposes the MCP (usually HTTP/SSE).
-- **Figma access:** Files you pull must belong to **our Figma account** (team/org that issued the token). The API only returns what that token is allowed to see; personal or third-party files need sharing into that account or a token with the right scopes.
-
-**CLI alternative:** If you maintain a small Node MCP that wraps the Figma API, you can still produce the same on-disk shape with your own script; save files into the spec's `figma/` directory using the same names (`tokens.css`, `<node-id>.md`, `<node-id>.png`, `assets/...`) and list them in UIX-SPEC's **Design Context Artifacts** table so step 4 reads them as the cached snapshot.
-
-If there is **no Figma** for the spec, step 2b can be skipped (`uixSkipped` in workflow state).
+If your team prefers a custom Node script over the `figma-to-code` MCP server, you can produce the same on-disk shape with your own tooling — save files into the spec's `figma/` directory using the same names (`tokens.css`, `<node-id>.md`, `<node-id>.png`, `assets/...`) and list them in UIX-SPEC's **Design Context Artifacts** table so step 4 reads them as the cached snapshot. The framework only cares about the on-disk contract, not who fills it.
 
 ### SPEC-CURRENT.md
 
@@ -458,6 +485,7 @@ Use `/bug` instead if the fix needs investigation, touches many files, or carrie
 - [Workflow return and continue](docs/WORKFLOW-RETURN-AND-CONTINUE.md) — Resume or go back a step, then continue (`/flow 001`)
 - [BMAD Fusion — Change Request Summary](docs/BMAD-FUSION-CHANGES.md) — Full list of BMAD fusion changes (templates, rules, steps)
 - [UIX / Figma Injection Overview](docs/UIX-FIGMA-INJECTION-OVERVIEW.md) — Technical analysis of the UIX integration approach
+- [Figma Designer Guide](docs/FIGMA-DESIGNER-GUIDE.md) — **For designers.** Naming, layout, components, and asset rules so the `figma-to-code` MCP extracts pixel-accurate specs. Send this to your designers before they build the first Figma file for a Spec-First project.
 - [PHILOSOPHY.md](PHILOSOPHY.md) — Framework principles and design rationale
 
 ## Testing
