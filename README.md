@@ -4,7 +4,16 @@ A structured methodology for AI-assisted software development. Ensures traceabil
 
 ## Installation
 
-### Option A: Install as a Plugin (Recommended)
+The framework installs in **two complementary steps**. Each step provides a different piece of the workflow; you need both:
+
+| Step | What you install | What it gives you | One-time or per-project? |
+|---|---|---|---|
+| **1. Editor plugin** | `spec-first-framework` plugin in Cursor / Claude Code / OpenCode | Slash commands (`/flow`, `/specify`, `/design`, `/uix`, …) and skills the agent uses | Per editor, one-time per machine |
+| **2. CLI + `spec-first init`** | The `spec-first` CLI, then run `spec-first init` in your project | Workflow files inside the project: `.framework/templates/`, `.framework/steps/`, `.framework/checklists/`, scaffold folders (`specs/`, `bugs/`), reference `mcp.json` | CLI once per machine, `init` once per project |
+
+> **Why two steps?** The plugin registers slash commands and skills inside the editor. The workflow files (templates, step definitions, checklists) live inside *your project* — that way each project owns its own copies of `SPEC.template.md`, `CONSTITUTION.md`, etc. and can customise them. Without step 2, slash commands like `/specify` will fail with "template not found" because they expect `.framework/templates/SPEC.template.md` in the project root.
+
+### Step 1 — Install the editor plugin
 
 #### Cursor
 
@@ -34,20 +43,24 @@ Or inside Claude Code:
 
 See [.opencode/INSTALL.md](.opencode/INSTALL.md) for manual setup (symlink plugin and skills directory).
 
-### Option B: Install via CLI
+### Step 2 — Install the CLI and initialise your project
 
-#### Install the CLI
+#### Install the CLI (one-time per machine)
 
 ```bash
 sudo curl -fsSL https://raw.githubusercontent.com/zlatkomq/spec-first-framework/main/spec-first.sh -o /usr/local/bin/spec-first && sudo chmod +x /usr/local/bin/spec-first
 ```
 
-#### Initialize a project
+#### Initialise a project (one-time per project)
 
 ```bash
 cd your-project
 spec-first init
 ```
+
+This copies `.framework/templates/`, `.framework/steps/`, `.framework/checklists/`, the scaffold folders (`specs/`, `bugs/`), the reference `mcp.json`, and other workflow files into your project. After this, slash commands like `/specify` will find their templates and run successfully.
+
+> **Manual alternative:** if you can't install the CLI, clone this repo and copy `.cursor/commands/`, `.framework/`, `mcp.json`, and an empty `specs/` + `bugs/` folder into your project by hand.
 
 #### Update to latest framework
 
@@ -55,13 +68,15 @@ spec-first init
 spec-first update
 ```
 
+`spec-first update` pulls the latest templates and step files into your project. Your `CONSTITUTION.md`, `specs/`, and `bugs/` content is preserved.
+
 #### Switch to a different branch
 
 ```bash
 spec-first update --branch <branch-name>
 ```
 
-#### Install Cursor Metrics Hook
+#### Install Cursor Metrics Hook (optional)
 
 Installs the [cursor-metrics](https://github.com/zlatkomq/cursor-metrics) hook into `~/.cursor/` so every agent session automatically reports usage metrics.
 
@@ -82,7 +97,7 @@ After installation, restart Cursor to activate. Debug logs are written to `~/.cu
 
 | Command | Description |
 |---------|-------------|
-| `spec-first init` | Install framework into current project |
+| `spec-first init` | Install framework files into current project (run once per project after Step 1) |
 | `spec-first update` | Pull latest rules/templates (preserves specs, bugs, constitution) |
 | `spec-first update --branch <name>` | Switch to a different framework branch |
 | `spec-first install-hook` | Install cursor-metrics hook for the current user |
@@ -90,9 +105,11 @@ After installation, restart Cursor to activate. Debug logs are written to `~/.cu
 
 ## Quick Start
 
-1. Install the framework with `spec-first init` (or manually copy `.cursor/` and `.framework/` folders into your project)
-2. Create `CONSTITUTION.md` using: `/constitute` + your project description
-3. For each spec, follow the workflow: SPEC → DESIGN → **UIX (Figma, optional)** → TASKS → Implementation → Review
+After completing both installation steps above:
+
+1. Create `CONSTITUTION.md` using: `/constitute` + your project description (e.g. `Python 3.12, FastAPI, pytest 80%, REST API`).
+2. For each feature, run the guided workflow: `/flow 001-feature-slug: <one-paragraph requirement>`. The agent walks you through SPEC → DESIGN → **UIX (Figma, optional)** → TASKS → Implementation → Review with `[C] Continue · [B] Back · [X] Exit` menus at every gate.
+3. Resume any time with `/flow 001`. Your progress lives in `specs/001-feature-slug/.workflow-state.md`.
 
 **Commands** (in `.cursor/commands/`): `/constitute`, `/specify`, `/design`, `/uix`, `/tasks`, `/implement`, `/review`, `/flow`, `/bug`, `/bugfix`, `/bugreview`, `/change`, `/adversarial`, `/debug`, `/validate` — see [Commands & Workflow Example](docs/COMMANDS-WORKFLOW-EXAMPLE.md).
 
