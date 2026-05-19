@@ -43,6 +43,47 @@ Or inside Claude Code:
 
 See [.opencode/INSTALL.md](.opencode/INSTALL.md) for manual setup (symlink plugin and skills directory).
 
+#### Codex (manual setup)
+
+Codex CLI uses the same [Agent Skills](https://agentskills.io) open standard as Cursor and Claude Code, but with two differences that need a one-time manual setup per project:
+
+1. **Discovery path:** Codex auto-discovers skills from `.agents/skills/` (not `skills/`). After running `spec-first init`, create the symlink:
+
+   ```bash
+   ln -sf ../skills .agents/skills      # macOS / Linux
+   # Windows (PowerShell, dev mode enabled):
+   # New-Item -ItemType SymbolicLink -Path .agents\skills -Target ..\skills
+   ```
+
+2. **Frontmatter requirement:** Codex strictly requires YAML frontmatter (`name`, `description`) at the top of each `SKILL.md`. The framework's skills today use the Markdown-only convention (`# Heading` + `## Description` section) that Cursor and Claude Code accept via first-paragraph fallback — Codex does not. Two options:
+
+   - **Recommended:** invoke skills by natural language (e.g. *"Use the spec-creation skill to draft SPEC.md for feature 001"*) — Codex's implicit-invocation mechanism matches on the `# Heading` text without needing frontmatter.
+   - **Strict `$skill-name` invocation:** add frontmatter to each `skills/<name>/SKILL.md` yourself:
+     ```yaml
+     ---
+     name: spec-creation
+     description: Use when creating a SPEC.md for a new feature, refactor, or migration.
+     ---
+     ```
+
+3. **AGENTS.md (optional, recommended):** Codex reads project-root `AGENTS.md` for orientation. Add a short file pointing at the framework:
+
+   ```markdown
+   # AGENTS.md
+   
+   This project uses the Spec-First Framework. The guided workflow is `$skill-name` invocation
+   or natural language: "Create SPEC.md for feature 001 using the spec-creation skill."
+   
+   - Skills: see skills/
+   - Step files: see .framework/steps/
+   - Templates: see .framework/templates/
+   - Project standards: see CONSTITUTION.md
+   ```
+
+   Codex appends `AGENTS.md` content to every prompt, so keep it concise (combined size cap is 32 KiB).
+
+Slash commands (`/specify`, `/flow`, etc.) are not user-extensible in Codex today — invoke the equivalent skill by name instead. Spec-First plans first-class Codex support (automated `.agents/skills` setup, frontmatter migration) for a future release.
+
 ### Step 2 — Install the CLI and initialise your project
 
 #### Install the CLI (one-time per machine)

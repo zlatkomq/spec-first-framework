@@ -134,6 +134,7 @@ No. The framework runs on the **SKILL.md** open standard with thin plugin adapte
 | Cursor 2.4+ | First-class — plugin via marketplace |
 | Claude Code | First-class — plugin via marketplace |
 | OpenCode | Supported via manual plugin registration |
+| Codex CLI | Supported via manual setup (symlink `.agents/skills` → `../skills`, optional `AGENTS.md` orientation file) — see [README → Step 1 → Codex](../README.md#codex-manual-setup) |
 | Any MCP-compatible editor | Templates and step files are plain Markdown — works anywhere |
 
 Vendor coupling is **at the editor layer**, not the framework. Switch editors without touching specs, designs, or any deliverable. The `figma-to-code` MCP runs locally / self-hosted, so swapping editors doesn't break design extraction either.
