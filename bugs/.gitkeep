@@ -1,0 +1,3 @@
+# Bug specifications are stored here
+# Each bug gets its own folder: BUG-XXX-description/
+# See .framework/templates/BUG.template.md for structure

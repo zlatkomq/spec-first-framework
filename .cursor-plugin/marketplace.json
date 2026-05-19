@@ -1,0 +1,16 @@
+{
+  "name": "spec-first-framework",
+  "owner": {
+    "name": "Zlatko Matokanovic"
+  },
+  "metadata": {
+    "description": "Spec-driven development framework for AI coding agents. Structured workflow with quality gates: SPEC, DESIGN, TASKS, Implementation, Review."
+  },
+  "plugins": [
+    {
+      "name": "spec-first-framework",
+      "source": ".",
+      "description": "Spec-driven development framework with quality gates, traceability, and structured AI-assisted workflows."
+    }
+  ]
+}
