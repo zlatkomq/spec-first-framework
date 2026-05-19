@@ -249,9 +249,9 @@ Send your design team [**docs/FIGMA-DESIGNER-GUIDE.md**](docs/FIGMA-DESIGNER-GUI
 
 5. **Install the Spec-First plugin** if you haven't already (see the [Installation section](#installation) above) — this provides the `/uix` and `/uix-refresh` slash commands and the `skills/uix-creation/` skill.
 
-##### Q Agency internal deployment
+##### Shared / remote deployments
 
-Q Agency runs the `figma-to-code` stack on the internal RACK (under `/home/DOCKER_MCP_DATA/`) on a VPN-only address. Internal developers replace `127.0.0.1` in the Cursor/Claude Code/OpenCode config with the internal URL and must be on the VPN. External users and clients should run their own instance using the [figma-mcp repo](https://github.com/zlatkomq/figma-mcp).
+If your team runs the MCP server on shared infrastructure (e.g. a single host on your private network, behind a VPN, or on a cloud VM) rather than each developer running it locally, just replace `127.0.0.1` in the Cursor / Claude Code / OpenCode config with the server's reachable hostname or IP. The Figma access token is set on the server (`.env`), so individual developers do not need their own token — they only need network reachability and editor config pointed at the right URL.
 
 #### First `/uix` call — what success looks like
 
