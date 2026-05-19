@@ -182,3 +182,89 @@ Compatible with **air-gapped, VPN-only, and on-premise** deployments. The only e
 **vs GitHub Spec-Kit:** Spec-Kit focuses on the SPEC artifact itself and conventions for writing it. Spec-First also wires implementation and review gates, and treats the SPEC as one link in a 6-step traced chain (CONSTITUTION → SPEC → DESIGN → UIX → TASKS → IMPLEMENTATION-SUMMARY → REVIEW). If Spec-Kit's SPEC format becomes a standard, Spec-First can align its `SPEC.template.md` to it without changing the rest of the pipeline.
 
 **vs `.cursor/rules` files / Cursor agents alone:** rules are static AI behavior modifiers. Spec-First is workflow + artifacts + gates. You can use rules WITH Spec-First — they're complementary.
+
+---
+
+## How should we migrate from a previous BMAD-fusion rules-based workflow to the current main (v1.2.0)?
+
+**TL;DR — the migration is reversible, takes ~1 hour per project, and your existing specs keep working untouched.** The methodology, artifacts, and gates are identical to what you have today. What changed is the *file format* the AI reads its own instructions from (`.cursor/rules/*.mdc` → cross-editor `skills/<name>/SKILL.md`), plus the addition of new companion deliverables (Figma flow, reporting, brownfield bootstrap).
+
+### What stays the same — existing specs work as-is
+
+- Every artifact in `specs/XXX/` and `bugs/BUG-XXX/` keeps working — `SPEC.md`, `DESIGN.md`, `TASKS.md`, `REVIEW.md`, `BUG.md` formats are unchanged
+- `/flow` workflow, gate semantics, and approval pattern are unchanged
+- BMAD-fusion agency metadata (`Approved By`, `Approval Date`, `Jira Ticket`, `SOW Ref`) preserved on every artifact
+- `CONSTITUTION.md` format is unchanged
+- Step file numbering shifts only because **step 3 is new** (UIX, optional) — old `step-04-implement.md` and `step-05-review.md` filenames are preserved; only the user-visible "Step N of 6" labels changed
+- Your customisations to `specs/`, `bugs/`, and `CONSTITUTION.md` are preserved by `spec-first update`
+
+### What changes
+
+| Concern | Before (rules era) | After (v1.2.0 main) |
+|---|---|---|
+| AI instruction format | `.cursor/rules/*.mdc` (Cursor-specific) | `skills/<name>/SKILL.md` (cross-editor open standard) |
+| Invocation | `@constitution-creation.mdc` | `/constitute` slash command (or `$constitute` in Codex) |
+| Editor support | Cursor only | Cursor / Claude Code / OpenCode / Codex (manual setup) |
+| Figma handoff | Manual | New optional step 2b: `/uix` + cached `figma/` snapshot |
+| Telemetry | None | Cursor Reporting (optional, self-hosted) |
+| Brownfield bootstrap | Manual `/constitute` | Optional [`legacy_ai_analyser`](https://github.com/zlatkomq/legacy_ai_analyser) plugin |
+
+### Migration sequence (per project, ~1 hour)
+
+```bash
+# 1. Branch off and snapshot the current state — your rollback point
+git checkout -b pre-spec-first-1.2.0-backup
+git add -A && git commit -m "Snapshot before Spec-First 1.2.0 migration"
+git push -u origin pre-spec-first-1.2.0-backup
+git checkout main
+
+# 2. Update the CLI to v0.6+
+sudo curl -fsSL https://raw.githubusercontent.com/zlatkomq/spec-first-framework/main/spec-first.sh \
+  -o /usr/local/bin/spec-first && sudo chmod +x /usr/local/bin/spec-first
+
+# 3. Pull the new framework files into the project
+#    Preserves:  specs/, bugs/, CONSTITUTION.md, .workflow-state.md files
+#    Replaces:   .framework/templates/, .framework/steps/, .framework/checklists/,
+#                skills/, .cursor/commands/, .cursor-plugin/, .claude-plugin/,
+#                .opencode/, docs/, mcp.json, README, FOLDER-STRUCTURE, …
+spec-first update
+
+# 4. Remove the old rules directory — superseded by skills/
+rm -rf .cursor/rules
+
+# 5. Install the editor plugin (one-time per machine)
+#    Cursor:
+/add-plugin zlatkomq/spec-first-framework
+#    Or Claude Code:
+claude plugin marketplace add zlatkomq/spec-first-framework
+claude plugin install spec-first-framework@spec-first-framework --scope project
+
+# 6. (Optional) Deploy figma-to-code MCP if you want the new UIX flow.
+#    See github.com/zlatkomq/figma-mcp
+
+# 7. Smoke test: open the editor and resume any existing spec
+/flow 001                              # should pick up where you left off
+```
+
+### In-flight work mid-migration
+
+| Spec state | Recommendation |
+|---|---|
+| At a gate, waiting for approval | Just approve and `/flow {spec-id}` continues on the new framework — no special handling |
+| Mid-implementation, some tasks `[x]` | Finish on the new framework — `subagent-driven-development` is a strict superset of the old behaviour; existing `IMPLEMENTATION-SUMMARY.md` entries remain valid input |
+| UI work pending but no `UIX-SPEC.md` exists | The new step 2b is optional — pick `[S] Skip UIX` and continue exactly as before. To add a UIX-SPEC to a finished spec retroactively, run `/uix {spec-id}` standalone. |
+
+### Common gotchas
+
+- **"Cursor doesn't see my skills"** — Install the plugin via the marketplace (`/add-plugin`), not by copying files. Restart Cursor after install.
+- **"`/constitute` doesn't trigger"** — Leftover `.cursor/rules/*.mdc` files conflict with skills. Delete them.
+- **"My `.workflow-state.md` says `stepsCompleted: ['step-03-tasks']` but step-02b is new — did I skip UIX?"** — No. `step-02b-uix` only appears in `stepsCompleted` for specs created **after** the migration. The framework does not retroactively flag old specs as missing it.
+- **"BMAD-fusion `Approved By` fields look wrong after update"** — They shouldn't be. `spec-first update` does not touch your existing artifacts. Check `git diff specs/` — if there are unexpected changes, revert.
+
+### Rollback
+
+```bash
+git checkout pre-spec-first-1.2.0-backup
+```
+
+The backup branch you created in step 1 preserves the full previous state including `.cursor/rules/`. The new framework files in `.framework/`, `skills/`, etc. are reverted; your `specs/`, `bugs/`, and `CONSTITUTION.md` are unchanged either way.

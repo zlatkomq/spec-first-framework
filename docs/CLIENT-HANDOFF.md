@@ -17,6 +17,7 @@
 | 7 | **Working example** | [docs/examples/001-user-registration/](examples/001-user-registration/) | A real spec run end-to-end: SPEC, DESIGN, TASKS, REVIEW for a "user registration" feature. Shows what every artifact looks like. |
 | 8 | **Automated test suite** | [tests/](../tests/) | 16 skill tests + 13 end-to-end scenarios proving every skill enforces its rules. Run `cd tests && ./run-skill-tests.sh` to see them pass. |
 | 9 | **Worked walkthrough** | [docs/WORKFLOW-DEMO.md](WORKFLOW-DEMO.md) | A narrated `/flow` run of the 001 User Registration feature with the prompts, AI responses, and artifacts at each step. |
+| 10 | **FAQ** | [docs/FAQ.md](FAQ.md) | Written answers to the questions clients ask cold: Figma MCP vs Figma's official MCP, vendor lock-in, privacy, BMAD / Spec-Kit comparison, what happens when the AI gets things wrong, **and a full migration guide from the previous rules-based BMAD-fusion workflow to v1.2.0**. Pair it with the meeting Q&A. |
 
 ---
 
