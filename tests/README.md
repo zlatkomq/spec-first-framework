@@ -15,7 +15,7 @@ This test suite verifies **skill content**: Claude has access to the skills and 
 ## Running Tests
 
 ```bash
-# Run all 15 skill tests (~15-20 min)
+# Run all 16 skill tests (~15-20 min)
 ./run-skill-tests.sh
 
 # Run with verbose output
@@ -41,13 +41,16 @@ This test suite verifies **skill content**: Claude has access to the skills and 
 | `run-skill-tests.sh` | Test runner with argument parsing, timing, pass/fail tracking |
 | `analyze-token-usage.py` | Parses JSONL session transcripts for per-subagent token breakdown |
 
-### Skill Tests (15 files, 46 assertions)
+### Skill Tests (16 files, 56 assertions)
 
 **Spec Definition Workflow:**
 - `test-constitution-creation.sh` — one-question-at-a-time, concrete versions, DRAFT status
 - `test-spec-creation.sh` — user provides ID, BDD format ACs, no tech details
 - `test-design-creation.sh` — SPEC must be APPROVED, omit irrelevant sections, ID match
 - `test-task-creation.sh` — DESIGN must be APPROVED, atomic tasks, Produces/Consumes contracts
+
+**UIX / Figma Workflow:**
+- `test-uix-creation.sh` — DESIGN must be APPROVED, fetch-once cache policy, `/uix-refresh` is the sole re-fetch path, `svg_ex_` auto-export rule, no fidelity loop (step-04 / step-05 never call MCP)
 
 **Implementation Workflow:**
 - `test-implementation.sh` — TASKS must be APPROVED, TDD iron law, HALT after 3 failures
