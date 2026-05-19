@@ -90,12 +90,13 @@ This framework layers on top of your existing CI/CD pipeline. It doesn't replace
 
 ### Not Tied to Any IDE
 
-Built for Cursor first (using `.mdc` rule files), but the core concepts are portable:
-- **Claude Code** — Rules become CLAUDE.md
-- **Antigravity** — Rules adapt to their format
-- **Any AI assistant** — The templates and workflow work anywhere
+Built on the cross-editor **SKILL.md** open standard with thin per-host plugin adapters, so the same skills and templates run wherever the agent runs:
+- **Cursor 2.4+** — Plugin auto-loads `skills/` and `.cursor/commands/`
+- **Claude Code** — Plugin auto-loads `skills/`; commands become slash commands
+- **OpenCode** — Plugin + skills directory registered via `.opencode/INSTALL.md`
+- **Any MCP-compatible AI assistant** — Templates and step files in `.framework/` are plain Markdown and work anywhere
 
-The methodology is the asset. The IDE-specific rules are just the implementation.
+The methodology is the asset. The host-specific plugin adapters are just the implementation.
 
 ### Not a Heavy Process
 
@@ -157,11 +158,11 @@ Those who copy later get the framework but not the experience.
 - Git-friendly (diffs, PRs, history)
 - Portable (works everywhere)
 
-### Why Separate Rules and Templates?
+### Why Separate Skills and Templates?
 
-**Rules** (`.mdc`) define AI behavior — how to fill templates, what constraints to follow, when to ask questions.
+**Skills** (`skills/<name>/SKILL.md`) define AI behavior — how to fill templates, what constraints to follow, when to ask questions, what gates to enforce.
 
-**Templates** (`.template.md`) define document structure — what sections exist, what format to use.
+**Templates** (`.framework/templates/*.template.md`) define document structure — what sections exist, what format to use.
 
 This separation allows:
 - Updating rules without changing structure
