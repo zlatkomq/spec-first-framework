@@ -100,6 +100,28 @@ Future major versions of the MCP server will be flagged in the Designer Guide's 
 
 ---
 
+## Roadmap (planned after this signoff)
+
+Investment continues. These are the next blocks of work — no fixed delivery dates yet, but each is scoped and prioritised.
+
+### 1. Automated QA test generation from spec artifacts
+
+A new step / skill that reads `SPEC.md` acceptance criteria (already in `Given/When/Then` form), `DESIGN.md` API and component contracts, and `UIX-SPEC.md` + the cached `figma/` snapshot for UI selectors, and produces **Playwright** tests that exercise each acceptance criterion end-to-end. The generated tests join the verification gate as automated regression coverage that runs in CI. This closes the loop: today the framework guarantees code traces to specs; with this step, the *test suite* will too — automatically.
+
+### 2. Token + cost optimisation
+
+Some skill behaviour today is deterministic (file existence checks, status lookups, gate validations, simple string substitutions) but still runs through the LLM, burning tokens. Next pass cherry-picks those actions and moves them into small shell or Python scripts invoked from the skill — same outcome, near-zero token cost. Also: trim SKILL.md prose where compaction is safe, and extend the `figma/` cache pattern (fetch once → save to disk → never re-fetch) to other expensive lookups. The reporting dashboard's cost-per-spec metric will show the impact directly.
+
+### 3. First-class Codex CLI support
+
+Codex CLI is supported today via a manual setup step (`.agents/skills` symlink + optional YAML frontmatter — see [README → Step 1 → Codex](../README.md#codex-manual-setup)). Next release will ship YAML frontmatter on all 16 skills, automated `.agents/skills` symlink creation in `spec-first init`, and a starter `AGENTS.md` template — promoting Codex CLI to a first-class editor host alongside Cursor / Claude Code / OpenCode with zero manual setup.
+
+### 4. Cursor Reporting dashboard completion + metric tuning
+
+The reporting frontend dashboard redesign is in flight (two-tab Overview + Developers layout with the workflow funnel chart). Next: finish the dashboard, then tune the metrics surfaced to fit your team's usage patterns — most-used commands, cost per spec, model mix per role, time-to-approval per gate, anomaly alerts. Custom views drop in on a per-client basis once we see your first month of telemetry.
+
+---
+
 ## Next step
 
 If you're the developer or tech lead and ready to install: open [README → Installation](../README.md#installation) and follow Step 1 + Step 2. Plan ~1 hour for the first machine, ~15 minutes per additional teammate.
