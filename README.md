@@ -460,6 +460,26 @@ Use `/bug` instead if the fix needs investigation, touches many files, or carrie
 - [UIX / Figma Injection Overview](docs/UIX-FIGMA-INJECTION-OVERVIEW.md) — Technical analysis of the UIX integration approach
 - [PHILOSOPHY.md](PHILOSOPHY.md) — Framework principles and design rationale
 
+## Testing
+
+The framework ships with an automated regression suite under [`tests/`](tests/) covering every skill in `skills/`.
+
+```bash
+cd tests
+./run-skill-tests.sh                              # all 16 skill tests (~15–20 min)
+./run-skill-tests.sh --test test-uix-creation.sh  # single test
+./run-skill-tests.sh --verbose                    # show per-assertion output
+```
+
+Two test layers:
+
+| Layer | Location | What it verifies |
+|---|---|---|
+| **Skill tests** (16 files, 56+ assertions) | `tests/test-<skill>.sh` | Each skill loads via the plugin and states its hard-gate rules correctly under questioning (e.g. "TDD iron law", "DESIGN must be APPROVED", "no MCP from step-04"). |
+| **E2E scenarios** (13 scenarios) | `tests/e2e/scenarios/<skill>/` | Run full workflow scenarios — happy paths plus gate-failure paths — and assert on real artifact contents. Driven by `tests/e2e/run-e2e-tests.sh`. |
+
+Tests use the **real** Claude Code CLI in headless mode (`claude -p`) with the plugin auto-loaded — no mocks. See [`tests/README.md`](tests/README.md) for the full assertion map and how to add a new test.
+
 ## Status
 
 | Workflow | Status | Version |
@@ -470,4 +490,6 @@ Use `/bug` instead if the fix needs investigation, touches many files, or carrie
 | UIX / Figma handoff | ✅ Complete | 1.2.0 (cached snapshot model) |
 | Brownfield (legacy) | 🚧 Planned | — |
 
-**Current version:** 1.2.0 — see [CHANGELOG.md](CHANGELOG.md) for details.
+**Current framework version:** 1.2.0 — see [CHANGELOG.md](CHANGELOG.md) for details.
+
+**Plugin manifest version:** 0.9.2 (in `.claude-plugin/plugin.json` and `.cursor-plugin/plugin.json`). The plugin manifest tracks its own semver — bumped on every release where the plugin contract changes (skill list, command list, plugin metadata). Framework version (1.2.0) tracks the workflow/methodology release line and is what you'd quote when discussing capabilities.

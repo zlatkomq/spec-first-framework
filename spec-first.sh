@@ -84,7 +84,6 @@ clone_repo() {
 # Directories to copy (relative to repo root)
 COPY_DIRS=(
   ".cursor/commands"
-  ".cursor/rules"
   ".cursor-plugin"
   ".claude-plugin"
   ".opencode/plugins"
@@ -192,7 +191,7 @@ cmd_init() {
   done
 
   # Guard: already initialized
-  if [ -d ".framework/templates" ] && [ -d ".cursor/rules" ]; then
+  if [ -d ".framework/templates" ] && [ -d ".cursor-plugin" ]; then
     warn "Framework already installed in this project."
     info "Use ${BOLD}spec-first update${NC} to pull the latest version."
     exit 0
