@@ -2,6 +2,12 @@
 
 All notable changes to the Spec-First AI Development Framework will be documented in this file.
 
+## [Unreleased]
+
+### Changed
+
+- **Plugin manifest version aligned to framework version (`1.2.0`)** in `.claude-plugin/plugin.json`, `.claude-plugin/marketplace.json`, and `.cursor-plugin/plugin.json` (previously `0.9.2`). Plugin and framework now share a single version line — one number to quote, one to bump per release.
+
 ## [1.2.0] - Cached Figma Snapshot Model (2026-04-21)
 
 ### Summary

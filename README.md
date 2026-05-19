@@ -490,6 +490,4 @@ Tests use the **real** Claude Code CLI in headless mode (`claude -p`) with the p
 | UIX / Figma handoff | ✅ Complete | 1.2.0 (cached snapshot model) |
 | Brownfield (legacy) | 🚧 Planned | — |
 
-**Current framework version:** 1.2.0 — see [CHANGELOG.md](CHANGELOG.md) for details.
-
-**Plugin manifest version:** 0.9.2 (in `.claude-plugin/plugin.json` and `.cursor-plugin/plugin.json`). The plugin manifest tracks its own semver — bumped on every release where the plugin contract changes (skill list, command list, plugin metadata). Framework version (1.2.0) tracks the workflow/methodology release line and is what you'd quote when discussing capabilities.
+**Current version:** 1.2.0 — see [CHANGELOG.md](CHANGELOG.md) for details. The plugin manifests (`.claude-plugin/plugin.json`, `.claude-plugin/marketplace.json`, `.cursor-plugin/plugin.json`) and the framework release line are aligned on the same version.
