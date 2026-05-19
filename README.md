@@ -234,6 +234,33 @@ Send your design team [**docs/FIGMA-DESIGNER-GUIDE.md**](docs/FIGMA-DESIGNER-GUI
 
 Q Agency runs the `figma-to-code` stack on the internal RACK (under `/home/DOCKER_MCP_DATA/`) on a VPN-only address. Internal developers replace `127.0.0.1` in the Cursor/Claude Code/OpenCode config with the internal URL and must be on the VPN. External users and clients should run their own instance using the [figma-mcp repo](https://github.com/zlatkomq/figma-mcp).
 
+#### First `/uix` call — what success looks like
+
+Once everything is wired up, run your first UIX step. From `/flow` after DESIGN approval (or standalone via `/uix 001 https://www.figma.com/design/<fileKey>/...`):
+
+1. **Finding the fileKey.** Open your Figma file in the browser. The URL looks like `https://www.figma.com/design/AbC123XyZ.../My-File-Name?node-id=12-34`. The `fileKey` is the segment between `/design/` (or `/file/` on older URLs) and the next `/` — here `AbC123XyZ...`. The `node-id` segment, if present, points at a specific frame.
+
+2. **The agent calls the MCP.** You'll see the agent invoke `get_figma_file_structure`, then `get_figma_design_tokens`, then `get_figma_node_spec` per design segment from DESIGN.md.
+
+3. **The `figma/` directory appears.** Inspect `specs/<id-slug>/figma/`:
+
+   ```
+   specs/001-front-page/
+   ├── UIX-SPEC.md                 # design-segment → Figma-node mapping (Status: DRAFT)
+   └── figma/
+       ├── tokens.css              # CSS :root block — every hex colour + font in the file
+       ├── 12-34.md                # JSX prop tree + flat geometry table for node 12:34
+       ├── 12-34.png               # (optional) visual reference
+       └── assets/
+           └── svg_ex_logo.svg     # auto-exported SVG for any svg_ex_-prefixed node
+   ```
+
+4. **UIX-SPEC.md's Design Context Artifacts table is populated.** Each row points at one cached file under `./figma/` — this is what step 4 (implementation) and step 5 (review) read from disk. The MCP is **not called again** for this spec unless you explicitly run `/uix-refresh`.
+
+5. **Approve the gate.** Status flips DRAFT → APPROVED, `.workflow-state.md` appends `step-02b-uix`, and `/flow` auto-continues to Task Breakdown.
+
+If any of the above doesn't happen — no `figma/` directory created, empty `tokens.css`, agent reports "MCP unreachable" — go back to the [figma-mcp Verification](https://github.com/zlatkomq/figma-mcp#verification) and [Troubleshooting](https://github.com/zlatkomq/figma-mcp#troubleshooting) sections to find which step is failing.
+
 #### What happens at step 2b
 
 | Phase | What happens |
