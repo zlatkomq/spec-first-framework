@@ -213,6 +213,8 @@ Reduces billing disputes and keeps bug vs scope-change work clearly separated.
 
 When the feature has UI in **Figma**, the `/flow` guided path runs **step 2b** after an approved DESIGN (see `.framework/steps/step-02b-uix.md` and `skills/uix-creation/SKILL.md`). Designers, the agent, and developers all share one source of truth: a fetched-once snapshot of the Figma file living on disk in the spec folder.
 
+> 🎬 **Watch it first:** two short [Figma → Code video walkthroughs](https://drive.google.com/drive/u/1/folders/1ZkTWf9m8j6lk5mn6FQVqI5HaxhnlZIpW) show this end-to-end before you set anything up.
+
 #### Architecture
 
 ```
@@ -547,6 +549,7 @@ Use `/bug` instead if the fix needs investigation, touches many files, or carrie
 - [BMAD Fusion — Change Request Summary](docs/BMAD-FUSION-CHANGES.md) — Full list of BMAD fusion changes (templates, rules, steps)
 - [UIX / Figma Injection Overview](docs/UIX-FIGMA-INJECTION-OVERVIEW.md) — Technical analysis of the UIX integration approach
 - [Figma Designer Guide](docs/FIGMA-DESIGNER-GUIDE.md) — **For designers.** Naming, layout, components, and asset rules so the `figma-to-code` MCP extracts pixel-accurate specs. Send this to your designers before they build the first Figma file for a Spec-First project.
+- [Figma → Code video walkthroughs](https://drive.google.com/drive/u/1/folders/1ZkTWf9m8j6lk5mn6FQVqI5HaxhnlZIpW) — Two short screen-recorded demos of the Figma → code flow end-to-end. Watch first if you prefer a visual orientation before reading the docs.
 - [Cursor Reporting](https://github.com/zlatkomq/cursor_reporting) — **Optional companion product.** FastAPI + MariaDB telemetry backend + web dashboard for team usage metrics (tokens, cost, model, `/command` and skill usage, timing). Hooked into Cursor via `spec-first install-hook`.
 - [legacy_ai_analyser](https://github.com/zlatkomq/legacy_ai_analyser) — **Brownfield bootstrap.** Cursor plugin that analyses an existing codebase and produces `CONSTITUTION.md` (plus a machine-readable JSON, detailed analysis report, and an interactive viewer) under `docs/ai/`. Run **before** the first `/flow` when adopting Spec-First on an existing project.
 - [PHILOSOPHY.md](PHILOSOPHY.md) — Framework principles and design rationale
