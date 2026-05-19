@@ -454,6 +454,7 @@ Use `/bug` instead if the fix needs investigation, touches many files, or carrie
 - [CHANGELOG.md](CHANGELOG.md) — Release history and version details
 - [FOLDER-STRUCTURE.md](FOLDER-STRUCTURE.md) — Detailed folder and file descriptions (includes UIX / cached `figma/` snapshot if present)
 - [Commands & Workflow Example](docs/COMMANDS-WORKFLOW-EXAMPLE.md) — Using slash commands (`/specify`, `/design`, etc.)
+- [Live Workflow Demo](docs/WORKFLOW-DEMO.md) — End-to-end walkthrough of building 001 User Registration, with prompts and AI responses at each step
 - [Workflow return and continue](docs/WORKFLOW-RETURN-AND-CONTINUE.md) — Resume or go back a step, then continue (`/flow 001`)
 - [BMAD Fusion — Change Request Summary](docs/BMAD-FUSION-CHANGES.md) — Full list of BMAD fusion changes (templates, rules, steps)
 - [UIX / Figma Injection Overview](docs/UIX-FIGMA-INJECTION-OVERVIEW.md) — Technical analysis of the UIX integration approach
