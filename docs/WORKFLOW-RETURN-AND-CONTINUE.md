@@ -26,20 +26,22 @@ From there, the runner loads and executes one step at a time. Each step shows a 
 ## Step chain
 
 ```
-Step 1: SPEC.md    (spec-creation rules + template)
+Step 1: SPEC.md     (spec-creation skill + template)
   ↓ [C]
-Step 2: DESIGN.md  (design-creation rules + template; gate: SPEC approved)
+Step 2: DESIGN.md   (design-creation skill + template; gate: SPEC approved)
   ↓ [C]
-Step 3: TASKS.md   (task-creation rules + template; gate: DESIGN approved)
+Step 3: UIX-SPEC.md (uix-creation skill + cached figma/ snapshot; OPTIONAL — pick [S] Skip if no Figma)
   ↓ [C]
-Step 4: Implement  (implementation rules; gate: TASKS approved)
+Step 4: TASKS.md    (task-creation skill + template; gate: DESIGN approved)
   ↓ [C]
-Step 5: REVIEW.md  (code-review rules + template; gate: implementation done)
+Step 5: Implement   (implementation / subagent-driven-development skill; gate: TASKS approved + verification checklist)
+  ↓ [C]
+Step 6: REVIEW.md   (code-review skill + template; gate: implementation done)
   ↓ [C]
 Complete
 ```
 
-Each step has a gate (e.g. SPEC must be APPROVED before DESIGN). If the gate isn't met, the step tells you and offers [B] Back to fix it.
+Each step has a gate (e.g. SPEC must be APPROVED before DESIGN). If the gate isn't met, the step tells you and offers [B] Back to fix it. **Step 3 (UIX) is optional** — if the spec has no UI work, pick `[S] Skip UIX` and the workflow records `uixSkipped: true` in `.workflow-state.md` and auto-continues to Step 4.
 
 ---
 
@@ -83,7 +85,7 @@ specFolder: 'specs/001-user-registration'
 
 ### Review fails — fix and re-review
 
-1. Review fails (step 5, verdict: CHANGES REQUESTED). Findings list specific issues.
+1. Review fails (step 6, verdict: CHANGES REQUESTED). Findings list specific issues.
 2. Menu shows: `[F] Fix` (auto-fix), `[B] Back to Implement`, `[B2] Back to Tasks`, `[B3] Back to Design`.
 3. Choose **[F] Fix** — AI applies scoped fixes for Critical/Major issues and re-runs review (up to 3 fix attempts).
 4. Or choose **[B] Back to Implement** — step-04 loads, detects REVIEW.md with CHANGES REQUESTED, and displays findings as context for re-implementation.
@@ -115,13 +117,15 @@ specFolder: 'specs/001-user-registration'
 │   ├── step-00-continue.md    # Resume logic
 │   ├── step-01-spec.md        # Create/update SPEC.md
 │   ├── step-02-design.md      # Create/update DESIGN.md
+│   ├── step-02b-uix.md        # Create UIX-SPEC.md + cached figma/ snapshot (optional)
 │   ├── step-03-tasks.md       # Create/update TASKS.md
-│   ├── step-04-implement.md   # Implement all tasks
+│   ├── step-04-implement.md   # Implement all tasks + verification gate
 │   └── step-05-review.md      # Generate REVIEW.md
 └── templates/
     ├── workflow-state.template.md   # State file template
     ├── SPEC.template.md
     ├── DESIGN.template.md
+    ├── UIX-SPEC.template.md
     ├── TASKS.template.md
     └── REVIEW.template.md
 
@@ -132,8 +136,10 @@ specs/001-user-registration/
 ├── .workflow-state.md         # Per-spec state (created by /flow)
 ├── SPEC.md
 ├── DESIGN.md
+├── UIX-SPEC.md                # Optional — only when the spec has a Figma file
+├── figma/                     # Optional — cached design context (tokens.css, <node-id>.md, assets/, drift-T*.md)
 ├── TASKS.md
-├── IMPLEMENTATION-SUMMARY.md  # Written after implementation (step 4)
+├── IMPLEMENTATION-SUMMARY.md  # Written after implementation (step 5)
 └── REVIEW.md
 ```
 

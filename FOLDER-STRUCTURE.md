@@ -5,43 +5,53 @@
 ```
 project/
 │
-├── skills/                             # Canonical cross-platform skill files (SKILL.md open standard)
-│   ├── spec-creation/SKILL.md          # How AI creates SPEC.md
-│   ├── constitution-creation/SKILL.md  # How AI creates CONSTITUTION.md
-│   ├── design-creation/SKILL.md        # How AI creates DESIGN.md
-│   ├── task-creation/SKILL.md          # How AI creates TASKS.md
-│   ├── implementation/SKILL.md         # How AI writes code
-│   ├── code-review/SKILL.md            # How AI reviews code
-│   ├── adversarial-review/SKILL.md     # How AI reviews any doc with ≥10 issues
-│   ├── bugfixing/SKILL.md              # How AI creates BUG.md
-│   ├── bug-implementation/SKILL.md     # How AI implements bugfixes
-│   ├── bug-review/SKILL.md             # How AI reviews bugfixes
-│   └── change-request/SKILL.md         # How AI runs change request workflow
+├── skills/                                  # Canonical cross-platform skill files (SKILL.md open standard) — 16 skills
+│   ├── spec-creation/SKILL.md               # How AI creates SPEC.md
+│   ├── constitution-creation/SKILL.md       # How AI creates CONSTITUTION.md
+│   ├── design-creation/SKILL.md             # How AI creates DESIGN.md
+│   ├── uix-creation/SKILL.md                # How AI creates UIX-SPEC.md (Figma mapping; cached figma/ snapshot)
+│   ├── task-creation/SKILL.md               # How AI creates TASKS.md
+│   ├── implementation/SKILL.md              # How AI writes code (single-task)
+│   ├── subagent-driven-development/SKILL.md # How /flow dispatches a subagent per task for multi-task specs
+│   ├── code-review/SKILL.md                 # How AI reviews code
+│   ├── adversarial-review/SKILL.md          # How AI reviews any doc with ≥10 issues
+│   ├── bugfixing/SKILL.md                   # How AI creates BUG.md
+│   ├── bug-implementation/SKILL.md          # How AI implements bugfixes
+│   ├── bug-review/SKILL.md                  # How AI reviews bugfixes
+│   ├── change-request/SKILL.md              # How AI runs change request workflow
+│   ├── git-worktrees/SKILL.md               # Workspace isolation (feature branches via git worktree)
+│   ├── finishing-development-branch/SKILL.md # Branch merge / PR / cleanup after a feature
+│   └── systematic-debugging/SKILL.md        # Root-cause investigation (/debug command)
 │
 ├── .cursor-plugin/
-│   └── plugin.json                     # Cursor platform adapter (skills path)
+│   ├── plugin.json                          # Cursor plugin manifest (skills + commands path)
+│   └── marketplace.json                     # Cursor marketplace metadata
 ├── .claude-plugin/
-│   └── plugin.json                     # Claude Code platform adapter (skills path)
+│   ├── plugin.json                          # Claude Code plugin manifest (skills path)
+│   └── marketplace.json                     # Claude Code marketplace metadata
 ├── .opencode/
 │   ├── plugins/
-│   │   └── spec-first.js               # OpenCode ES Module plugin (system prompt injection)
-│   └── INSTALL.md                      # Manual setup instructions (symlink plugin + skills)
+│   │   └── spec-first.js                    # OpenCode ES Module plugin (system prompt injection)
+│   └── INSTALL.md                           # Manual setup instructions (symlink plugin + skills)
 │
 ├── .cursor/
-│   └── commands/                       # Cursor slash commands (invoke skills + context)
-│       ├── constitute.md
-│       ├── specify.md
-│       ├── design.md
-│       ├── tasks.md
-│       ├── implement.md
-│       ├── review.md
-│       ├── flow.md                     # Guided BMAD-style workflow (steps + menus)
-│       ├── bug.md
-│       ├── bugfix.md
-│       ├── bugreview.md
-│       ├── change.md                   # Change request (scope change) workflow
-│       ├── adversarial.md              # Adversarial review of any document
-│       └── validate.md                 # Framework integrity check
+│   └── commands/                            # Cursor slash commands — 16 commands
+│       ├── constitute.md                    #   /constitute — create CONSTITUTION.md
+│       ├── specify.md                       #   /specify — create SPEC.md
+│       ├── design.md                        #   /design — create DESIGN.md
+│       ├── uix.md                           #   /uix — create UIX-SPEC.md (Figma)
+│       ├── uix-refresh.md                   #   /uix-refresh — re-fetch cached Figma snapshot
+│       ├── tasks.md                         #   /tasks — create TASKS.md
+│       ├── implement.md                     #   /implement — implement tasks
+│       ├── review.md                        #   /review — code review
+│       ├── flow.md                          #   /flow — guided end-to-end workflow
+│       ├── bug.md                           #   /bug — create BUG.md
+│       ├── bugfix.md                        #   /bugfix — implement bug fix
+│       ├── bugreview.md                     #   /bugreview — review bug fix
+│       ├── change.md                        #   /change — scope change request
+│       ├── adversarial.md                   #   /adversarial — extreme skepticism review (≥10 issues)
+│       ├── debug.md                         #   /debug — systematic root-cause investigation
+│       └── validate.md                      #   /validate — framework integrity check
 │
 ├── .framework/
 │   ├── steps/                          # BMAD-style step files for /flow
@@ -52,29 +62,44 @@ project/
 │   │   ├── step-03-tasks.md
 │   │   ├── step-04-implement.md
 │   │   └── step-05-review.md
-│   ├── templates/
-│   │   ├── SPEC.template.md            # Template structure for specifications
-│   │   ├── DESIGN.template.md          # Template structure for technical design
-│   │   ├── UIX-SPEC.template.md        # Template for Figma files + segment → node-id mapping
-│   │   ├── TASKS.template.md           # Template structure for task breakdown
-│   │   ├── CONSTITUTION.template.md    # Template structure for project constitution
-│   │   ├── BUG.template.md             # Template for bug reports
-│   │   ├── REVIEW.template.md          # Template for code review (incl. Implementation Summary Cross-Reference, Auto-Fix)
-│   │   ├── BUG-REVIEW.template.md      # Template for bug review
-│   │   ├── workflow-state.template.md  # State file template for /flow (jiraTicket, sowRef)
-│   │   ├── CHANGE-PROPOSAL.template.md # Template for change proposals (classification, impact)
-│   │   ├── SPEC-CURRENT.template.md    # Template for compiled spec (SPEC + bugs + CRs)
-│   │   ├── CODEBASE-ANALYSIS.template.md   # Template for codebase analysis (legacy)
-│   │   └── LEGACY-ASSESSMENT.template.md   # Template for legacy assessment
+│   ├── templates/                          # Document templates — 11 files
+│   │   ├── SPEC.template.md                # Template structure for specifications
+│   │   ├── DESIGN.template.md              # Template structure for technical design
+│   │   ├── UIX-SPEC.template.md            # Template for Figma files + segment → node-id mapping
+│   │   ├── TASKS.template.md               # Template structure for task breakdown
+│   │   ├── CONSTITUTION.template.md        # Template structure for project constitution
+│   │   ├── BUG.template.md                 # Template for bug reports
+│   │   ├── REVIEW.template.md              # Template for code review (Implementation Summary Cross-Reference, Auto-Fix)
+│   │   ├── BUG-REVIEW.template.md          # Template for bug review
+│   │   ├── workflow-state.template.md      # State file template for /flow (jiraTicket, sowRef, uixSkipped, …)
+│   │   ├── CHANGE-PROPOSAL.template.md     # Template for change proposals (classification, impact)
+│   │   └── SPEC-CURRENT.template.md        # Template for compiled spec (SPEC + bugs + CRs)
 │   └── checklists/
-│       └── verification-checklist.md  # Step 4 verification gate after implementation
+│       └── verification-checklist.md       # Step 4 verification gate after implementation
 │
-├── CONSTITUTION.md                     # Project-level standards (THE source of truth)
+├── mcp.json                                 # Reference MCP config (figma-to-code server, defaults to 127.0.0.1:3000)
+├── spec-first.sh                            # Project-init CLI (downloaded to /usr/local/bin/spec-first)
 │
-├── docs/
-│   └── legacy-analysis/                # Only for brownfield projects
-│       ├── CODEBASE-ANALYSIS.md        # Tech stack, patterns, structure detected
-│       └── LEGACY-ASSESSMENT.md        # Tech debt, risks, do-not-touch areas
+├── CONSTITUTION.md                          # Project-level standards (THE source of truth)
+│
+├── docs/                                    # Repo documentation
+│   ├── CLIENT-HANDOFF.md                    # One-page index for clients receiving the framework
+│   ├── COMMANDS-WORKFLOW-EXAMPLE.md         # Standalone command usage
+│   ├── WORKFLOW-DEMO.md                     # Worked /flow run end-to-end
+│   ├── WORKFLOW-RETURN-AND-CONTINUE.md      # Resume / back / continue mechanics
+│   ├── FIGMA-DESIGNER-GUIDE.md              # Design contract for designers (naming, layout, svg_ex_, …)
+│   ├── UIX-FIGMA-INJECTION-OVERVIEW.md      # Historical: original design analysis for the UIX feature
+│   ├── BMAD-FUSION-CHANGES.md               # Historical: v0.7.x BMAD fusion changes
+│   ├── examples/                            # Working example: 001-user-registration (SPEC, DESIGN, TASKS, REVIEW)
+│   └── legacy-analysis/                     # Stub (.gitkeep) — populated only for brownfield projects (planned)
+│
+├── tests/                                   # Automated regression suite
+│   ├── README.md
+│   ├── run-skill-tests.sh                   # Runs the 16 skill tests
+│   ├── test-helpers.sh                      # Shared assertion library
+│   ├── test-<skill>.sh                      # 16 skill tests (one per skill in skills/)
+│   └── e2e/                                 # 13 end-to-end scenario scripts (happy paths + gate failures)
+│       └── scenarios/<skill>/<name>.scenario.sh
 │
 ├── specs/
 │   ├── 001-user-authentication/
@@ -153,18 +178,22 @@ Skills are in the open SKILL.md format — compatible with Cursor 2.4+, Claude C
 
 | Skill Directory | Used In | Purpose |
 |----------------|---------|---------|
+| `skills/constitution-creation/` | Step 0 (once per project) | How AI creates CONSTITUTION.md |
 | `skills/spec-creation/` | Step 1 | How AI creates SPEC.md |
 | `skills/design-creation/` | Step 2 | How AI creates DESIGN.md |
-| `skills/uix-creation/` | Step 3 | How AI creates UIX-SPEC.md (Figma mapping) |
+| `skills/uix-creation/` | Step 3 (optional) | How AI creates UIX-SPEC.md + caches Figma snapshot |
 | `skills/task-creation/` | Step 4 | How AI creates TASKS.md |
-| `skills/implementation/` | Step 5 | How AI writes code |
-| `skills/code-review/` | Step 6 | How AI reviews code |
+| `skills/implementation/` | Step 5 (single-task) | How AI writes code for one task |
+| `skills/subagent-driven-development/` | Step 5 (multi-task, default) | How `/flow` dispatches a subagent per task |
+| `skills/code-review/` | Step 6 | How AI runs adversarial code review |
+| `skills/adversarial-review/` | Anytime | How AI reviews any doc with ≥10 issues |
 | `skills/bugfixing/` | Bugfix Step 1 | How AI creates BUG.md |
 | `skills/bug-implementation/` | Bugfix Step 2 | How AI implements bugfixes |
 | `skills/bug-review/` | Bugfix Step 3 | How AI reviews bugfixes |
 | `skills/change-request/` | Change request | How AI runs CR workflow (classification, impact, proposal, Amendment History) |
-| `skills/adversarial-review/` | Anytime | How AI reviews any doc with ≥10 issues |
-| `skills/constitution-creation/` | Step 0 | How AI creates CONSTITUTION.md |
+| `skills/systematic-debugging/` | `/debug` | Root-cause investigation before fixing |
+| `skills/git-worktrees/` | Step 5 (optional) | Workspace isolation per feature branch |
+| `skills/finishing-development-branch/` | After Step 6 | Branch merge / PR / cleanup |
 
 ### Templates
 
@@ -181,16 +210,12 @@ Skills are in the open SKILL.md format — compatible with Cursor 2.4+, Claude C
 | `CHANGE-PROPOSAL.template.md` | `/change` | Structure for change proposals |
 | `SPEC-CURRENT.template.md` | Regeneration | Header/instructions for compiled spec (SPEC + bugs + CRs) |
 | `CONSTITUTION.template.md` | Step 0 | Structure for project standards |
-| `CODEBASE-ANALYSIS.template.md` | Step 0 (legacy) | Structure for codebase analysis |
-| `LEGACY-ASSESSMENT.template.md` | Step 0 (legacy) | Structure for tech debt assessment |
 
 ### Outputs
 
 | File | Created By | Approved By | Purpose |
 |------|------------|-------------|---------|
 | `CONSTITUTION.md` | Tech Lead + AI | Tech Lead | Project-wide standards |
-| `CODEBASE-ANALYSIS.md` | Developer + AI | Tech Lead | Legacy codebase documentation |
-| `LEGACY-ASSESSMENT.md` | Developer + AI | Tech Lead | Tech debt inventory |
 | `SPEC.md` | PO/BA + AI | PO/Client | What to build |
 | `DESIGN.md` | Developer + AI | Tech Lead | How to build it |
 | `UIX-SPEC.md` | Designer/Dev + AI | Tech Lead | Figma files + design segment → node-id mapping + Design Context Artifacts table (optional) |
@@ -257,7 +282,7 @@ BUG-003-timeout-on-large-upload/
 
 ```
 project/
-├── skills/                 ✓ All 11 skills
+├── skills/                 ✓ All 16 skills
 ├── .cursor-plugin/         ✓ Cursor adapter
 ├── .claude-plugin/         ✓ Claude Code adapter
 ├── .opencode/              ✓ OpenCode adapter
@@ -270,24 +295,28 @@ project/
 └── src/                    ✓ New code
 ```
 
-### Brownfield (Existing Codebase)
+### Brownfield (Existing Codebase) — 🚧 Planned
+
+The Brownfield workflow is **planned** but not yet implemented. The `docs/legacy-analysis/` directory ships as a stub (`.gitkeep`) so the path is reserved. When the workflow ships, it will populate the directory with:
 
 ```
 project/
-├── skills/                 ✓ All 11 skills
+├── skills/                 ✓ All 16 skills (same as greenfield)
 ├── .cursor-plugin/         ✓ Cursor adapter
 ├── .claude-plugin/         ✓ Claude Code adapter
 ├── .opencode/              ✓ OpenCode adapter
 ├── .framework/
-│   └── templates/          ✓ All templates
-├── CONSTITUTION.md          ✓ Created from analysis
+│   └── templates/          ✓ All templates + brownfield-specific (planned)
+├── CONSTITUTION.md         ✓ Created from analysis (planned)
 ├── docs/
-│   └── legacy-analysis/    ✓ REQUIRED
-│       ├── CODEBASE-ANALYSIS.md
-│       └── LEGACY-ASSESSMENT.md
+│   └── legacy-analysis/    ✓ REQUIRED (planned)
+│       ├── CODEBASE-ANALYSIS.md   (planned — template + workflow not yet shipped)
+│       └── LEGACY-ASSESSMENT.md   (planned — template + workflow not yet shipped)
 ├── specs/                  ✓ Specs
 └── src/                    ✓ Existing + new code
 ```
+
+For now (v1.2.0) the brownfield path is the same as greenfield with a hand-written CONSTITUTION.md describing the existing codebase.
 
 ---
 

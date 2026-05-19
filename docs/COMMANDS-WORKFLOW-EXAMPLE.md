@@ -11,6 +11,8 @@ How to use the Cursor commands to run the full spec-first workflow. Each command
 | `/constitute` | Create/update `CONSTITUTION.md` | Project description (tech stack, standards) |
 | `/specify` | Create `specs/XXX-slug/SPEC.md` | Spec ID + requirement (or just requirement; ID asked if missing) |
 | `/design` | Create `specs/XXX-slug/DESIGN.md` | Spec reference (e.g. 006 or path) |
+| `/uix` | Create `specs/XXX-slug/UIX-SPEC.md` + fetch-once cached `figma/` snapshot via `figma-to-code` MCP | Spec reference (e.g. 006) + Figma file URL(s) |
+| `/uix-refresh` | Re-fetch the cached `figma/` snapshot for a spec. **The only path that re-calls the MCP** after the initial fetch in step-02b. Drift files (`figma/drift-T*.md`) are preserved. | Spec reference (e.g. 006) |
 | `/tasks` | Create `specs/XXX-slug/TASKS.md` | Spec/design reference (e.g. 006 or path) |
 | `/implement` | Implement one task from TASKS.md | Task reference (e.g. T3 from 006) |
 | `/review` | Generate `specs/XXX-slug/REVIEW.md` | Spec reference (e.g. 006 or path) |
@@ -20,6 +22,8 @@ How to use the Cursor commands to run the full spec-first workflow. Each command
 | `/bugreview` | Generate `bugs/BUG-XXX-slug/REVIEW.md` | Bug reference (e.g. BUG-001 or path) |
 | `/change` | Handle scope change: classification check, impact analysis, Change Proposal. After approval: update SPEC/DESIGN/TASKS, Amendment History, SPEC-CURRENT.md. | Spec reference (e.g. 001) + optional Jira ref or description |
 | `/adversarial` | Review any document (spec, design, doc) with extreme skepticism; find at least 10 issues. | Document or content to review (e.g. @SPEC.md or paste) |
+| `/debug` | Systematic root-cause investigation before fixing — instrumented, one variable at a time. Use **before** `/bug` when you need analysis, not a formal bug report. | Brief description of the failing behaviour (e.g. tests failing in auth after middleware change) |
+| `/validate` | Framework integrity check: verifies all step files, templates, checklists, skills, adapters, and cross-references are present and valid. | No arguments — runs against the current project |
 
 ---
 
@@ -56,7 +60,18 @@ or
 
 ---
 
-**Step 3 – Tasks (Gate 3: Tech Lead approves)**
+**Step 3 – UIX Spec (optional; only when the feature has UI in Figma)**
+
+```
+/uix 006 https://www.figma.com/design/<file-key>/...
+```
+→ Creates `specs/006-chatbot/UIX-SPEC.md` and, when `figma-to-code` MCP (v2.0.0+) is reachable, fetches the design context **once** via the granular tool sequence and saves every response under `specs/006-chatbot/figma/` (`tokens.css`, `<node-id>.md`, optional `<node-id>.png`, `assets/`). Steps 5 and 6 read these files from disk; they never re-call the MCP. To refresh later, run `/uix-refresh 006`.
+
+Skip this step if the feature has no Figma — `/flow` records `uixSkipped: true` in `.workflow-state.md` and auto-continues to Step 4.
+
+---
+
+**Step 4 – Tasks (Gate 3: Tech Lead approves)**
 
 ```
 /tasks 006
@@ -69,7 +84,7 @@ or
 
 ---
 
-**Step 4 – Implementation (per task)**
+**Step 5 – Implementation (per task)**
 
 ```
 /implement T1 from 006
@@ -77,13 +92,13 @@ or
 ```
 /implement T2 from 006
 ```
-… repeat for each task (T1, T2, T3, …).
+… repeat for each task (T1, T2, T3, …). For multi-task specs `/flow` dispatches a subagent per task via the `subagent-driven-development` skill. After all tasks are `[x]`, a verification gate runs (`.framework/checklists/verification-checklist.md`) before review.
 
 → Implements code per task. No human gate per task; gate is at review.
 
 ---
 
-**Step 5 – Code review (Gate 4: Reviewer approves)**
+**Step 6 – Code review (Gate 4: Reviewer approves)**
 
 ```
 /review 006
