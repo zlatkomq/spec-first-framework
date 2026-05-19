@@ -522,6 +522,7 @@ Use `/bug` instead if the fix needs investigation, touches many files, or carrie
 
 ## Documentation
 
+- **[CLIENT-HANDOFF.md](docs/CLIENT-HANDOFF.md) — Start here.** One-page index of the full handoff: what each deliverable is, who on your team reads which doc, recommended reading order, and verification steps. The fastest way to orient a new client or team.
 - [CHANGELOG.md](CHANGELOG.md) — Release history and version details
 - [FOLDER-STRUCTURE.md](FOLDER-STRUCTURE.md) — Detailed folder and file descriptions (includes UIX / cached `figma/` snapshot if present)
 - [Commands & Workflow Example](docs/COMMANDS-WORKFLOW-EXAMPLE.md) — Using slash commands (`/specify`, `/design`, etc.)
