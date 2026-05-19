@@ -11,10 +11,11 @@
 | 1 | **Spec-First Framework** (this repo) | [github.com/zlatkomq/spec-first-framework](https://github.com/zlatkomq/spec-first-framework) | The methodology: gated SPEC → DESIGN → UIX → TASKS → Implementation → Review workflow with AI-driven step files, templates, and slash commands. |
 | 2 | **`figma-to-code` MCP server** | [github.com/zlatkomq/figma-mcp](https://github.com/zlatkomq/figma-mcp) | A small Node/Docker service that translates Figma files into deterministic JSON / JSX specs the AI consumes. Stands on its own; the framework calls it during the UIX step. |
 | 3 | **Cursor Reporting** (telemetry + dashboard) | [github.com/zlatkomq/cursor_reporting](https://github.com/zlatkomq/cursor_reporting) | A FastAPI + MariaDB service with a web dashboard that collects usage metrics (tokens, model, cost, `/command` and skill name, timing) from every agent run. Optional but recommended — gives you visibility into how the framework is being used and what it costs. Hook into Cursor via `spec-first install-hook`. |
-| 4 | **Figma Designer Guide** | [docs/FIGMA-DESIGNER-GUIDE.md](FIGMA-DESIGNER-GUIDE.md) | A "design contract" for the people building your Figma files. Following it is what turns approximate AI implementations into pixel-accurate ones. |
-| 5 | **Working example** | [docs/examples/001-user-registration/](examples/001-user-registration/) | A real spec run end-to-end: SPEC, DESIGN, TASKS, REVIEW for a "user registration" feature. Shows what every artifact looks like. |
-| 6 | **Automated test suite** | [tests/](../tests/) | 16 skill tests + 13 end-to-end scenarios proving every skill enforces its rules. Run `cd tests && ./run-skill-tests.sh` to see them pass. |
-| 7 | **Worked walkthrough** | [docs/WORKFLOW-DEMO.md](WORKFLOW-DEMO.md) | A narrated `/flow` run of the 001 User Registration feature with the prompts, AI responses, and artifacts at each step. |
+| 4 | **legacy_ai_analyser** (brownfield bootstrap) | [github.com/zlatkomq/legacy_ai_analyser](https://github.com/zlatkomq/legacy_ai_analyser) | Cursor plugin for **existing codebases**. Scans your code, architecture, APIs, data models, dependencies, and infrastructure and produces `docs/ai/CONSTITUTION.md` plus a machine-readable JSON, detailed analysis report, and interactive viewer. Run **before** the first `/flow` when adopting Spec-First on a brownfield project — replaces the manual `/constitute` step. Skip on greenfield. |
+| 5 | **Figma Designer Guide** | [docs/FIGMA-DESIGNER-GUIDE.md](FIGMA-DESIGNER-GUIDE.md) | A "design contract" for the people building your Figma files. Following it is what turns approximate AI implementations into pixel-accurate ones. |
+| 6 | **Working example** | [docs/examples/001-user-registration/](examples/001-user-registration/) | A real spec run end-to-end: SPEC, DESIGN, TASKS, REVIEW for a "user registration" feature. Shows what every artifact looks like. |
+| 7 | **Automated test suite** | [tests/](../tests/) | 16 skill tests + 13 end-to-end scenarios proving every skill enforces its rules. Run `cd tests && ./run-skill-tests.sh` to see them pass. |
+| 8 | **Worked walkthrough** | [docs/WORKFLOW-DEMO.md](WORKFLOW-DEMO.md) | A narrated `/flow` run of the 001 User Registration feature with the prompts, AI responses, and artifacts at each step. |
 
 ---
 
@@ -23,7 +24,7 @@
 | Role on your team | Read first | Then |
 |---|---|---|
 | **Project owner / decision-maker** | This page, then [README §Status](../README.md#status) and [PHILOSOPHY.md](../PHILOSOPHY.md) | Skim [WORKFLOW-DEMO.md](WORKFLOW-DEMO.md) to see what an end-to-end run looks like |
-| **Developer / tech lead** | [README §Installation](../README.md#installation) (both steps) | [Commands & Workflow Example](COMMANDS-WORKFLOW-EXAMPLE.md) → [WORKFLOW-DEMO.md](WORKFLOW-DEMO.md) → run `/flow` on a real spec |
+| **Developer / tech lead** | [README §Installation](../README.md#installation) (both steps) | [Commands & Workflow Example](COMMANDS-WORKFLOW-EXAMPLE.md) → [WORKFLOW-DEMO.md](WORKFLOW-DEMO.md) → run `/flow` on a real spec. **Brownfield only:** install [legacy_ai_analyser](https://github.com/zlatkomq/legacy_ai_analyser) first and run `/constitution` before the first `/flow`. |
 | **Designer** | **[FIGMA-DESIGNER-GUIDE.md](FIGMA-DESIGNER-GUIDE.md)** — only doc they need | Optional: skim [README §Figma and UIX flow](../README.md#figma-and-uix-flow-layout-handoff) for context |
 | **DevOps / infra** | [figma-mcp Installation](https://github.com/zlatkomq/figma-mcp#installation) and [figma-mcp Verification](https://github.com/zlatkomq/figma-mcp#verification) | Decide local vs Docker vs stdio deployment for the MCP server. Also deploy [Cursor Reporting](https://github.com/zlatkomq/cursor_reporting) (Docker Compose, one command) if you want team usage metrics. |
 | **Engineering manager** | This page, then [Cursor Reporting README](https://github.com/zlatkomq/cursor_reporting) | Understand what telemetry the dashboard surfaces (token cost per developer / model / command) — this is your visibility into how the framework is being used and how much it costs |
@@ -48,7 +49,10 @@ Day 1 — Setup (developer + devops)
     ▸ End of day: developer can run `/flow` end-to-end without errors
 
 Day 2 — First real feature
-    ▸ Run /constitute to capture your project's standards
+    ▸ Greenfield: run /constitute to capture your project's standards
+    ▸ Brownfield (existing codebase): install legacy_ai_analyser plugin and
+      run /constitution to generate docs/ai/CONSTITUTION.md from the existing code
+      (replaces the manual /constitute step)
     ▸ Pick a small feature; run /flow on it
     ▸ Designer hands off the first Figma file built per FIGMA-DESIGNER-GUIDE.md
     ▸ Compare output against the worked example in docs/examples/001-user-registration/
@@ -88,6 +92,7 @@ If any step fails, every doc points to the next one — but the two single most 
 | Spec-First Framework | 1.2.0 |
 | `figma-to-code` MCP server | 2.0.0+ |
 | Cursor Reporting | 1.0.0 |
+| legacy_ai_analyser | latest from `main` (see repo) |
 | Figma Designer Guide | v0.1 |
 
 Future major versions of the MCP server will be flagged in the Designer Guide's version block — re-check there before rolling out a new MCP release to your team.

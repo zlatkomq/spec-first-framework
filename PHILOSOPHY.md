@@ -16,13 +16,13 @@ A structured, spec-first workflow that ensures:
 
 ## Scope
 
-**This framework is for greenfield projects only.**
+**This framework supports both greenfield and brownfield projects.**
+
+For greenfield, `/constitute` captures your project's standards directly from a short description. For **brownfield / legacy** codebases, use the companion Cursor plugin **[legacy_ai_analyser](https://github.com/zlatkomq/legacy_ai_analyser)** first — it scans the existing codebase (code, architecture, APIs, data models, dependencies, infrastructure) and produces a brownfield-aware `CONSTITUTION.md` plus supporting analysis artifacts under `docs/ai/`. After that, the standard Spec-First workflow runs unchanged.
 
 **Current version is optimized for backend API development** — services, APIs, database-backed applications. The workflow concepts (spec → design → tasks → review) are universal, but the templates and examples assume backend terminology (data models, endpoints, repositories).
 
 Frontend, mobile, and infrastructure adaptations are planned for future versions.
-
-A separate repository with adapted rules and additional templates for brownfield/legacy codebases is planned. It will include codebase analysis, legacy assessment, and migration strategy tooling.
 
 ## Core Principles
 
@@ -210,16 +210,16 @@ The current framework includes testing as part of TASKS.md and validates test ex
 
 This is under evaluation to determine if it adds value or unnecessary complexity to the agnostic workflow.
 
-### Brownfield Support (Separate Repository)
+### Brownfield Support (Companion Plugin)
 
-A dedicated repository for legacy/existing codebases is planned. It will reuse most of the per-spec workflow (SPEC → DESIGN → TASKS → Implementation → Review) but add a layer to the CONSTITUTION.md creation process based on legacy assessment.
+Brownfield is supported today via the companion Cursor plugin **[legacy_ai_analyser](https://github.com/zlatkomq/legacy_ai_analyser)**. The plugin replaces the manual `/constitute` step for existing codebases — it analyses the actual code (architecture, APIs, data models, dependencies, infrastructure) and emits:
 
-Additional components:
-- Codebase analysis rules and templates
-- Legacy assessment documentation
-- "Do not touch" boundary definitions
-- Migration strategy tooling
-- Extended CONSTITUTION.md with legacy patterns and constraints
+- `docs/ai/CONSTITUTION.md` — compact brownfield-aware cornerstone, used as the preamble for every downstream Spec-First agent prompt
+- `docs/ai/constitution.json` — machine-readable equivalent
+- `docs/ai/full-analysis-YYYY-MM-DD.md` — detailed reference
+- `docs/ai/constitution-viewer.html` — interactive UI for browsing the analysis
+
+After running `/constitution`, the rest of the workflow (SPEC → DESIGN → UIX → TASKS → Implementation → Review) is identical to the greenfield path — the CONSTITUTION already encodes the legacy patterns and constraints so subsequent agents respect them automatically.
 
 ### Enforcement Tooling (Planned)
 

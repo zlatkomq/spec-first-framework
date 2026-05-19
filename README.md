@@ -117,6 +117,20 @@ After completing both installation steps above:
 
 **Guided workflow (recommended):** Use **`/flow 001-slug: requirements`** to run the full feature workflow step by step (BMAD-style: state + step files + menus). Resume anytime with **`/flow 001`**. Go back with **[B]**, continue with **[C]**. See [Workflow return and continue](docs/WORKFLOW-RETURN-AND-CONTINUE.md).
 
+### Brownfield projects
+
+If you're adopting Spec-First on an **existing codebase**, `/constitute` alone doesn't have enough signal — it would ask you to manually describe a codebase that already has its own patterns, libraries, conventions, and constraints. Use the companion plugin **[legacy_ai_analyser](https://github.com/zlatkomq/legacy_ai_analyser)** first: it scans your code, architecture, APIs, data models, dependencies, and infrastructure, then produces a brownfield-aware `CONSTITUTION.md` (plus a machine-readable `constitution.json`, a detailed `full-analysis-YYYY-MM-DD.md`, and an interactive viewer) under `docs/ai/`. After that, the standard Spec-First workflow (`/flow`, `/specify`, …) runs unchanged against your existing codebase.
+
+```
+# Brownfield bootstrap (Cursor)
+/add-plugin zlatkomq/legacy_ai_analyser
+/constitution                          # generates CONSTITUTION.md from your existing code
+# Then proceed with the normal Spec-First workflow:
+/flow 001-feature-slug: <requirement>
+```
+
+For greenfield projects, skip this — `/constitute` directly captures the standards you want for a fresh codebase.
+
 ## Workflow
 
 ### Feature Workflow
@@ -534,6 +548,7 @@ Use `/bug` instead if the fix needs investigation, touches many files, or carrie
 - [UIX / Figma Injection Overview](docs/UIX-FIGMA-INJECTION-OVERVIEW.md) — Technical analysis of the UIX integration approach
 - [Figma Designer Guide](docs/FIGMA-DESIGNER-GUIDE.md) — **For designers.** Naming, layout, components, and asset rules so the `figma-to-code` MCP extracts pixel-accurate specs. Send this to your designers before they build the first Figma file for a Spec-First project.
 - [Cursor Reporting](https://github.com/zlatkomq/cursor_reporting) — **Optional companion product.** FastAPI + MariaDB telemetry backend + web dashboard for team usage metrics (tokens, cost, model, `/command` and skill usage, timing). Hooked into Cursor via `spec-first install-hook`.
+- [legacy_ai_analyser](https://github.com/zlatkomq/legacy_ai_analyser) — **Brownfield bootstrap.** Cursor plugin that analyses an existing codebase and produces `CONSTITUTION.md` (plus a machine-readable JSON, detailed analysis report, and an interactive viewer) under `docs/ai/`. Run **before** the first `/flow` when adopting Spec-First on an existing project.
 - [PHILOSOPHY.md](PHILOSOPHY.md) — Framework principles and design rationale
 
 ## Testing
@@ -564,6 +579,6 @@ Tests use the **real** Claude Code CLI in headless mode (`claude -p`) with the p
 | Bugfix | ✅ Complete | 0.5.0+ |
 | Change request | ✅ Complete | 0.7.0+ |
 | UIX / Figma handoff | ✅ Complete | 1.2.0 (cached snapshot model) |
-| Brownfield (legacy) | 🚧 Planned | — |
+| Brownfield (legacy) | ✅ Supported | via the [legacy_ai_analyser](https://github.com/zlatkomq/legacy_ai_analyser) companion tool (Cursor plugin) — see [Brownfield projects](#brownfield-projects) below |
 
 **Current version:** 1.2.0 — see [CHANGELOG.md](CHANGELOG.md) for details. The plugin manifests (`.claude-plugin/plugin.json`, `.claude-plugin/marketplace.json`, `.cursor-plugin/plugin.json`) and the framework release line are aligned on the same version.

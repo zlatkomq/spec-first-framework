@@ -4,6 +4,10 @@ All notable changes to the Spec-First AI Development Framework will be documente
 
 ## [Unreleased]
 
+### Added
+
+- **Brownfield support via the [`legacy_ai_analyser`](https://github.com/zlatkomq/legacy_ai_analyser) companion Cursor plugin.** Previously the framework was greenfield-only; brownfield projects had to hand-write `CONSTITUTION.md`. The companion plugin now analyses an existing codebase (architecture, APIs, data models, dependencies, infrastructure) and emits `docs/ai/CONSTITUTION.md` plus a machine-readable JSON, detailed analysis report, and interactive viewer. After running `/constitution`, the standard Spec-First workflow runs unchanged. README, PHILOSOPHY.md, FOLDER-STRUCTURE.md, and CLIENT-HANDOFF.md updated to document the brownfield bootstrap sequence.
+
 ### Changed
 
 - **Plugin manifest version aligned to framework version (`1.2.0`)** in `.claude-plugin/plugin.json`, `.claude-plugin/marketplace.json`, and `.cursor-plugin/plugin.json` (previously `0.9.2`). Plugin and framework now share a single version line — one number to quote, one to bump per release.
